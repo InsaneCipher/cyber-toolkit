@@ -1,0 +1,86 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1c1c1c, #2c2c54);
+    color: #f1f1f1;
+    min-height: 100vh;
+}
+
+h1 {
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+}
+
+p {
+    font-size: 1.1rem;
+    color: #dcdcdc;
+}
+
+.btn-primary {
+    background: #4ecca3;
+    border: none;
+    padding: 12px 28px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.btn-primary:hover {
+    background: #3ebf92;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+pre {
+    background-color: #1f1f2e;
+    color: #4ecca3;
+    padding: 20px;
+    border-radius: 12px;
+    font-size: 1rem;
+    overflow-x: auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.bg-white {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 20px !important;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* Tabs styling */
+.nav-tabs .nav-link {
+    color: #dcdcdc;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link.active {
+    color: #4ecca3;
+    border-bottom: 3px solid #4ecca3;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #3ebf92;
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+    .btn-primary {
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
+    pre {
+        font-size: 0.9rem;
+    }
+    .nav-tabs .nav-link {
+        font-size: 0.9rem;
+    }
+}
