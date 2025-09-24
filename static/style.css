@@ -69,6 +69,34 @@ pre {
     color: #3ebf92;
 }
 
+.scan-form {
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.scan-label {
+  font-weight: 600;
+  color: #ddd;
+}
+
+.scan-select {
+  background-color: #1f1f2e;
+  color: #f1f1f1;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.scan-select:focus {
+  outline: none;
+  border-color: #4ecca3;
+  box-shadow: 0 0 6px rgba(78,204,163,0.5);
+}
+
 @media (max-width: 768px) {
     h1 {
         font-size: 1.8rem;
@@ -83,4 +111,83 @@ pre {
     .nav-tabs .nav-link {
         font-size: 0.9rem;
     }
+}
+
+/* Recon Tools Tab Styling */
+#dns {
+    background-color: #1e1e2f; /* dark base */
+    color: #f5f5f5; /* force light text */
+    padding: 20px;
+    border-radius: 12px;
+}
+
+/* Force all text inside to be light */
+#dns h4,
+#dns h5,
+#dns p,
+#dns label,
+#dns div,
+#dns strong {
+    color: #f5f5f5 !important;
+}
+
+/* Headings accent */
+#dns h4 {
+    color: #4da6ff !important;
+    margin-top: 15px;
+}
+
+/* Descriptions */
+#dns p.text-muted {
+    color: #cccccc !important; /* lighter gray so it’s still visible */
+}
+
+/* Forms */
+#dns .scan-form {
+    background: #2a2a3d;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+/* Input fields */
+#dns input.form-control {
+    background: #1b1b2b;
+    color: #f5f5f5;
+    border: 1px solid #444;
+}
+
+#dns input.form-control::placeholder {
+    color: #888;
+}
+
+/* Buttons */
+#dns button.btn-primary {
+    background: #4da6ff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: bold;
+    transition: background 0.2s ease-in-out;
+}
+
+#dns button.btn-primary:hover {
+    background: #1a8cff;
+}
+
+/* Result cards */
+#dns .bg-white {
+    background: #2a2a3d !important;
+    color: #f5f5f5 !important;
+    border: 1px solid #444;
+}
+
+/* Preformatted output (traceroute, whois) */
+#dns pre {
+    background: #1b1b2b;
+    padding: 10px;
+    border-radius: 8px;
+    color: #00ff99; /* terminal green */
+    overflow-x: auto;
 }
