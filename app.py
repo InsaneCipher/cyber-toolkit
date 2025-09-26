@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 import time
 from net_scan import *
 from port_scan import *
+from recon_tools import *
 
 app = Flask(__name__)
 
@@ -26,12 +27,21 @@ def run_scan(timeout):
 
 result = None
 dns_result = None
+trace_target = None
+traceroute_result = None
+whois_target = None
+whois_result = None
 port_results = None
+cert_target = None
+cert_result = None
 
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    global result, dns_result, port_results
+    global result, dns_result, port_results, \
+        traceroute_result, whois_result, \
+        trace_target, whois_target, cert_target, \
+        cert_result
 
     if request.method == "POST":
         action = request.form.get("action")
@@ -39,20 +49,38 @@ def index():
         if action == "scan":
             timeout = int(request.form.get("timeout", 5))
             result = run_scan(timeout)
-        elif action == "dns_lookup":
-            print("Looking up DNS records...")
-            ip = request.form.get("ip")
-            try:
-                hostname = socket.gethostbyaddr(ip)[0]
-            except:
-                hostname = "No hostname found"
-            dns_result = {"ip": ip, "hostname": hostname}
         elif action == "port_scan":
             ports = int(request.form.get("ports"))
             print(f"Scanning ports 1-{ports}...")
             port_results = scan_ports(range(1, ports))
+        elif action == "dns_lookup":
+            print("Looking up DNS records...")
+            ip = request.form.get("ip")
+            dns_result = dns_lookup(ip)
+        elif action == "traceroute":
+            trace_target = request.form.get("trace_target")
+            print(f"Running traceroute onm {trace_target}...")
+            traceroute_result = traceroute(trace_target)
+        elif action == "whois":
+            whois_target = request.form.get("whois_target")
+            print(f"Looking up whois records on {whois_target}...")
+            whois_result = whois_lookup(whois_target)
+        elif action == "cert_lookup":
+            cert_target = request.form.get("cert_target")
+            print(f"Looking up cert records on {cert_target}...")
+            cert_result = cert_lookup(cert_target)
 
-    return render_template("index.html", result=result, dns_result=dns_result, port_results=port_results)
+    return render_template("index.html",
+                           result=result,
+                           dns_result=dns_result,
+                           port_results=port_results,
+                           traceroute_result=traceroute_result,
+                           trace_target=trace_target,
+                           whois_result=whois_result,
+                           whois_target=whois_target,
+                           cert_result=cert_result,
+                           cert_target=cert_target,
+                           )
 
 
 if __name__ == "__main__":

@@ -1,0 +1,7 @@
+- Running services/programs
+- Hardware usage stats
+- IP Geolocation
+- Results export
+- Email analyzer
+- Malware analyzer
+- WiFi info & Security check

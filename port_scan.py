@@ -15,6 +15,13 @@ def scan_port(host, port):
     return None
 
 
+def get_service(port):
+    try:
+        return socket.getservbyport(port)
+    except OSError:
+        return "Unknown"
+
+
 def scan_ports(ports=range(1, 1025)):
     host = "127.0.0.1"
     workers = 50
@@ -24,7 +31,7 @@ def scan_ports(ports=range(1, 1025)):
 
     for port in results:
         if port:
-            open_ports.append({'port': port})
+            open_ports.append({'port': port, 'type': get_service(port)})
     return open_ports
 
 
