@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request
-import time
-from net_scan import *
-from port_scan import *
-from recon_tools import *
+from tools.net_scan import *
+from tools.port_scan import *
+from tools.recon_tools import *
+from tools.process_scan import *
+from tools.service_scan import *
 
 app = Flask(__name__)
 
@@ -34,6 +35,8 @@ whois_result = None
 port_results = None
 cert_target = None
 cert_result = None
+running_processes = None
+running_services = None
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -41,7 +44,7 @@ def index():
     global result, dns_result, port_results, \
         traceroute_result, whois_result, \
         trace_target, whois_target, cert_target, \
-        cert_result
+        cert_result, running_processes, running_services
 
     if request.method == "POST":
         action = request.form.get("action")
@@ -49,22 +52,35 @@ def index():
         if action == "scan":
             timeout = int(request.form.get("timeout", 5))
             result = run_scan(timeout)
+
         elif action == "port_scan":
             ports = int(request.form.get("ports"))
             print(f"Scanning ports 1-{ports}...")
             port_results = scan_ports(range(1, ports))
+
+        elif action == "process_scan":
+            print(f"Scanning processes...")
+            running_processes = scan_processes()
+
+        elif action == "service_scan":
+            print(f"Scanning services...")
+            running_services = scan_services()
+
         elif action == "dns_lookup":
             print("Looking up DNS records...")
             ip = request.form.get("ip")
             dns_result = dns_lookup(ip)
+
         elif action == "traceroute":
             trace_target = request.form.get("trace_target")
             print(f"Running traceroute onm {trace_target}...")
             traceroute_result = traceroute(trace_target)
+
         elif action == "whois":
             whois_target = request.form.get("whois_target")
             print(f"Looking up whois records on {whois_target}...")
             whois_result = whois_lookup(whois_target)
+
         elif action == "cert_lookup":
             cert_target = request.form.get("cert_target")
             print(f"Looking up cert records on {cert_target}...")
@@ -80,6 +96,8 @@ def index():
                            whois_target=whois_target,
                            cert_result=cert_result,
                            cert_target=cert_target,
+                           running_processes=running_processes,
+                           running_services=running_services,
                            )
 
 

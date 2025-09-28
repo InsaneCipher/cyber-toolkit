@@ -23,6 +23,12 @@
             <button class="nav-link" id="port-tab" data-bs-toggle="tab" data-bs-target="#port" type="button" role="tab">Port Scanner</button>
         </li>
         <li class="nav-item" role="presentation">
+            <button class="nav-link" id="process-tab" data-bs-toggle="tab" data-bs-target="#process" type="button" role="tab">Scan Processes</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab">Scan Services</button>
+        </li>
+        <li class="nav-item" role="presentation">
             <button class="nav-link" id="dns-tab" data-bs-toggle="tab" data-bs-target="#dns" type="button" role="tab">Recon Tools</button>
         </li>
         <li class="nav-item" role="presentation">
@@ -48,7 +54,7 @@
         </form>
 
     {% if result %}
-    <div class="mt-4 p-3 bg-white rounded shadow-sm">
+    <div class="mt-4 p-3 bg-white shadow-sm">
         <h5>Scan Results:</h5>
 
         <!-- Sub-tabs -->
@@ -190,208 +196,278 @@
         </div>
 
 
-        <!-- Port Scanner Tab -->
-        <div class="tab-pane fade" id="port" role="tabpanel">
-            <form method="POST" action="/" class="scan-form mt-3">
-                <input type="hidden" name="action" value="port_scan">
-                <label for="ports" class="scan-label">Port Range:</label>
-                  <select name="ports" id="ports" class="scan-select">
-                    <option value="1025">Common Ports (1–1025)</option>
-                    <option value="49151">Registered Ports (1–49151)</option>
-                    <option value="65535">All Ports (1–65535)</option>
-                  </select>
-                <button type="submit" class="btn-primary">Run Port Scan</button>
-            </form>
+    <!-- Port Scanner Tab -->
+    <div class="tab-pane fade" id="port" role="tabpanel">
+        <form method="POST" action="/" class="scan-form mt-3">
+            <input type="hidden" name="action" value="port_scan">
+            <label for="ports" class="scan-label">Port Range:</label>
+              <select name="ports" id="ports" class="scan-select">
+                <option value="1025">Common Ports (1–1025)</option>
+                <option value="49151">Registered Ports (1–49151)</option>
+                <option value="65535">All Ports (1–65535)</option>
+              </select>
+            <button type="submit" class="btn-primary">Run Port Scan</button>
+        </form>
 
-            {% if port_results %}
-            <div class="mt-4 p-3 bg-white rounded shadow-sm">
-                <h5>Scan Results:</h5>
-                {% if port_results %}
-                <table class="table table-striped table-hover table-responsive">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Port</th>
-                            <th>Port Service</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for row in port_results %}
-                        <tr>
-                            <td>{{ row.port }}</td>
-                            <td>{{ row.type }}</td>
-                            <td>Open</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                <p>No open ports found.</p>
-                {% endif %}
-            </div>
-            {% endif %}
+        {% if port_results %}
+        <div class="mt-4 p-3 bg-white shadow-sm">
+            <h5>Scan Results:</h5>
+            <table class="table table-striped table-hover table-responsive">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Port</th>
+                        <th>Port Service</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in port_results %}
+                    <tr>
+                        <td>{{ row.port }}</td>
+                        <td>{{ row.type }}</td>
+                        <td>Open</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
+        {% endif %}
+    </div>
+
+    <!-- Processes Tab -->
+    <div class="tab-pane fade" id="process" role="tabpanel">
+        <h4 class="mt-3">🛠 Running Processes</h4>
+        <form method="POST" action="/" class="scan-form mt-3">
+            <input type="hidden" name="action" value="process_scan">
+            <button type="submit" class="btn-primary">Scan Processes</button>
+        </form>
+
+        {% if running_processes %}
+        <div class="mt-4 p-3 bg-white shadow-sm">
+            <h5>Running Processes:</h5>
+            <table class="table table-striped table-hover table-responsive">
+                <thead class="table-dark">
+                    <tr>
+                        <th>PID</th>
+                        <th>Name</th>
+                        <th>User</th>
+                        <th>CPU %</th>
+                        <th>Mem %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in running_processes %}
+                    <tr>
+                        <td>{{ p.pid }}</td>
+                        <td>{{ p.name }}</td>
+                        <td>{{ p.username or p.user or "N/A" }}</td>
+                        <td>{{ "%.1f"|format(p.cpu_percent or 0) }}</td>
+                        <td>{{ "%.1f"|format(p.memory_percent or p.mem_percent or 0) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Services Tab -->
+    <div class="tab-pane fade" id="services" role="tabpanel">
+        <h4 class="mt-3">🛠 Running Services</h4>
+        <form method="POST" action="/" class="scan-form mt-3">
+            <input type="hidden" name="action" value="service_scan">
+            <button type="submit" class="btn-primary">Scan Services</button>
+        </form>
+
+        {% if running_services %}
+        <div class="mt-4 p-3 bg-white shadow-sm">
+            <h5>Service List:</h5>
+
+            <table class="table table-striped table-hover table-responsive">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Display Name</th>
+                        <th>Status</th>
+                        <th>Start Type</th>
+                        <th>PID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for name, svc in running_services.items() %}
+                    <tr>
+                        <td>{{ name }}</td>
+                        <td>{{ svc.display_name if svc.display_name else "N/A" }}</td>
+                        <td>{{ svc.status if svc.status else "N/A" }}</td>
+                        <td>{{ svc.start_type if svc.start_type else "N/A" }}</td>
+                        <td>{{ svc.pid if svc.pid else "N/A" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+
 
 
         <!-- Recon Tools Tab -->
-<div class="tab-pane fade" id="dns" role="tabpanel">
+    <div class="tab-pane fade" id="dns" role="tabpanel">
+        <!-- DNS Lookup -->
+        <h4 class="mt-3">🔎 DNS Lookup</h4>
+        <p class="text-muted">DNS Lookup resolves an IP address to its associated hostname (or vice versa), helping identify the server or domain behind an IP.</p>
+        <form method="POST" action="/" class="scan-form mt-2">
+            <input type="hidden" name="action" value="dns_lookup">
+            <label for="ip" class="scan-label">Enter IP Address:</label>
+            <input type="text" name="ip" id="ip" class="form-control mb-2" placeholder="e.g. 8.8.8.8" required>
+            <button type="submit" class="btn-primary">Lookup</button>
+        </form>
 
-    <!-- DNS Lookup -->
-    <h4 class="mt-3">🔎 DNS Lookup</h4>
-    <p class="text-muted">DNS Lookup resolves an IP address to its associated hostname (or vice versa), helping identify the server or domain behind an IP.</p>
-    <form method="POST" action="/" class="scan-form mt-2">
-        <input type="hidden" name="action" value="dns_lookup">
-        <label for="ip" class="scan-label">Enter IP Address:</label>
-        <input type="text" name="ip" id="ip" class="form-control mb-2" placeholder="e.g. 8.8.8.8" required>
-        <button type="submit" class="btn-primary">Lookup</button>
-    </form>
+        {% if dns_result %}
+        <div class="mt-3 p-3 bg-white shadow-sm">
+            <h5>Result:</h5>
+            <p><strong>IP:</strong> {{ dns_result.ip }}</p>
+            <p><strong>Hostname:</strong> {{ dns_result.hostname }}</p>
+        </div>
+        {% endif %}
 
-    {% if dns_result %}
-    <div class="mt-3 p-3 bg-white rounded shadow-sm">
-        <h5>Result:</h5>
-        <p><strong>IP:</strong> {{ dns_result.ip }}</p>
-        <p><strong>Hostname:</strong> {{ dns_result.hostname }}</p>
-    </div>
-    {% endif %}
+        <hr>
 
-    <hr>
+        <!-- Traceroute -->
+        <h4 class="mt-3">🌍 Traceroute</h4>
+        <p class="text-muted">Traceroute shows the path your request takes across the internet, revealing each “hop” between routers and networks.</p>
+        <form method="POST" action="/" class="scan-form mt-2">
+            <input type="hidden" name="action" value="traceroute">
+            <label for="trace_target" class="scan-label">Enter Host/IP:</label>
+            <input type="text" name="trace_target" id="trace_target" class="form-control mb-2" placeholder="e.g. example.com" required>
+            <button type="submit" class="btn-primary">Scan</button>
+        </form>
 
-    <!-- Traceroute -->
-    <h4 class="mt-3">🌍 Traceroute</h4>
-    <p class="text-muted">Traceroute shows the path your request takes across the internet, revealing each “hop” between routers and networks.</p>
-    <form method="POST" action="/" class="scan-form mt-2">
-        <input type="hidden" name="action" value="traceroute">
-        <label for="trace_target" class="scan-label">Enter Host/IP:</label>
-        <input type="text" name="trace_target" id="trace_target" class="form-control mb-2" placeholder="e.g. example.com" required>
-        <button type="submit" class="btn-primary">Scan</button>
-    </form>
-
-    {% if traceroute_result %}
-    <div class="mt-3 p-3 bg-white rounded shadow-sm">
-        <h5>Traceroute Result For {{trace_target}}:</h5>
-        <table class="table table-dark table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>Hop</th>
-                    <th>Latency 1</th>
-                    <th>Latency 2</th>
-                    <th>Latency 3</th>
-                    <th>Host / IP</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for hop in traceroute_result.hops %}
-                <tr>
-                    <td>{{ hop.hop }}</td>
-                    <td>{{ hop.latency1 }}</td>
-                    <td>{{ hop.latency2 }}</td>
-                    <td>{{ hop.latency3 }}</td>
-                    <td>{{ hop.host }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% endif %}
+        {% if traceroute_result %}
+        <div class="mt-3 p-3 bg-white shadow-sm">
+            <h5>Traceroute Result For {{trace_target}}:</h5>
+            <table class="table table-dark table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Hop</th>
+                        <th>Latency 1</th>
+                        <th>Latency 2</th>
+                        <th>Latency 3</th>
+                        <th>Host / IP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for hop in traceroute_result.hops %}
+                    <tr>
+                        <td>{{ hop.hop }}</td>
+                        <td>{{ hop.latency1 }}</td>
+                        <td>{{ hop.latency2 }}</td>
+                        <td>{{ hop.latency3 }}</td>
+                        <td>{{ hop.host }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
 
 
-    <hr>
+        <hr>
 
-    <!-- WHOIS -->
-    <h4 class="mt-3">📑 WHOIS Lookup</h4>
-    <p class="text-muted">WHOIS Lookup retrieves registration details about a domain or IP, such as the owner, registrar, and creation/expiry dates.</p>
-    <form method="POST" action="/" class="scan-form mt-2">
-        <input type="hidden" name="action" value="whois">
-        <label for="whois_target" class="scan-label">Enter Domain/IP:</label>
-        <input type="text" name="whois_target" id="whois_target" class="form-control mb-2" placeholder="e.g. example.com" required>
-        <button type="submit" class="btn-primary">Lookup</button>
-    </form>
+        <!-- WHOIS -->
+        <h4 class="mt-3">📑 WHOIS Lookup</h4>
+        <p class="text-muted">WHOIS Lookup retrieves registration details about a domain or IP, such as the owner, registrar, and creation/expiry dates.</p>
+        <form method="POST" action="/" class="scan-form mt-2">
+            <input type="hidden" name="action" value="whois">
+            <label for="whois_target" class="scan-label">Enter Domain/IP:</label>
+            <input type="text" name="whois_target" id="whois_target" class="form-control mb-2" placeholder="e.g. example.com" required>
+            <button type="submit" class="btn-primary">Lookup</button>
+        </form>
 
-    {% if whois_result %}
-    <div class="mt-3 p-3 bg-white rounded shadow-sm">
-        <h5>WHOIS Lookup Result For {{whois_target}}:</h5>
-        <table class="table table-striped table-hover table-responsive">
-            <thead class="table-dark">
-                <tr>
-                    <th>Field</th>
-                    <th>Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for key, value in whois_result.items() %}
-                <tr>
-                    <td>{{ key }}</td>
-                    <td>
-                        {% if value is iterable and value is not string %}
-                            {% if value|length > 0 %}
-                                <ul class="mb-0">
-                                    {% for v in value %}
-                                        <li>{{ v }}</li>
-                                    {% endfor %}
-                                </ul>
+        {% if whois_result %}
+        <div class="mt-3 p-3 bg-white shadow-sm">
+            <h5>WHOIS Lookup Result For {{whois_target}}:</h5>
+            <table class="table table-striped table-hover table-responsive">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, value in whois_result.items() %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        <td>
+                            {% if value is iterable and value is not string %}
+                                {% if value|length > 0 %}
+                                    <ul class="mb-0">
+                                        {% for v in value %}
+                                            <li>{{ v }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    None
+                                {% endif %}
                             {% else %}
-                                None
+                                {{ value if value else "None" }}
                             {% endif %}
-                        {% else %}
-                            {{ value if value else "None" }}
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
 
-    <!-- Certificate Inspection -->
-    <h4 class="mt-3">🔒 Certificate Inspection</h4>
-    <p class="text-muted">
-        Fetches the SSL/TLS certificate of a domain, showing issuer, expiry, and Subject Alternative Names (SANs).
-    </p>
-    <form method="POST" action="/" class="scan-form mt-2">
-        <input type="hidden" name="action" value="cert_lookup">
-        <label for="cert_target" class="scan-label">Enter Domain:</label>
-        <input type="text" name="cert_target" id="cert_target" class="form-control mb-2" placeholder="e.g. example.com" required>
-        <button type="submit" class="btn-primary">Inspect</button>
-    </form>
+        <!-- Certificate Inspection -->
+        <h4 class="mt-3">🔒 Certificate Inspection</h4>
+        <p class="text-muted">
+            Fetches the SSL/TLS certificate of a domain, showing issuer, expiry, and Subject Alternative Names (SANs).
+        </p>
+        <form method="POST" action="/" class="scan-form mt-2">
+            <input type="hidden" name="action" value="cert_lookup">
+            <label for="cert_target" class="scan-label">Enter Domain:</label>
+            <input type="text" name="cert_target" id="cert_target" class="form-control mb-2" placeholder="e.g. example.com" required>
+            <button type="submit" class="btn-primary">Inspect</button>
+        </form>
 
-    {% if cert_result %}
-    <div class="mt-3 p-3 bg-white rounded shadow-sm">
-        <h5>Certificate Details for {{ cert_target }}:</h5>
-        <table class="table table-striped table-hover table-responsive">
-            <thead class="table-dark">
-                <tr>
-                    <th>Field</th>
-                    <th>Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for key, value in cert_result.items() %}
-                <tr>
-                    <td>{{ key }}</td>
-                    <td>
-                        {% if value is iterable and value is not string %}
-                            {% if value|length > 0 %}
-                                <ul class="mb-0">
-                                    {% for v in value %}
-                                        <li>{{ v }}</li>
-                                    {% endfor %}
-                                </ul>
+        {% if cert_result %}
+        <div class="mt-3 p-3 bg-white shadow-sm">
+            <h5>Certificate Details for {{ cert_target }}:</h5>
+            <table class="table table-striped table-hover table-responsive">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, value in cert_result.items() %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        <td>
+                            {% if value is iterable and value is not string %}
+                                {% if value|length > 0 %}
+                                    <ul class="mb-0">
+                                        {% for v in value %}
+                                            <li>{{ v }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    None
+                                {% endif %}
                             {% else %}
-                                None
+                                {{ value if value else "None" }}
                             {% endif %}
-                        {% else %}
-                            {{ value if value else "None" }}
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
     </div>
-    {% endif %}
-
-</div>
 
 
 

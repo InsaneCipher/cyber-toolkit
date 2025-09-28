@@ -1,6 +1,6 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #1c1c1c, #2c2c54);
+    background: #2c2c54;
     color: #f1f1f1;
     min-height: 100vh;
 }
@@ -8,7 +8,7 @@ body {
 h1 {
     font-weight: 700;
     color: #ffffff;
-    text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+    text-shadow: 1px 1px 6px rgba(0,0,0,0.6);
 }
 
 p {
@@ -19,35 +19,47 @@ p {
 .btn-primary {
     background: #4ecca3;
     border: none;
-    padding: 12px 28px;
-    font-size: 1.2rem;
+    padding: 10px 25px;
+    font-size: 1.1rem;
     font-weight: 600;
-    border-radius: 50px;
+    border-radius: 30px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
 }
 
 .btn-primary:hover {
     background: #3ebf92;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.3);
 }
 
-pre {
+.scan-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.scan-label {
+    font-weight: 600;
+    color: #ddd;
+}
+
+.scan-select, input.form-control {
     background-color: #1f1f2e;
-    color: #4ecca3;
-    padding: 20px;
-    border-radius: 12px;
+    color: #f1f1f1;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
     font-size: 1rem;
-    overflow-x: auto;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
 }
 
-.bg-white {
-    background-color: rgba(255, 255, 255, 0.05) !important;
-    border-radius: 20px !important;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+.scan-select:focus, input.form-control:focus {
+    outline: none;
+    border-color: #4ecca3;
+    box-shadow: 0 0 8px rgba(78,204,163,0.5);
 }
 
 /* Tabs styling */
@@ -55,139 +67,110 @@ pre {
     color: #dcdcdc;
     font-weight: 600;
     font-size: 1rem;
-    border: none;
-    border-bottom: 3px solid transparent;
+    border-radius: 8px 8px 0 0;
+    margin-right: 5px;
     transition: all 0.3s ease;
 }
 
 .nav-tabs .nav-link.active {
-    color: #4ecca3;
-    border-bottom: 3px solid #4ecca3;
+    color: #fff;
+    background-color: #4ecca3;
+    border-color: #4ecca3 #4ecca3 transparent;
 }
 
 .nav-tabs .nav-link:hover {
-    color: #3ebf92;
+    background-color: rgba(78,204,163,0.2);
+    color: #fff;
 }
 
-.scan-form {
-  margin: 20px 0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+/* Result cards */
+.bg-white {
+    background-color: rgba(40, 40, 60, 0.95) !important; /* slightly opaque to avoid stretching dark effect */
+    color: #f1f1f1 !important;
+    border-radius: 15px !important;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    margin-bottom: 20px;
 }
 
-.scan-label {
-  font-weight: 600;
-  color: #ddd;
+/* Tables */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
-.scan-select {
-  background-color: #1f1f2e;
-  color: #f1f1f1;
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
+table thead tr th {
+    background: #33334d;
+    color: #fff;
+    font-weight: 600;
 }
 
-.scan-select:focus {
-  outline: none;
-  border-color: #4ecca3;
-  box-shadow: 0 0 6px rgba(78,204,163,0.5);
+table tbody tr:hover {
+    background: rgba(78,204,163,0.1);
 }
 
-@media (max-width: 768px) {
-    h1 {
-        font-size: 1.8rem;
-    }
-    .btn-primary {
-        font-size: 1rem;
-        padding: 10px 20px;
-    }
-    pre {
-        font-size: 0.9rem;
-    }
-    .nav-tabs .nav-link {
-        font-size: 0.9rem;
-    }
+table td, table th {
+    padding: 10px;
+    vertical-align: middle;
 }
 
-/* Recon Tools Tab Styling */
+/* Preformatted output */
+pre {
+    background-color: #1b1b2b;
+    color: #4ecca3;
+    padding: 15px;
+    border-radius: 12px;
+    overflow-x: auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    font-size: 0.95rem;
+}
+
+/* DNS Tab Overrides */
 #dns {
-    background-color: #1e1e2f; /* dark base */
-    color: #f5f5f5; /* force light text */
+    background-color: #1e1e2f;
+    color: #f5f5f5;
     padding: 20px;
     border-radius: 12px;
 }
 
-/* Force all text inside to be light */
-#dns h4,
-#dns h5,
-#dns p,
-#dns label,
-#dns div,
-#dns strong {
-    color: #f5f5f5 !important;
-}
-
-/* Headings accent */
 #dns h4 {
     color: #4da6ff !important;
-    margin-top: 15px;
+    margin-top: 20px;
 }
 
-/* Descriptions */
 #dns p.text-muted {
-    color: #cccccc !important; /* lighter gray so it’s still visible */
+    color: #cccccc !important;
 }
 
-/* Forms */
 #dns .scan-form {
     background: #2a2a3d;
     padding: 15px;
-    border-radius: 10px;
+    border-radius: 12px;
     margin-bottom: 20px;
 }
 
-/* Input fields */
 #dns input.form-control {
     background: #1b1b2b;
     color: #f5f5f5;
     border: 1px solid #444;
 }
 
-#dns input.form-control::placeholder {
-    color: #888;
-}
-
-/* Buttons */
 #dns button.btn-primary {
     background: #4da6ff;
-    border: none;
-    padding: 8px 16px;
     border-radius: 8px;
-    color: #fff;
-    font-weight: bold;
-    transition: background 0.2s ease-in-out;
+    font-weight: 600;
 }
 
 #dns button.btn-primary:hover {
     background: #1a8cff;
 }
 
-/* Result cards */
-#dns .bg-white {
-    background: #2a2a3d !important;
-    color: #f5f5f5 !important;
-    border: 1px solid #444;
-}
-
-/* Preformatted output (traceroute, whois) */
-#dns pre {
-    background: #1b1b2b;
-    padding: 10px;
-    border-radius: 8px;
-    color: #00ff99; /* terminal green */
-    overflow-x: auto;
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    h1 { font-size: 1.8rem; }
+    .btn-primary { font-size: 1rem; padding: 8px 20px; }
+    .nav-tabs .nav-link { font-size: 0.9rem; margin-right: 3px; }
+    table td, table th { font-size: 0.85rem; padding: 8px; }
 }

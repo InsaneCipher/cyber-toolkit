@@ -5,3 +5,5 @@
 - Email analyzer
 - Malware analyzer
 - WiFi info & Security check
+- IP Subnet calc
+- Hashing
