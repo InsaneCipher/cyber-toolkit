@@ -1,7 +1,7 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     """background: linear-gradient(135deg, #203a43, #2c5364, #4087a5);"""
-    color: #f1f1f1;
+    color: #fff;
     min-height: 100vh;
     background-image: url("/static/images/background.png");
 }
@@ -72,7 +72,7 @@ p {
 
 /* Tabs styling */
 .nav-tabs .nav-link {
-    color: #dcdcdc;
+    color: #fff;
     font-weight: 600;
     font-size: 1rem;
     border-radius: 8px 8px 0 0;
@@ -99,29 +99,6 @@ p {
     padding: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     margin-bottom: 20px;
-}
-
-/* Tables */
-table {
-    border-collapse: separate;
-    border-spacing: 0;
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-table thead tr th {
-    background: #33334d;
-    color: #fff;
-    font-weight: 600;
-}
-
-table tbody tr:hover {
-    background: rgba(78,204,163,0.1);
-}
-
-table td, table th {
-    padding: 10px;
-    vertical-align: middle;
 }
 
 /* Preformatted output */
