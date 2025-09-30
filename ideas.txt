@@ -1,9 +1,17 @@
-- Running services/programs
 - Hardware usage stats
 - IP Geolocation
 - Results export
 - Email analyzer
 - Malware analyzer
 - WiFi info & Security check
-- IP Subnet calc
-- Hashing
+- Base64 encoding files/text
+- DNS Resolver
+- File Hash Checker – upload a file → see SHA256/MD5.
+- Log Analyzer – paste logs, highlight IPs/domains automatically.
+- Regex Tester – test regex against input text.
+- JSON/YAML/XML Formatter – prettify raw data.
+- UUID Generator – create v4, v5 UUIDs.
+- String Converter – lowercase, uppercase, ROT13, hex → text.
+- Email Validator – check if email domain exists, MX records.
+- URL Scanner (safe) – extract domain, path, query params.
+- Common Wordlist Generator – based on input (for pentest prep

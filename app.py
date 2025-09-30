@@ -4,6 +4,8 @@ from tools.port_scan import *
 from tools.recon_tools import *
 from tools.process_scan import *
 from tools.service_scan import *
+from tools.hashing_and_encoding import *
+from tools.subnet import *
 
 app = Flask(__name__)
 
@@ -37,6 +39,8 @@ cert_target = None
 cert_result = None
 running_processes = None
 running_services = None
+hashed_strings = None
+subnet = None
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -44,7 +48,8 @@ def index():
     global result, dns_result, port_results, \
         traceroute_result, whois_result, \
         trace_target, whois_target, cert_target, \
-        cert_result, running_processes, running_services
+        cert_result, running_processes, running_services, \
+        hashed_strings, subnet
 
     if request.method == "POST":
         action = request.form.get("action")
@@ -86,6 +91,17 @@ def index():
             print(f"Looking up cert records on {cert_target}...")
             cert_result = cert_lookup(cert_target)
 
+        elif action == "hash_encrypt":
+            plain_string = request.form.get("plain_string")
+            print(f"Hashing {plain_string}...")
+            hashed_strings = hash_string(plain_string)
+
+        elif action == "subnet_calc":
+            base_network = request.form.get("base_network")
+            requirements = request.form.get("requirements")
+            print(f"Creating subnet for {base_network}...")
+            subnet = allocate_subnets(base_network, requirements)
+
     return render_template("index.html",
                            result=result,
                            dns_result=dns_result,
@@ -98,6 +114,8 @@ def index():
                            cert_target=cert_target,
                            running_processes=running_processes,
                            running_services=running_services,
+                           hashed_strings=hashed_strings,
+                           subnet=subnet,
                            )
 
 

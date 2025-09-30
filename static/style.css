@@ -14,7 +14,7 @@ h1 {
 
 p {
     font-size: 1.1rem;
-    color: #dcdcdc;
+    color: #fff;
 }
 
 .btn-primary {
@@ -30,7 +30,7 @@ p {
 
 .btn-primary:hover {
     background: #3ebf92;
-    transform: translateY(-2px);
+    transform: translateY(-1px);
     box-shadow: 0 6px 18px rgba(0,0,0,0.3);
 }
 
@@ -40,12 +40,17 @@ p {
     align-items: center;
     gap: 12px;
     margin-bottom: 20px;
-    color: #ffffff;
+}
+
+#dns .scan-form, #misc .scan-form {
+    background: #2a2a3d;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
 }
 
 .scan-label {
     font-weight: 600;
-    color: #ddd;
 }
 
 .scan-select, input.form-control {
@@ -55,6 +60,8 @@ p {
     padding: 8px 12px;
     font-size: 1rem;
     transition: all 0.3s ease;
+    margin-right: 20px;
+    margin-left: 5px;
 }
 
 .scan-select:focus, input.form-control:focus {
@@ -128,62 +135,20 @@ pre {
     font-size: 0.95rem;
 }
 
-/* DNS Tab Overrides */
-#dns, #services {
-    background-color: #1a1625;
-    color: #f5f5f5;
-    padding: 20px;
-    border-radius: 12px;
-}
-
-#dns h4 {
-    color: #4da6ff !important;
-    margin-top: 20px;
-}
-
-#dns p.text-muted {
-    color: #cccccc !important;
-}
-
-#dns .scan-form {
-    background: #2a2a3d;
-    padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-}
-
 #dns input.form-control {
-    background: #cccccc;
-    color: #000000;
+    background: #fff;
+    color: #000;
     border: 1px solid #444;
-}
-
-#dns button.btn-primary {
-    background: #4da6ff;
-    border-radius: 8px;
-    font-weight: 600;
-}
-
-#dns button.btn-primary:hover {
-    background: #1a8cff;
-}
-
-/* Responsive tweaks */
-@media (max-width: 768px) {
-    h1 { font-size: 1.8rem; }
-    .btn-primary { font-size: 1rem; padding: 8px 20px; }
-    .nav-tabs .nav-link { font-size: 0.9rem; margin-right: 3px; }
-    table td, table th { font-size: 0.85rem; padding: 8px; }
 }
 
 /* Common result card styling */
 .result-card {
     margin-top: 5px;
     padding: 20px;
-    border-radius: 16px;
-    background: #2d1f3d;
-    color: #f5f5f5;
     box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    background-color: #1f2937;
+    color: #fff;
+    border-radius: 12px;
 }
 
 /* Tab titles with accents */
@@ -195,10 +160,13 @@ pre {
 /* Per-tab accent colors */
 .color {
     color: #4da6ff;
+    margin-top: 20px;
 }
 
-/* Result headings inside cards */
-.result-card h5 {
-    color: #4ecca3;
-    margin-bottom: 15px;
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    h1 { font-size: 1.8rem; }
+    .btn-primary { font-size: 1rem; padding: 8px 20px; }
+    .nav-tabs .nav-link { font-size: 0.9rem; margin-right: 3px; }
+    table td, table th { font-size: 0.85rem; padding: 8px; }
 }
