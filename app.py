@@ -80,7 +80,7 @@ def index():
 
         elif action == "traceroute":
             trace_target = request.form.get("trace_target")
-            print(f"Running traceroute onm {trace_target}...")
+            print(f"Running traceroute on {trace_target}...")
             traceroute_result = traceroute(trace_target)
 
         elif action == "whois":
@@ -95,8 +95,24 @@ def index():
 
         elif action == "hash_encrypt":
             plain_string = request.form.get("plain_string")
-            print(f"Hashing {plain_string}...")
-            hashed_strings = hash_string(plain_string)
+            uploaded_file = request.files.get("file_input")
+
+            # Decide what to hash
+            if plain_string and uploaded_file and uploaded_file.filename != "":
+                # Both provided — pick one or return None
+                hashed_strings = None
+            elif uploaded_file and uploaded_file.filename != "":
+                # Only file provided
+                file_bytes = uploaded_file.read()
+                print(f"Hashing file: {uploaded_file.filename}...")
+                hashed_strings = hash_bytes(file_bytes)
+            elif plain_string:
+                # Only string provided
+                print(f"Hashing string: {plain_string}...")
+                hashed_strings = hash_string(plain_string)
+            else:
+                # Neither provided
+                hashed_strings = None
 
         elif action == "encode_string":
             encode_data = request.form.get("encode_string")

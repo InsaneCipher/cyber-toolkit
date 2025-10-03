@@ -3,6 +3,22 @@ import zlib
 import base64
 
 
+def hash_bytes(data_bytes):
+    algorithms = ["md5", "sha1", "sha224", "sha256", "sha384", "sha512", "sha3-224",
+                  "sha3-256", "sha3-384", "sha3-512", "blake2b", "blake2s"]
+
+    results = {}
+    for algo in algorithms:
+        h = hashlib.new(algo)
+        h.update(data_bytes)
+        results[algo] = h.hexdigest()
+
+    # Add CRC32 separately
+    results["crc32"] = format(zlib.crc32(data_bytes) & 0xFFFFFFFF, '08x')
+
+    return results
+
+
 def hash_string(text):
     """
     Hashes the input string using commonly used algorithms.

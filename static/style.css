@@ -3,18 +3,19 @@ body {
     """background: linear-gradient(135deg, #203a43, #2c5364, #4087a5);"""
     color: #fff;
     min-height: 100vh;
-    background-image: url("/static/images/background.png");
+    background: #f2faf7;
+    padding-top: 56px;
 }
 
 h1 {
     font-weight: 700;
-    color: #ffffff;
+    color: #000;
     text-shadow: 1px 1px 6px rgba(0,0,0,0.6);
 }
 
 p {
     font-size: 1.1rem;
-    color: #fff;
+    color: #000;
 }
 
 .btn-primary {
@@ -42,26 +43,19 @@ p {
     margin-bottom: 20px;
 }
 
-#dns .scan-form, #misc .scan-form {
-    background: #2a2a3d;
-    padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-}
-
 .scan-label {
     font-weight: 600;
 }
 
 .scan-select, input.form-control {
     background-color: #ffffff;
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 2px solid #1b1b2b;
     border-radius: 8px;
     padding: 8px 12px;
     font-size: 1rem;
     transition: all 0.3s ease;
     margin-right: 20px;
-    margin-left: 5px;
+    margin-left: 0px;
 }
 
 .scan-select:focus, input.form-control:focus {
@@ -70,35 +64,17 @@ p {
     box-shadow: 0 0 8px rgba(78,204,163,0.5);
 }
 
-/* Tabs styling */
-.nav-tabs .nav-link {
-    color: #fff;
-    font-weight: 600;
-    font-size: 1rem;
-    border-radius: 8px 8px 0 0;
-    margin-right: 5px;
-    transition: all 0.3s ease;
-}
-
-.nav-tabs .nav-link.active {
-    color: #fff;
-    background-color: #4ecca3;
-    border-color: #4ecca3 #4ecca3 transparent;
-}
-
-.nav-tabs .nav-link:hover {
-    background-color: rgba(78,204,163,0.2);
-    color: #fff;
-}
-
 /* Result cards */
-.bg-white {
-    background-color: rgba(40, 40, 60, 0.95) !important; /* slightly opaque to avoid stretching dark effect */
-    color: #f1f1f1 !important;
+.result_box {
+    background-color: #2d3748 !important; /* slightly opaque to avoid stretching dark effect */
     border-radius: 15px !important;
     padding: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     margin-bottom: 20px;
+}
+
+.result_box p {
+    color: #ffffff !important;
 }
 
 /* Preformatted output */
@@ -112,22 +88,6 @@ pre {
     font-size: 0.95rem;
 }
 
-#dns input.form-control {
-    background: #fff;
-    color: #000;
-    border: 1px solid #444;
-}
-
-/* Common result card styling */
-.result-card {
-    margin-top: 5px;
-    padding: 20px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-    background-color: #1f2937;
-    color: #fff;
-    border-radius: 12px;
-}
-
 /* Tab titles with accents */
 .tab-title {
     font-weight: 700;
@@ -139,6 +99,79 @@ pre {
     color: #4da6ff;
     margin-top: 20px;
 }
+
+/* Sidebar wrapper */
+.vert-sidebar {
+    position: fixed;
+    top: 56px; /* Below navbar */
+    left: 0;
+    height: calc(100vh - 57px);
+    width: 220px;
+    background-color: #e7e9eb;
+    display: flex;
+    flex-direction: column;
+    z-index: 900;
+    padding: 0;        /* Remove any extra padding */
+}
+
+/* Remove ul spacing */
+.vert-sidebar .nav {
+    margin: 0;
+    padding: 0;
+}
+
+/* Remove li spacing */
+.vert-sidebar .nav-item {
+    margin: 0;
+    padding: 0;
+}
+
+/* Override Bootstrap's nav-link in the sidebar */
+.vert-sidebar .nav-link {
+    border-radius: 0 !important;    /* Remove pill rounding */
+    display: block;
+    text-align: left;
+    width: 100%;
+    padding: 12px 20px;
+    font-weight: 600;
+    color: #000;
+    background: transparent;        /* Reset Bootstrap blue */
+    transition: background-color 0.3s ease;
+}
+
+/* Hover state */
+.vert-sidebar .nav-link:hover {
+    background-color: #cdcdcd !important;
+}
+
+/* Active (selected) state */
+.vert-sidebar .nav-link.active {
+    background-color: #4ecca3 !important; /* darker green */
+    color: #fff !important;
+    font-weight: 700; /* make it stand out */
+}
+
+.navbar {
+    background-color: #282a35 !important;
+}
+
+.tab-pane {
+    margin-top: 0; /* remove any default top margin */
+    padding-top: 0; /* optional, in case padding exists */
+}
+
+.tab-pane h2,
+.tab-pane h4 {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.tab-content {
+    padding-top: 1rem; /* optional consistent spacing below navbar */
+}
+
+
+
 
 /* Responsive tweaks */
 @media (max-width: 768px) {
