@@ -4,7 +4,6 @@
 - Email analyzer
 - Malware analyzer
 - WiFi info & Security check
-- Base64 encoding files/text
 - DNS Resolver
 - File Hash Checker – upload a file → see SHA256/MD5.
 - Log Analyzer – paste logs, highlight IPs/domains automatically.

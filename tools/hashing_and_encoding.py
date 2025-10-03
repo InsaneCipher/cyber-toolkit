@@ -1,5 +1,6 @@
 import hashlib
 import zlib
+import base64
 
 
 def hash_string(text):
@@ -33,3 +34,22 @@ def hash_string(text):
     results["CRC32"] = format(zlib.crc32(data) & 0xFFFFFFFF, '08x')
 
     return results
+
+
+def encode_string(text):
+    data = base64.b64encode(text.encode("unicode_escape"))
+    data = data.decode("unicode_escape")
+    result = {"plaintext": text, "data": data}
+    return result
+
+
+def decode_string(data):
+    try:
+        text = base64.b64decode(data)
+        text = text.decode("unicode_escape")
+        result = {"data": data, "plaintext": text}
+    except:
+        result = {"data": "Invalid base64-encoded string", "plaintext": ""}
+
+    return result
+

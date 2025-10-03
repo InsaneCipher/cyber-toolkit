@@ -519,33 +519,77 @@
                 {% endfor %}
               </tbody>
             </table>
-            <script>
-            function copyDigest(id) {
-              const el = document.getElementById(id);
-              if (!el) return;
-              const text = el.innerText || el.textContent;
-              if (!navigator.clipboard) {
-                // fallback
-                const ta = document.createElement('textarea');
-                ta.value = text;
-                document.body.appendChild(ta);
-                ta.select();
-                try { document.execCommand('copy'); } catch(e) {}
-                document.body.removeChild(ta);
-                return;
-              }
-              navigator.clipboard.writeText(text).then(() => {
-                // optional: show quick feedback
-                const btn = event?.currentTarget;
-                if (btn) {
-                  const orig = btn.innerHTML;
-                  btn.innerHTML = 'Copied';
-                  setTimeout(()=> btn.innerHTML = orig, 900);
-                }
-              }).catch(()=>{/* ignore */});
-            }
-            </script>
             {% endif %}
+            <hr>
+
+            <h4 class="tab-title color">Base64 Encode</h4>
+            <p>Converts a string to various hashes.</p>
+            <form method="POST" action="/" class="scan-form mt-2">
+                <input type="hidden" name="action" value="encode_string">
+                <label for="ip" class="scan-label">Enter String:</label>
+                <input type="text" name="encode_string" id="encode_string" class="form-control" placeholder="e.g. Orange" required>
+                <button type="submit" class="btn-primary">Encode</button>
+
+            {% if encoded_string %}
+            <table class="table table-striped table-hover table-sm table-responsive">
+              <thead class="table-dark">
+                <tr>
+                  <th>String</th>
+                  <th>Encoded Value</th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="align-middle">{{ encoded_string.plaintext }}</td>
+                  <td class="align-middle">
+                    <code class="d-block text-break" id="base64_encoded_string">{{ encoded_string.data }}</code>
+                  </td>
+                  <td class="text-end align-middle">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="copyDigest('base64_encoded_string')">
+                      Copy
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            {% endif %}
+            </form>
+            <hr>
+
+            <h4 class="tab-title color">Base64 Decode</h4>
+            <p>Converts a string to various hashes.</p>
+            <form method="POST" action="/" class="scan-form mt-2">
+                <input type="hidden" name="action" value="decode_string">
+                <label for="ip" class="scan-label">Enter Encoded String:</label>
+                <input type="text" name="decode_string" id="decode_string" class="form-control" placeholder="e.g. T3Jhbmdl" required>
+                <button type="submit" class="btn-primary">Decode</button>
+
+            {% if decoded_string %}
+            <table class="table table-striped table-hover table-sm table-responsive">
+              <thead class="table-dark">
+                <tr>
+                  <th>Encoded Value</th>
+                  <th>String</th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="align-middle">{{ decoded_string.data }}</td>
+                  <td class="align-middle">
+                    <code class="d-block text-break" id="base64_decoded_string">{{ decoded_string.plaintext }}</code>
+                  </td>
+                  <td class="text-end align-middle">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="copyDigest('base64_decoded_string')">
+                      Copy
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            {% endif %}
+            </form>
             <hr>
 
 
@@ -633,6 +677,31 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 });
+
+function copyDigest(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const text = el.innerText || el.textContent;
+  if (!navigator.clipboard) {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+    return;
+  }
+  navigator.clipboard.writeText(text).then(() => {
+    // optional: show quick feedback
+    const btn = event?.currentTarget;
+    if (btn) {
+      const orig = btn.innerHTML;
+      btn.innerHTML = 'Copied';
+      setTimeout(()=> btn.innerHTML = orig, 900);
+    }
+  }).catch(()=>{/* ignore */});
+}
 </script>
 </body>
 </html>

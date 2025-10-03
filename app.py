@@ -41,6 +41,8 @@ running_processes = None
 running_services = None
 hashed_strings = None
 subnet = None
+decoded_string = None
+encoded_string = None
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -49,7 +51,7 @@ def index():
         traceroute_result, whois_result, \
         trace_target, whois_target, cert_target, \
         cert_result, running_processes, running_services, \
-        hashed_strings, subnet
+        hashed_strings, subnet, decoded_string, encoded_string
 
     if request.method == "POST":
         action = request.form.get("action")
@@ -96,6 +98,16 @@ def index():
             print(f"Hashing {plain_string}...")
             hashed_strings = hash_string(plain_string)
 
+        elif action == "encode_string":
+            encode_data = request.form.get("encode_string")
+            print(f"Encoding {encode_data}...")
+            encoded_string = encode_string(encode_data)
+
+        elif action == "decode_string":
+            decode_data = request.form.get("decode_string")
+            print(f"Decoding {decode_data}...")
+            decoded_string = decode_string(decode_data)
+
         elif action == "subnet_calc":
             base_network = request.form.get("base_network")
             requirements = request.form.get("requirements")
@@ -116,6 +128,8 @@ def index():
                            running_services=running_services,
                            hashed_strings=hashed_strings,
                            subnet=subnet,
+                           decoded_string=decoded_string,
+                           encoded_string=encoded_string,
                            )
 
 
