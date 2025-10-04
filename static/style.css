@@ -129,7 +129,6 @@ pre {
 /* Override Bootstrap's nav-link in the sidebar */
 .vert-sidebar .nav-link {
     border-radius: 0 !important;    /* Remove pill rounding */
-    display: block;
     text-align: left;
     width: 100%;
     padding: 12px 20px;
@@ -137,6 +136,7 @@ pre {
     color: #000;
     background: transparent;        /* Reset Bootstrap blue */
     transition: background-color 0.3s ease;
+    display: block;
 }
 
 /* Hover state */
@@ -170,6 +170,20 @@ pre {
     padding-top: 1rem; /* optional consistent spacing below navbar */
 }
 
+#sectionNav {
+  top: 56px; /* sits right below top navbar */
+  z-index: 998;
+}
+
+.vert-sidebar.d-none {
+  display: none !important;
+  opacity: 0;
+}
+
+main {
+  margin-left: 230px; /* leave room for sidebar */
+  padding-top: 1rem;
+}
 
 
 
