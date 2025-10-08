@@ -7,26 +7,33 @@ body {
     padding-top: 86px;
 }
 
-h1 {
+h4 {
     font-weight: 700;
-    color: #000;
-    text-shadow: 1px 1px 6px rgba(0,0,0,0.6);
+    font-size: 1.2rem;
 }
 
 p {
-    font-size: 1.1rem;
+    font-size: 1.0rem;
     color: #000;
+}
+
+label {
+    font-size: 1.0rem;
+}
+
+.scan-form label {
+  margin-right: 8px;
+  white-space: nowrap;
 }
 
 .btn-primary {
     background: #4ecca3;
     border: none;
-    padding: 10px 25px;
-    font-size: 0.9rem;
+    padding: 5px 20px;
+    font-size: 1.0rem;
     font-weight: 600;
-    border-radius: 30px;
+    border-radius: 3px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     color: #fff;
 }
 
@@ -34,6 +41,22 @@ p {
     background: #3ebf92;
     transform: translateY(-1px);
     box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+}
+
+.result_box .btn-map {
+    display: inline-block;
+    background: #4ecca3;
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.result_box .btn-map:hover {
+    background: #3ebf92;
+    transform: translateY(-1px);
+    color: #fff;
 }
 
 .scan-form {
@@ -51,9 +74,9 @@ p {
 .scan-select, input.form-control {
     background-color: #ffffff;
     border: 2px solid #1b1b2b;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 1rem;
+    border-radius: 1px;
+    padding: 5px 10px;
+    font-size: 0.9rem;
     transition: all 0.3s ease;
     margin-right: 20px;
     margin-left: 0px;
@@ -76,7 +99,7 @@ p {
 
 .result_box p {
     color: #fff !important;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     margin: 7px 0px; /* small top and bottom margin */
 }
 

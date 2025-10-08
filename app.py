@@ -20,9 +20,9 @@ dns_cache = None
 dns_result = None
 traceroute_result = None
 whois_result = None
+rev_whois_result = None
 cert_result = None
 trace_target = None
-whois_target = None
 cert_target = None
 hashed_strings = None
 encoded_string = None
@@ -31,6 +31,9 @@ subnet = None
 ping_result = None
 arp_table = None
 interface_info = None
+rev_dns_result = None
+geo_result = None
+asn_result = None
 
 
 def get_template(name, active):
@@ -47,7 +50,6 @@ def get_template(name, active):
         whois_result=whois_result,
         cert_result=cert_result,
         trace_target=trace_target,
-        whois_target=whois_target,
         cert_target=cert_target,
         hashed_strings=hashed_strings,
         encoded_string=encoded_string,
@@ -56,6 +58,10 @@ def get_template(name, active):
         ping_result=ping_result,
         arp_table=arp_table,
         interface_info=interface_info,
+        rev_dns_result=rev_dns_result,
+        geo_result=geo_result,
+        rev_whois_result=rev_whois_result,
+        asn_result=asn_result,
     )
 
 
@@ -112,32 +118,55 @@ def network():
 # -------------------------------------
 @app.route("/recon", methods=["GET", "POST"])
 def recon():
-    global result, port_results, running_processes, running_services, dns_cache, dns_result, \
-        traceroute_result, whois_result, cert_result, trace_target, whois_target, cert_target, \
-        hashed_strings, encoded_string, decoded_string, subnet
+    global dns_result, traceroute_result, whois_result, cert_result, trace_target, cert_target, \
+        rev_dns_result, geo_result, rev_whois_result, asn_result
 
     if request.method == "POST":
         action = request.form.get("action")
 
         if action == "dns_lookup":
-            ip = request.form.get("ip")
-            print(f"Running DNS lookup on {ip}")
-            dns_result = dns_lookup(ip)
+            domain = request.form.get("dns_domain")
+            print(f"Running DNS lookup on {domain}...")
+            dns_result = dns_lookup(domain)
+
+        elif action == "rev_dns_lookup":
+            ip = request.form.get("dns_ip")
+            print(f"Running Reverse DNS lookup on {ip}...")
+            rev_dns_result = reverse_dns_lookup(ip)
+            print(rev_dns_result)
 
         elif action == "traceroute":
             trace_target = request.form.get("trace_target")
-            print(f"Running traceroute on {trace_target}")
+            print(f"Running traceroute on {trace_target}...")
             traceroute_result = traceroute(trace_target)
 
+        elif action == "ip_geo":
+            ip = request.form.get("geo_ip")
+            print(f"Running geolocation finding on {ip}...")
+            geo_result = ip_geolocation(ip)
+
         elif action == "whois":
-            whois_target = request.form.get("whois_target")
-            print(f"Running WHOIS lookup on {whois_target}")
-            whois_result = whois_lookup(whois_target)
+            target = request.form.get("whois_target")
+            print(f"Running WHOIS lookup on {target}...")
+            whois_result = whois_lookup(target)
+
+        elif action == "rev_whois":
+            query = request.form.get("rev_whois_target")
+            tld_filter = request.form.get("tld_filter", "").strip()
+            exact_match = bool(request.form.get("exact_match"))
+            print(f"Running reverse WHOIS lookup on {query}, exact match: {exact_match} and filter: {tld_filter}...")
+            # rev_whois_result = reverse_whois(query, tld_filter, exact_match)
+            rev_whois_result = {"query": query, "error": "Feature currently unavailable!"}
 
         elif action == "cert_lookup":
             cert_target = request.form.get("cert_target")
-            print(f"Inspecting certificate for {cert_target}")
+            print(f"Inspecting certificate for {cert_target}...")
             cert_result = cert_lookup(cert_target)
+
+        elif action == "asn_lookup":
+            asn_ip = request.form.get("asn_ip")
+            print(f"Inspecting certificate for {asn_ip}...")
+            asn_result = asn_lookup(asn_ip)
 
     return get_template("recon.html", "recon")
 
@@ -148,7 +177,7 @@ def recon():
 @app.route("/utils", methods=["GET", "POST"])
 def utils():
     global result, port_results, running_processes, running_services, dns_cache, dns_result, \
-        traceroute_result, whois_result, cert_result, trace_target, whois_target, cert_target, \
+        traceroute_result, whois_result, cert_result, trace_target, cert_target, \
         hashed_strings, encoded_string, decoded_string, subnet
 
     if request.method == "POST":
@@ -192,7 +221,7 @@ def utils():
 @app.route("/system")
 def system():
     global result, port_results, running_processes, running_services, dns_cache, dns_result, \
-        traceroute_result, whois_result, cert_result, trace_target, whois_target, cert_target, \
+        traceroute_result, whois_result, cert_result, trace_target, cert_target, \
         hashed_strings, encoded_string, decoded_string, subnet
 
     if request.method == "POST":

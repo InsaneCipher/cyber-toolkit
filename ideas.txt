@@ -78,3 +78,30 @@ Monitoring: Live Traffic, Bandwidth, Active Connections
 Analysis: Top Talkers, Protocol Breakdown, Latency Graph
 Diagnostics: Ping, Port Tester, DNS Cache Viewer
 Utilities: Export Config, Public IP, Interface Info
+
+
+| Tool                   | Description                             |
+| ---------------------- | --------------------------------------- |
+| **DNS Lookup**         | Resolve domain ↔ IP mappings.           |
+| **Reverse DNS Lookup** | Identify domains associated with an IP. |
+| **Traceroute**         | Trace network path (hops and latency).  |
+| **IP Geolocation**     | Find country, ISP, and ASN for an IP.   |
+
+| Tool                           | Description                                      |
+| ------------------------------ | ------------------------------------------------ |
+| **WHOIS Lookup**               | View domain registration data.                   |
+| **Reverse WHOIS / ASN Lookup** | Find other domains registered by the same owner. |
+| **Certificate Inspection**     | Retrieve SSL/TLS certificate details.            |
+
+| Tool                            | Description                                        |
+| ------------------------------- | -------------------------------------------------- |
+| **HTTP Header Analyzer**        | Inspect headers for tech stack and security clues. |
+| **HTTP Response Viewer**        | Show raw response and status details.              |
+| **Technology Fingerprinting**   | Detect technologies (server, CMS, framework).      |
+| **Robots.txt / Sitemap Viewer** | Reveal disallowed or hidden site areas.            |
+
+| Tool                             | Description                          |
+| -------------------------------- | ------------------------------------ |
+| **Subdomain Enumerator**         | Find subdomains from a domain.       |
+| **Open Redirect Checker**        | Detect redirect vulnerabilities.     |
+| **SSL Cipher & Protocol Tester** | Identify supported SSL/TLS versions. |

@@ -4,17 +4,59 @@ import platform
 import whois
 import re
 import ssl
+import tldextract
+import requests
 from datetime import datetime
 
 
-def dns_lookup(ip):
+def dns_lookup(domain):
     try:
-        hostname = socket.gethostbyaddr(ip)[0]
-    except:
-        hostname = "No hostname found"
+        # Get IP address for the given domain
+        ip = socket.gethostbyname(domain)
 
-    result = {'ip': ip, 'hostname': hostname}
-    print(result)
+        # Try to get full hostname (sometimes same as domain)
+        try:
+            hostname = socket.gethostbyaddr(ip)[0]
+        except socket.herror:
+            hostname = "No reverse hostname found"
+
+        result = {
+            "domain": domain,
+            "ip": ip,
+            "hostname": hostname
+        }
+
+    except Exception as e:
+        result = {
+            "domain": domain,
+            "error": "Invalid domain or DNS lookup failed",
+            "hostname": "N/A"
+        }
+
+    return result
+
+
+def reverse_dns_lookup(ip):
+    try:
+        # Get the full PTR hostname
+        full_hostname = socket.gethostbyaddr(ip)[0]
+
+        # Extract just the registered domain (e.g., google.com)
+        extracted = tldextract.extract(full_hostname)
+        domain = f"{extracted.domain}.{extracted.suffix}" if extracted.suffix else full_hostname
+
+        result = {
+            "ip": ip,
+            "hostname": full_hostname,
+            "domain": domain
+        }
+
+    except Exception as e:
+        result = {
+            "ip": ip,
+            "error": "No PTR record found",
+            "domain": "N/A"
+        }
 
     return result
 
@@ -109,3 +151,89 @@ def cert_lookup(hostname, port=443):
 
     except Exception as e:
         return {"error": str(e)}
+
+
+def ip_geolocation(ip):
+    try:
+        response = requests.get(f"http://ip-api.com/json/{ip}")
+        data = response.json()
+        
+        if data["status"] == "success":
+            result = {
+                "ip": ip, 
+                "country": data["country"],
+                "region": data["region"],
+                "city": data["city"],
+                "zip": data["zip"], 
+                "lat": data["lat"],
+                "lon": data["lon"],
+                "isp": data["isp"], 
+                "org": data["org"]
+            }
+            print(result)
+        else:
+            result = {"ip": ip, "error": "Lookup Failed!"}
+    except Exception as e:
+        result = {"ip": ip, "error": str(e)}
+        
+    return result
+
+
+# Currently Unavailable
+def reverse_whois(query, tld_filter=None, exact=False):
+    try:
+        # Build base params dynamically
+        params = {"query": query}
+
+        if tld_filter:
+            # Normalize commas/spaces
+            tlds = [t.strip().lstrip('.') for t in tld_filter.split(',') if t.strip()]
+            params["tlds"] = ",".join(tlds)
+
+        if exact:
+            params["exact_match"] = "true"
+
+        # Example API (you’d replace with the actual service)
+        response = requests.get("https://api.viewdns.info/reversewhois/", params=params)
+        data = response.json()
+
+        # Example response parsing — adapt to your API
+        result = {
+            "query": query,
+            "tld": params.get("tlds"),
+            "exact": exact,
+            "domains": data.get("domains", []),
+        }
+
+    except Exception as e:
+        result = {"query": query, "error": str(e)}
+
+    return result
+
+
+def asn_lookup(query):
+    try:
+        # If a domain is given, resolve it to an IP first
+        try:
+            ip = socket.gethostbyname(query)
+        except socket.gaierror:
+            ip = query  # already an IP
+
+        response = requests.get(f"https://ipinfo.io/{ip}/json")
+        data = response.json()
+
+        result = {
+            "Query": query,
+            "IP": ip,
+            "ASN": data.get("org") or data.get("asn"),
+            "Country": data.get("country"),
+            "Region": data.get("region"),
+            "City": data.get("city")
+        }
+
+    except Exception as e:
+        result = {"query": query, "error": str(e)}
+
+    return result
+
+

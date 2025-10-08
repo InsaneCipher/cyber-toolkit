@@ -276,15 +276,17 @@
 
           <div class="tab-pane" id="diag" role="tabpanel">
           <!-- PING TOOL -->
-          <div class="tool-card">
-              <h4 class="tab-title color">Ping Tool</h4>
-              <p>Check connectivity to a host and measure latency.</p>
-              <form method="POST" action="/network" class="scan-form mt-2">
+            <form method="POST" action="/network" class="scan-form">
+              <div class="tool-card">
+                  <h4 class="tab-title color">Ping Tool</h4>
+                  <p>Check connectivity to a host and measure latency.</p>
+
                   <input type="hidden" name="action" value="ping_host">
                   <label for="ping_target" class="scan-label">Enter Host/IP:</label>
-                  <input type="text" name="ping_target" id="ping_target" class="form-control" placeholder="e.g. 8.8.8.8" required>
+                  <input type="text" name="ping_target" id="ping_target" class="scan-select" placeholder="e.g. 8.8.8.8" required>
                   <button type="submit" class="btn-primary">Ping</button>
-              </form>
+              </div>
+            </form>
 
               {% if ping_result %}
               <div class="result_box">
@@ -293,7 +295,6 @@
                   <p>{{ ping_result.output | replace('\n', '<br>') | safe }}</p>
               </div>
               {% endif %}
-          </div>
 
           <hr>
 
@@ -414,11 +415,11 @@ document.addEventListener("DOMContentLoaded", function () {
     let triggerTabList = [].slice.call(document.querySelectorAll('#toolTabs button'))
     triggerTabList.forEach(function (triggerEl) {
         triggerEl.addEventListener('shown.bs.tab', function (event) {
-            localStorage.setItem('activeTab', event.target.getAttribute('data-bs-target'));
+            localStorage.setItem('networkActiveTab', event.target.getAttribute('data-bs-target'));
         })
     });
 
-    let activeTab = localStorage.getItem('activeTab');
+    let activeTab = localStorage.getItem('networkActiveTab');
     if (activeTab) {
         let tab = document.querySelector('#toolTabs button[data-bs-target="' + activeTab + '"]');
         if (tab) {
