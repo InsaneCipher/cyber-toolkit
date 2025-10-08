@@ -1,10 +1,10 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Verdana, Geneva, sans-serif;
     """background: linear-gradient(135deg, #203a43, #2c5364, #4087a5);"""
     color: #fff;
     min-height: 100vh;
     background: #f2faf7;
-    padding-top: 56px;
+    padding-top: 86px;
 }
 
 h1 {
@@ -22,11 +22,12 @@ p {
     background: #4ecca3;
     border: none;
     padding: 10px 25px;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     font-weight: 600;
     border-radius: 30px;
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    color: #fff;
 }
 
 .btn-primary:hover {
@@ -66,7 +67,7 @@ p {
 
 /* Result cards */
 .result_box {
-    background-color: #2d3748 !important; /* slightly opaque to avoid stretching dark effect */
+    background-color: #282a35 !important; /* slightly opaque to avoid stretching dark effect */
     border-radius: 15px !important;
     padding: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
@@ -74,13 +75,15 @@ p {
 }
 
 .result_box p {
-    color: #ffffff !important;
+    color: #fff !important;
+    font-size: 0.9rem;
+    margin: 7px 0px; /* small top and bottom margin */
 }
 
 /* Preformatted output */
 pre {
-    background-color: #1b1b2b;
-    color: #4ecca3;
+    background-color: #282a35;
+    color: #fff;
     padding: 15px;
     border-radius: 12px;
     overflow-x: auto;
@@ -103,7 +106,7 @@ pre {
 /* Sidebar wrapper */
 .vert-sidebar {
     position: fixed;
-    top: 56px; /* Below navbar */
+    top: 86px; /* Below navbar */
     left: 0;
     height: calc(100vh - 57px);
     width: 220px;
@@ -132,7 +135,7 @@ pre {
     text-align: left;
     width: 100%;
     padding: 12px 20px;
-    font-weight: 600;
+    font-weight: 100;
     color: #000;
     background: transparent;        /* Reset Bootstrap blue */
     transition: background-color 0.3s ease;
@@ -146,13 +149,26 @@ pre {
 
 /* Active (selected) state */
 .vert-sidebar .nav-link.active {
-    background-color: #4ecca3 !important; /* darker green */
+    background-color: #4da6ff !important; /* darker green */
     color: #fff !important;
-    font-weight: 700; /* make it stand out */
 }
 
 .navbar {
-    background-color: #282a35 !important;
+    background: #282a35;
+    color: #000 !important;
+}
+
+.brand-navbar {
+    background: linear-gradient(90deg, #1b2735, #1b2735);
+    padding-left: 0;
+    padding-top: 3px;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: #4ecca3 !important;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
 }
 
 .tab-pane {
@@ -185,7 +201,63 @@ main {
   padding-top: 1rem;
 }
 
+/* Fix horizontal nav alignment and height */
+.horizontal-navbar {
+    height: 30px;
+    background-color: #282a35 !important;
+    display: flex;
+    align-items: stretch;
+    padding: 0 !important;
+}
 
+.horizontal-navbar .container-fluid {
+  display: flex;
+  justify-content: flex-start !important; /* push content left */
+  align-items: stretch;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.horizontal-navbar .navbar-nav {
+  display: flex;
+  justify-content: flex-start !important; /* keep nav items left-aligned */
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+  flex-wrap: nowrap;
+  flex-grow: 1;
+}
+
+.horizontal-navbar .nav-item {
+  display: flex;
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+}
+
+.horizontal-navbar .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0 32px !important; /* control horizontal spacing */
+    font-weight: 600;
+    color: #fff !important;
+    transition: background-color 0.3s ease;
+    border-radius: 0;
+    font-size: 0.9rem;
+}
+
+/* Hover and active states */
+.horizontal-navbar .nav-link:hover {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+.horizontal-navbar .nav-link.active {
+  background-color: #4ecca3 !important;
+  color: #fff !important;
+}
 
 /* Responsive tweaks */
 @media (max-width: 768px) {

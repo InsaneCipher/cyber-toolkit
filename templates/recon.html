@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Recon Tools - Cyber Toolkit</title>
+    <title>Network Tools - Cyber Toolkit</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
@@ -11,16 +11,45 @@
 </head>
 <body>
 
-<!-- Shared Top Nav -->
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+<!-- Top Brand Bar -->
+<nav class="navbar brand-navbar fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Cyber Toolkit</a>
-    <ul class="navbar-nav ms-auto">
-      <li class="nav-item"><a class="nav-link {% if active == 'network' %}active{% endif %}" href="{{ url_for('network') }}">Network</a></li>
-      <li class="nav-item"><a class="nav-link {% if active == 'recon' %}active{% endif %}" href="{{ url_for('recon') }}">Recon</a></li>
-      <li class="nav-item"><a class="nav-link {% if active == 'utils' %}active{% endif %}" href="{{ url_for('utils') }}">Utilities</a></li>
-    </ul>
+    <a class="navbar-brand fw-bold text-uppercase ms-2" href="#" style="letter-spacing: 1px;">
+      ⚙️ Cyber Toolkit
+    </a>
   </div>
+</nav>
+
+<!-- Navigation Bar (Below Brand) -->
+<nav class="horizontal-navbar navbar navbar-expand-lg fixed-top" style="top: 56px;">
+    <div class="container-fluid">
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'network' %}active{% endif %}" href="{{ url_for('network') }}">Network</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'recon' %}active{% endif %}" href="{{ url_for('recon') }}">Recon</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'system' %}active{% endif %}" href="{{ url_for('system') }}">System</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'forensics' %}active{% endif %}" href="{{ url_for('forensics') }}">Forensics</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'security' %}active{% endif %}" href="{{ url_for('security') }}">Security</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'utils' %}active{% endif %}" href="{{ url_for('utils') }}">Utilities</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'developer' %}active{% endif %}" href="{{ url_for('developer') }}">Developer</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'about' %}active{% endif %}" href="{{ url_for('about') }}">About</a>
+            </li>
+        </ul>
+    </div>
 </nav>
 
 <div class="container-fluid">
@@ -328,7 +357,7 @@
             <div class="tool-card">
                 <h4 class="tab-title color">🔎 DNS Lookup</h4>
                 <p>DNS Lookup resolves an IP address to its associated hostname (or vice versa), helping identify the server or domain behind an IP.</p>
-                <form method="POST" action="/" class="scan-form mt-2">
+                <form method="POST" action="/recon" class="scan-form mt-2">
                     <input type="hidden" name="action" value="dns_lookup">
                     <label for="ip" class="scan-label">Enter IP Address:</label>
                     <input type="text" name="ip" id="ip" class="form-control" placeholder="e.g. 8.8.8.8" required>
@@ -348,7 +377,7 @@
             <!-- Traceroute -->
             <h4 class="tab-title color">🌍 Traceroute</h4>
             <p>Traceroute shows the path your request takes across the internet, revealing each “hop” between routers and networks.</p>
-            <form method="POST" action="/" class="scan-form mt-2">
+            <form method="POST" action="/recon" class="scan-form mt-2">
                 <input type="hidden" name="action" value="traceroute">
                 <label for="trace_target" class="scan-label">Enter Host/IP:</label>
                 <input type="text" name="trace_target" id="trace_target" class="form-control mb-2" placeholder="e.g. example.com" required>
@@ -385,7 +414,7 @@
             <!-- WHOIS -->
             <h4 class="tab-title color">📑 WHOIS Lookup</h4>
             <p>WHOIS Lookup retrieves registration details about a domain or IP, such as the owner, registrar, and creation/expiry dates.</p>
-            <form method="POST" action="/" class="scan-form mt-2">
+            <form method="POST" action="/recon" class="scan-form mt-2">
                 <input type="hidden" name="action" value="whois">
                 <label for="whois_target" class="scan-label">Enter Domain/IP:</label>
                 <input type="text" name="whois_target" id="whois_target" class="form-control mb-2" placeholder="e.g. example.com" required>
@@ -432,7 +461,7 @@
             <!-- Certificate Inspection -->
             <h4 class="tab-title color">🔒 Certificate Inspection</h4>
             <p>Fetches the SSL/TLS certificate of a domain, showing issuer, expiry, and Subject Alternative Names (SANs).</p>
-            <form method="POST" action="/" class="scan-form mt-2">
+            <form method="POST" action="/recon" class="scan-form mt-2">
                 <input type="hidden" name="action" value="cert_lookup">
                 <label for="cert_target" class="scan-label">Enter Domain:</label>
                 <input type="text" name="cert_target" id="cert_target" class="form-control mb-2" placeholder="e.g. example.com" required>
@@ -480,7 +509,7 @@
             <h4 class="tab-title color">Hash Encryption</h4>
             <p>Convert a string or file to various hashes.</p>
 
-            <form method="POST" action="/" class="scan-form mt-2" enctype="multipart/form-data">
+            <form method="POST" action="/recon" class="scan-form mt-2" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="hash_encrypt">
 
                 <label class="scan-label" for="plain_string">Enter String:</label>

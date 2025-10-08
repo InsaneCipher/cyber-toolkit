@@ -14,3 +14,67 @@
 - Email Validator – check if email domain exists, MX records.
 - URL Scanner (safe) – extract domain, path, query params.
 - Common Wordlist Generator – based on input (for pentest prep
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+🔍 Diagnostics & Monitoring
+
+These are core utilities for understanding and debugging your network.
+Ping Tool → Check connectivity to a host and measure latency.
+ARP Table Viewer → Display your system’s ARP cache (local IP–MAC mappings).
+Active Connections Viewer → Show all current TCP/UDP connections (like netstat).
+Bandwidth Monitor → Track real-time upload/download usage per process or interface.
+Interface Info → Display network adapters, IPs, gateways, and DNS servers.
+Packet Capture (Sniffer) → Capture and analyze live packets (with filters for IPs or ports).
+DNS Cache Viewer → Display locally cached DNS resolutions.
+
+🧠 Analysis & Visualization
+For deeper insight or trend tracking.
+Traffic Breakdown by Protocol → Show how much traffic comes from HTTP, HTTPS, DNS, etc.
+Top Talkers / Listeners → Identify the most active local or remote IPs.
+Latency Graph → Plot latency over time for a host to visualize packet loss or instability.
+Network Map → Visualize all devices discovered on your LAN (requires ARP/ping sweep).
+Port Usage Heatmap → Show open ports across local devices visually.
+
+🧰 Testing & Utilities
+Tools for debugging and simulation.
+Port Tester → Check if a specific port on your machine is open or reachable externally.
+Local HTTP Server Check → Quickly test if local web servers are accessible.
+Packet Generator / Flood Tester (⚠️ optional, for controlled environments only) → Send test packets for performance or stress analysis.
+Firewall Rule Checker → Test whether traffic on specific ports/protocols is allowed or blocked.
+Traceroute (Local Mode) → Show hops within your LAN only.
+
+🧩 System Integration
+
+Good for context and configuration.
+Network Configuration Exporter → Export interface, gateway, DNS, and route info as JSON or CSV.
+Public IP Fetcher → Retrieve your current WAN/public IP address.
+Ping Sweep (LAN Scanner) → Scan local subnet for active devices and show hostname, MAC, manufacturer.
+
+💡 Example Layout
+You could group them visually:
+Monitoring: Live Traffic, Bandwidth, Active Connections
+Analysis: Top Talkers, Protocol Breakdown, Latency Graph
+Diagnostics: Ping, Port Tester, DNS Cache Viewer
+Utilities: Export Config, Public IP, Interface Info
