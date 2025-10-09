@@ -105,3 +105,93 @@ Utilities: Export Config, Public IP, Interface Info
 | **Subdomain Enumerator**         | Find subdomains from a domain.       |
 | **Open Redirect Checker**        | Detect redirect vulnerabilities.     |
 | **SSL Cipher & Protocol Tester** | Identify supported SSL/TLS versions. |
+
+
+⚙️ System Tab — Suggested Subtabs
+🧠 1. Overview
+OS name, version, build number
+System uptime
+Hostname, username
+Manufacturer & model (from platform, WMI, or dmidecode)
+CPU model, core/thread count, frequency
+Total RAM & free RAM
+Disk usage summary (total, used, free)
+GPU model(s)
+Battery status (if laptop)
+Python libs/tools: platform, psutil, cpuinfo, wmi, subprocess
+
+⚡ 2. CPU & Memory
+CPU name, vendor, architecture (x64/ARM), clock speed, cache sizes
+Number of cores/threads, logical vs physical
+Current CPU utilization
+Per-core usage (real-time)
+Total memory, available memory, usage %
+Swap usage
+Python libs/tools: psutil, cpuinfo, platform, wmi
+
+💽 3. Storage & Drives
+Drives (C:, D:, /dev/sda, etc.)
+Total, used, free space
+Filesystem type (NTFS/ext4/FAT32, etc.)
+Mount points
+Disk I/O stats (read/write speed, counts)
+SMART health status (if available)
+Python libs/tools: psutil.disk_partitions(), psutil.disk_usage(), pySMART, smartctl, lsblk
+
+🌐 4. Network & Adapters
+Network adapters (Ethernet, Wi-Fi, virtual, loopback)
+IP address, MAC address, gateway, DNS servers
+Interface status (up/down, speed)
+Active TCP/UDP connections (like netstat)
+Bandwidth usage per interface
+Python libs/tools: psutil.net_if_addrs(), psutil.net_io_counters(), socket, subprocess(ipconfig/ifconfig/netstat)
+
+💻 5. GPU & Display
+GPU model, vendor, driver version
+GPU memory total / used
+Current GPU utilization (%)
+Display resolution and refresh rate
+Python libs/tools: pynvml (NVIDIA), GPUtil, subprocess with wmic path win32_videocontroller, or lspci on Linux
+
+🔋 6. Power & Battery
+Power source (AC/Battery)
+Battery charge level (%)
+Status (charging/discharging)
+Estimated time remaining
+Python libs/tools: psutil.sensors_battery(), acpi on Linux
+
+🧩 7. Sensors & Temperatures
+CPU temperature(s)
+GPU temperature
+Motherboard / system temperature
+Fan speeds (if available)
+Python libs/tools: psutil.sensors_temperatures(), lm-sensors, OpenHardwareMonitor (via WMI)
+
+🧰 8. Processes & Services
+Running processes (PID, name, user, CPU%, RAM%)
+Start time, command line
+Running services (name, status, startup type, PID)
+Python libs/tools: psutil.process_iter(), wmi (for Windows services), systemctl list-units (Linux)
+
+🧾 9. BIOS / Motherboard Info
+Motherboard manufacturer, model, serial
+BIOS vendor, version, release date
+System UUID
+Chassis type
+Python libs/tools: wmi (Win32_BaseBoard, Win32_BIOS), dmidecode (Linux)
+
+🔌 10. Connected Devices
+USB devices
+PCI devices
+External drives
+Monitors / HID devices
+Python libs/tools: pyudev, subprocess(lsusb/lspci), wmi
+
+🧱 11. Installed Software
+Application name
+Version
+Publisher / vendor
+Install date
+Python libs/tools:
+Windows: registry via winreg or WMI
+Linux: dpkg, rpm, flatpak list, etc.

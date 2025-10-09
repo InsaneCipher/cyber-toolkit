@@ -132,7 +132,7 @@ pre {
     top: 86px; /* Below navbar */
     left: 0;
     height: calc(100vh - 57px);
-    width: 220px;
+    width: 246px;
     background-color: #e7e9eb;
     display: flex;
     flex-direction: column;
@@ -156,13 +156,16 @@ pre {
 .vert-sidebar .nav-link {
     border-radius: 0 !important;    /* Remove pill rounding */
     text-align: left;
+    font-size: 0.9rem;
     width: 100%;
-    padding: 12px 20px;
+    padding: 12px 10px;
     font-weight: 100;
     color: #000;
     background: transparent;        /* Reset Bootstrap blue */
     transition: background-color 0.3s ease;
     display: block;
+    border-bottom: #000;
+    border-bottom-width: medium !important;
 }
 
 /* Hover state */
@@ -174,6 +177,12 @@ pre {
 .vert-sidebar .nav-link.active {
     background-color: #4da6ff !important; /* darker green */
     color: #fff !important;
+}
+
+.emoji {
+  display: inline-block;
+  width: 1.6em;        /* Adjust until text aligns neatly */
+  text-align: center;  /* Centers the emoji within its space */
 }
 
 .navbar {
@@ -280,12 +289,4 @@ main {
 .horizontal-navbar .nav-link.active {
   background-color: #4ecca3 !important;
   color: #fff !important;
-}
-
-/* Responsive tweaks */
-@media (max-width: 768px) {
-    h1 { font-size: 1.8rem; }
-    .btn-primary { font-size: 1rem; padding: 8px 20px; }
-    .nav-tabs .nav-link { font-size: 0.9rem; margin-right: 3px; }
-    table td, table th { font-size: 0.85rem; padding: 8px; }
 }
