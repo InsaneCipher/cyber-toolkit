@@ -438,8 +438,170 @@
         </div>
 
         <div class="tab-pane" id="web" role="tabpanel">
-            <h4 class="tab-title color">Web Footprinting</h4>
-            <p>Convert a string or file to various hashes.</p>
+            <!-- HTTP Header Analyzer -->
+            <h4 class="tab-title color">HTTP Header Analyzer</h4>
+            <p>Inspect response headers to uncover server information, frameworks, or security clues.</p>
+            <form method="POST" action="/recon" class="scan-form mt-2">
+                <div class="tool-card">
+                    <input type="hidden" name="action" value="http_headers">
+                    <label for="header_url" class="scan-label">Enter URL:</label>
+                    <input type="text" name="header_url" id="header_url" class="scan-select" placeholder="e.g. example.com" required>
+                    <button type="submit" class="btn-primary">Analyze</button>
+                </div>
+            </form>
+
+            {% if header_result %}
+                {% if header_result.error %}
+                    <div class="result_box mt-3">
+                        <p><strong>Error:</strong> {{ header_result.error }}</p>
+                    </div>
+                {% else %}
+                <table class="table table-sm table-hover table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Header</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>URL:</td>
+                            <td>{{ header_result.url }}</td>
+                        </tr>
+                        <tr>
+                            <td>Status:</td>
+                            <td>{{ header_result.status_code }}</td>
+                        </tr>
+                        {% for key, value in header_result.headers.items() %}
+                            <tr>
+                                <td>{{ key }}</td>
+                                <td>{{ value }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            {% endif %}
+            <hr>
+
+            <!-- HTTP Response Viewer -->
+            <h4 class="tab-title color">HTTP Response Viewer</h4>
+            <p>Fetch and inspect the raw response, including status code and preview of the content.</p>
+            <form method="POST" action="/recon" class="scan-form mt-2">
+                <div class="tool-card">
+                    <input type="hidden" name="action" value="http_response">
+                    <label for="resp_url" class="scan-label">Enter URL:</label>
+                    <input type="text" name="resp_url" id="resp_url" class="scan-select" placeholder="e.g. example.com" required>
+                    <button type="submit" class="btn-primary">Fetch</button>
+                </div>
+            </form>
+
+            {% if response_result %}
+                {% if response_result.error %}
+                    <div class="result_box mt-3">
+                        <p><strong>Error:</strong> {{ response_result.error }}</p>
+                    </div>
+                {% else %}
+                <table class="table table-sm table-hover table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Header</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>URL:</td>
+                            <td>{{ response_result.url }}</td>
+                        </tr>
+                        <tr>
+                            <td>Status:</td>
+                            <td>{{ response_result.status_code }} {{ response_result.reason }}</td>
+                        </tr>
+                        {% for key, value in response_result.headers.items() %}
+                            <tr>
+                                <td>{{ key }}</td>
+                                <td>{{ value }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="result_box">
+                    <p class="mt-3">Response Snippet:</p>
+                    <p>{{ response_result.content_snippet }}</p>
+                </div>
+                {% endif %}
+            {% endif %}
+            <hr>
+
+            <!-- Technology Fingerprinting -->
+            <h4 class="tab-title color">Technology Fingerprinting</h4>
+            <p>Detect web technologies such as servers, frameworks, and CMS platforms used by the target site.</p>
+            <form method="POST" action="/recon" class="scan-form mt-2">
+                <div class="tool-card">
+                    <input type="hidden" name="action" value="tech_fingerprint">
+                    <label for="tech_url" class="scan-label">Enter URL:</label>
+                    <input type="text" name="url" id="tech_url" class="scan-select" placeholder="e.g. example.com" required>
+                    <button type="submit" class="btn-primary">Scan</button>
+                </div>
+            </form>
+
+            {% if tech_result %}
+                {% if tech_result.error %}
+                    <div class="result_box mt-3">
+                        <p><strong>Error:</strong> {{ tech_result.error }}</p>
+                    </div>
+                {% else %}
+                <div class="result_box">
+                    {% if tech_result.error %}
+                        <p><strong>Error:</strong> {{ tech_result.error }}</p>
+                    {% else %}
+                        <p><strong>URL:</strong> {{ tech_result.url }}</p>
+                        <p><strong>Status:</strong> {{ tech_result.status_code }}</p>
+                        <hr>
+                        <h6>Detected Technologies:</h6>
+                        <ul>
+                            {% for tech in tech_result.detected %}
+                            <li>{{ tech }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                {% endif %}
+            {% endif %}
+            <hr>
+
+            <!-- Robots.txt / Sitemap Viewer -->
+            <h4 class="tab-title color">Robots.txt / Sitemap Viewer</h4>
+            <p>Retrieve and inspect a site's <code>robots.txt</code> and <code>sitemap.xml</code> files to discover hidden or restricted areas.</p>
+            <form method="POST" action="/recon" class="scan-form mt-2">
+                <div class="tool-card">
+                    <input type="hidden" name="action" value="robots_sitemap">
+                    <label for="robots_url" class="scan-label">Enter URL:</label>
+                    <input type="text" name="url" id="robots_url" class="scan-select" placeholder="e.g. example.com" required>
+                    <button type="submit" class="btn-primary">View</button>
+                </div>
+            </form>
+
+            {% if robots_result %}
+                {% if robots_result.error %}
+                <div class="result_box mt-3">
+                    <p><strong>Error:</strong> {{ robots_result.error }}</p>
+                </div>
+                {% else %}
+                <div class="result_box">
+                    <h6>robots.txt ({{ robots_result.robots_status }}):</h6>
+                    <p><strong>URL:</strong> <a href="{{ robots_result.robots_url }}" target="_blank">{{ robots_result.robots_url }}</a></p>
+                    <pre style="white-space: pre-wrap;">{{ robots_result.robots_content }}</pre>
+                    <hr>
+                    <h6>sitemap.xml ({{ robots_result.sitemap_status }}):</h6>
+                    <p><strong>URL:</strong> <a href="{{ robots_result.sitemap_url }}" target="_blank">{{ robots_result.sitemap_url }}</a></p>
+                    <pre style="white-space: pre-wrap;">{{ robots_result.sitemap_content }}</pre>
+                </div>
+                {% endif %}
+            {% endif %}
+            <hr>
         </div>
 
         <div class="tab-pane" id="infra" role="tabpanel">

@@ -8,6 +8,8 @@ import tldextract
 import requests
 from datetime import datetime
 
+from django.utils.dateformat import re_escaped
+
 
 def dns_lookup(domain):
     try:
@@ -233,6 +235,120 @@ def asn_lookup(query):
 
     except Exception as e:
         result = {"query": query, "error": str(e)}
+
+    return result
+
+
+def http_header_analyser(url):
+    try:
+        if not url.startswith(("http://", "https://")):
+            url = f"http://{url}"
+
+        response = requests.head(url, timeout=5, allow_redirects=True)
+        headers = dict(response.headers)
+
+        result = {
+            "url": url,
+            "status_code": response.status_code,
+            "headers": headers
+        }
+    except Exception as e:
+        result = {"error": str(e)}
+
+    return result
+
+
+def http_response_viewer(url):
+    try:
+        if not url.startswith(("http://", "https://")):
+            url = f"http://{url}"
+
+        response = requests.get(url, timeout=8)
+        result = {
+            "url": response.url,
+            "status_code": response.status_code,
+            "reason": response.reason,
+            "headers": dict(response.headers),
+            "content_snippet": str(response.text[:800] + "...")  # limit for safety
+        }
+    except Exception as e:
+        result = {"error": str(e)}
+
+    return result
+
+
+def technology_fingerprinting(url):
+    try:
+        if not url.startswith(("http://", "https://")):
+            url = f"http://{url}"
+
+        response = requests.get(url, timeout=10)
+        headers = response.headers
+        html = response.text.lower()
+
+        detected = []
+
+        # Header based clues
+        if "server" in headers:
+            detected.append(f"Server: {headers["server"]}")
+        if "x-powered-by" in headers:
+            detected.append(f"Powered by: {headers['x-powered-by']}")
+        if "cf-ray" in headers:
+            detected.append(f"Cloudflare detected")
+
+        # HTML based clues
+        if "wp-content" in html or "wordpress" in html:
+            detected.append(f"WordPress CMS")
+        if "drupal" in html:
+            detected.append(f"Drupal CMS")
+        if "joomla" in html:
+            detected.append(f"Joomla CMS")
+        if "shopify" in html:
+            detected.append(f"Shopify platform")
+        if "react" in html:
+            detected.append(f"React.js framework")
+        if "vue" in html:
+            detected.append(f"Vue.js framework")
+        if "django" in html:
+            detected.append(f"Django Backend")
+        if "flask" in html:
+            detected.append(f"Flask Backend")
+
+        if not detected:
+            detected.append(f"No clear technology fingerprints found.")
+
+        result = {
+            "url": response.url,
+            "status_code": response.status_code,
+            "detected": detected
+        }
+    except Exception as e:
+        result = {"error": str(e)}
+
+    return result
+
+
+def robots_sitemap_viewer(url):
+    try:
+        if not url.startswith(("http://", "https://")):
+            url = f"http://{url}"
+
+        robots_url = url.rstrip("/") + "/robots.txt"
+        sitemap_url = url.rstrip("/") + "/sitemap.xml"
+
+        robots_resp = requests.get(robots_url, timeout=5)
+        sitemap_resp = requests.get(sitemap_url, timeout=5)
+
+        result = {
+            "robots_url": robots_url,
+            "robots_status": robots_resp.status_code,
+            "robots_content": robots_resp.text if robots_resp.ok else "robots.txt not found.",
+            "sitemap_url": sitemap_url,
+            "sitemap_status": sitemap_resp.status_code,
+            "sitemap_content": sitemap_resp.text[:1000] if sitemap_resp.ok else "sitemap.xml not found.",
+        }
+    except Exception as e:
+        result = {"error": str(e)}
 
     return result
 

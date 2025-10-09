@@ -34,6 +34,10 @@ interface_info = None
 rev_dns_result = None
 geo_result = None
 asn_result = None
+header_result = None
+response_result = None
+tech_result = None
+robots_result = None
 
 
 def get_template(name, active):
@@ -62,6 +66,10 @@ def get_template(name, active):
         geo_result=geo_result,
         rev_whois_result=rev_whois_result,
         asn_result=asn_result,
+        header_result=header_result,
+        response_result=response_result,
+        tech_result=tech_result,
+        robots_result=robots_result,
     )
 
 
@@ -119,7 +127,8 @@ def network():
 @app.route("/recon", methods=["GET", "POST"])
 def recon():
     global dns_result, traceroute_result, whois_result, cert_result, trace_target, cert_target, \
-        rev_dns_result, geo_result, rev_whois_result, asn_result
+        rev_dns_result, geo_result, rev_whois_result, asn_result, header_result, response_result, \
+        tech_result, robots_result
 
     if request.method == "POST":
         action = request.form.get("action")
@@ -167,6 +176,26 @@ def recon():
             asn_ip = request.form.get("asn_ip")
             print(f"Inspecting certificate for {asn_ip}...")
             asn_result = asn_lookup(asn_ip)
+
+        elif action == "http_headers":
+            url = request.form.get("header_url")
+            print(f"Analysing headers for {url}...")
+            header_result = http_header_analyser(url)
+
+        elif action == "http_response":
+            url = request.form.get("resp_url")
+            print(f"Analysing headers for {url}...")
+            response_result = http_response_viewer(url)
+
+        elif action == "tech_fingerprint":
+            url = request.form.get("tech_url")
+            print(f"Analysing headers for {url}...")
+            tech_result = technology_fingerprinting(url)
+
+        elif action == "robots_sitemap":
+            url = request.form.get("robots_url")
+            print(f"Analysing headers for {url}...")
+            robots_result = robots_sitemap_viewer(url)
 
     return get_template("recon.html", "recon")
 
