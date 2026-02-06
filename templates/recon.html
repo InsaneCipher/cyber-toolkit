@@ -58,7 +58,7 @@
     <nav class="vert-sidebar">
       <ul class="nav flex-column nav-pills" id="toolTabs" role="tablist">
         <li class="nav-item">
-          <button class="nav-link" id="net-intel-tab active" data-bs-toggle="tab" data-bs-target="#net-intel" type="button" role="tab"><span class="emoji">🧠</span> Network Intelligence</button>
+          <button class="nav-link active" id="net-intel-tab active" data-bs-toggle="tab" data-bs-target="#net-intel" type="button" role="tab"><span class="emoji">🧠</span> Network Intelligence</button>
         </li>
         <li class="nav-item">
           <button class="nav-link" id="domain-tab" data-bs-toggle="tab" data-bs-target="#domain" type="button" role="tab"><span class="emoji">🌐</span> Domain & Ownership</button>
@@ -75,7 +75,7 @@
     <!-- Main content -->
     <main class="col-md-10 ms-sm-auto px-md-4">
         <div class="tab-content" id="toolTabsContent">
-        <div class="tab-pane" id="net-intel" role="tabpanel">
+        <div class="tab-pane show active" id="net-intel" role="tabpanel">
             <!-- DNS Lookup -->
             <h4 class="tab-title color">DNS Lookup</h4>
             <p>DNS Lookup resolves a domain name to its corresponding IP address, helping identify the server location or network endpoint associated with that domain.</p>
@@ -632,11 +632,11 @@ document.addEventListener("DOMContentLoaded", function () {
     let triggerTabList = [].slice.call(document.querySelectorAll('#toolTabs button'))
     triggerTabList.forEach(function (triggerEl) {
         triggerEl.addEventListener('shown.bs.tab', function (event) {
-            localStorage.setItem('reconActiveTab', event.target.getAttribute('data-bs-target'));
+            localStorage.setItem('activeTab', event.target.getAttribute('data-bs-target'));
         })
     });
 
-    let activeTab = localStorage.getItem('reconActiveTab');
+    let activeTab = localStorage.getItem('activeTab');
     if (activeTab) {
         let tab = document.querySelector('#toolTabs button[data-bs-target="' + activeTab + '"]');
         if (tab) {

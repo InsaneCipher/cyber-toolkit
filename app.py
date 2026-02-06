@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from torch.utils.model_dump import get_storage_info
 
 from tools.diagnostics import get_dns_cache, ping_host, get_arp_table, get_interface_info
 from tools.net_scan import *
@@ -8,6 +9,7 @@ from tools.process_scan import *
 from tools.service_scan import *
 from tools.hashing_and_encoding import *
 from tools.subnet import *
+from tools.system_tools import *
 
 app = Flask(__name__)
 
@@ -38,6 +40,9 @@ header_result = None
 response_result = None
 tech_result = None
 robots_result = None
+system_info = get_system_info()
+cpu_info = get_cpu_mem_info()
+storage_info = get_storage_info()
 
 
 def get_template(name, active):
@@ -70,6 +75,9 @@ def get_template(name, active):
         response_result=response_result,
         tech_result=tech_result,
         robots_result=robots_result,
+        system_info=system_info,
+        cpu_info=cpu_info,
+        storage_info=storage_info,
     )
 
 
@@ -249,9 +257,7 @@ def utils():
 
 @app.route("/system")
 def system():
-    global result, port_results, running_processes, running_services, dns_cache, dns_result, \
-        traceroute_result, whois_result, cert_result, trace_target, cert_target, \
-        hashed_strings, encoded_string, decoded_string, subnet
+    global system_info
 
     if request.method == "POST":
         action = request.form.get("action")

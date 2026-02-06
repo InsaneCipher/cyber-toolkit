@@ -98,7 +98,265 @@
 
     <!-- Main content -->
     <main class="col-md-10 ms-sm-auto px-md-4">
-      <div class="tab-content" id="toolTabsContent">
+        <div class="tab-content" id="toolTabsContent">
+            <div class="tab-pane show active" id="overview" role="tabpanel">
+                <h4 class="tab-title color">System Overview</h4>
+                <p>Displays key information about your Windows device, including OS details, hardware specifications, and resource usage.</p>
+
+                {% if system_info %}
+                    {% if system_info.error %}
+                    <div class="result_box mt-3">
+                        <p><strong>Error:</strong> {{ system_info.error }}</p>
+                    </div>
+                    {% else %}
+                    <!-- Operating System -->
+                    <table class="table table-striped table-hover table-rounded">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Field</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>OS Name</strong></td><td>{{ system_info.os_name }}</td></tr>
+                            <tr><td><strong>OS Version</strong></td><td>{{ system_info.os_version }}</td></tr>
+                            <tr><td><strong>OS Build / Release</strong></td><td>{{ system_info.build_number }}</td></tr>
+                            <tr><td><strong>System Uptime</strong></td><td>{{ system_info.system_uptime }}</td></tr>
+                            <tr><td><strong>Hostname</strong></td><td>{{ system_info.hostname }}</td></tr>
+                            <tr><td><strong>Username</strong></td><td>{{ system_info.username }}</td></tr>
+                            <tr><td><strong>Manufacturer</strong></td><td>{{ system_info.manufacturer }}</td></tr>
+                            <tr><td><strong>Model</strong></td><td>{{ system_info.model }}</td></tr>
+                            <tr><td><strong>CPU</strong></td><td>{{ system_info.cpu_name }}</td></tr>
+                            <tr><td><strong>CPU Cores</strong></td><td>{{ system_info.cpu_cores }}</td></tr>
+                            <tr><td><strong>CPU Threads</strong></td><td>{{ system_info.cpu_threads }}</td></tr>
+                            <tr><td><strong>CPU Frequency</strong></td><td>{{ system_info.cpu_freq }}</td></tr>
+                            <tr><td><strong>Total RAM</strong></td><td>{{ system_info.total_ram }}</td></tr>
+                            <tr><td><strong>Used RAM</strong></td><td>{{ system_info.used_ram }}</td></tr>
+                            <tr><td><strong>Free RAM</strong></td><td>{{ system_info.free_ram }}</td></tr>
+                            <tr><td><strong>Total Storage Space</strong></td><td>{{ system_info.disk_total }}</td></tr>
+                            <tr><td><strong>Used Storage Space</strong></td><td>{{ system_info.disk_used }}</td></tr>
+                            <tr><td><strong>Free Storage Space</strong></td><td>{{ system_info.disk_free }}</td></tr>
+                            {% if system_info.gpu %}
+                                {% for gpu in system_info.gpu %}
+                                    <tr><td><strong>GPU</strong></td><td>{{ gpu }}</td></tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr><td><strong>GPU</strong></td><td>No GPU information detected.</td></tr>
+                            {% endif %}
+                            <tr><td><strong>Battery Level</strong></td><td>{{ system_info.battery_percent }}</td></tr>
+                            <tr><td><strong>Power Status</strong></td><td>{{ system_info.battery_plugged }}</td></tr>
+                        </tbody>
+                    </table>
+                    {% endif %}
+                {% endif %}
+                </div>
+            
+        <div class="tab-pane" id="cpu" role="tabpanel">
+    <h4 class="tab-title color">CPU & Memory</h4>
+    <p>Detailed information about the processor, real-time CPU usage, and system memory utilization.</p>
+
+    {% if cpu_info %}
+        {% if cpu_info.error %}
+        <div class="result_box mt-3">
+            <p><strong>Error:</strong> {{ cpu_info.error }}</p>
+        </div>
+        {% else %}
+
+        <!-- CPU INFORMATION -->
+        <table class="table table-striped table-hover table-rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>CPU Field</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>CPU Name</strong></td><td>{{ cpu_info.cpu.name }}</td></tr>
+                <tr><td><strong>Vendor</strong></td><td>{{ cpu_info.cpu.vendor }}</td></tr>
+                <tr><td><strong>Architecture</strong></td><td>{{ cpu_info.cpu.architecture }}</td></tr>
+                <tr><td><strong>Physical Cores</strong></td><td>{{ cpu_info.cpu.cores_physical }}</td></tr>
+                <tr><td><strong>Logical Threads</strong></td><td>{{ cpu_info.cpu.threads_logical }}</td></tr>
+
+                {% if cpu_info.cpu.clock %}
+                <tr>
+                    <td><strong>Clock Speed</strong></td>
+                    <td>
+                        Current: {{ cpu_info.cpu.clock.current_mhz }} MHz |
+                        Max: {{ cpu_info.cpu.clock.max_mhz }} MHz
+                    </td>
+                </tr>
+                {% endif %}
+
+                <tr>
+                    <td><strong>Total CPU Usage</strong></td>
+                    <td>{{ cpu_info.cpu.utilization_percent }}%</td>
+                </tr>
+
+                {% if cpu_info.cpu.cache %}
+                <tr>
+                    <td><strong>L2 Cache</strong></td>
+                    <td>{{ cpu_info.cpu.cache.l2_kb }} KB</td>
+                </tr>
+                <tr>
+                    <td><strong>L3 Cache</strong></td>
+                    <td>{{ cpu_info.cpu.cache.l3_kb }} KB</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+        <!-- PER-CORE CPU USAGE -->
+        {% if cpu_info.cpu.per_core_percent %}
+        <h5 class="mt-4">Per-Core CPU Usage</h5>
+        <table class="table table-striped table-hover table-rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>Core</th>
+                    <th>Usage</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usage in cpu_info.cpu.per_core_percent %}
+                <tr>
+                    <td>Core {{ loop.index0 }}</td>
+                    <td>{{ usage }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
+        <!-- MEMORY INFORMATION -->
+        <h5 class="mt-4">Memory</h5>
+        <table class="table table-striped table-hover table-rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>Memory Field</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Total Memory</strong></td><td>{{ cpu_info.memory.total_bytes | filesizeformat }}</td></tr>
+                <tr><td><strong>Available Memory</strong></td><td>{{ cpu_info.memory.available_bytes | filesizeformat }}</td></tr>
+                <tr><td><strong>Used Memory</strong></td><td>{{ cpu_info.memory.used_bytes | filesizeformat }}</td></tr>
+                <tr><td><strong>Memory Usage</strong></td><td>{{ cpu_info.memory.usage_percent }}%</td></tr>
+            </tbody>
+        </table>
+
+        <!-- SWAP -->
+        <h5 class="mt-4">Swap / Page File</h5>
+        <table class="table table-striped table-hover table-rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>Swap Field</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Total Swap</strong></td><td>{{ cpu_info.swap.total_bytes | filesizeformat }}</td></tr>
+                <tr><td><strong>Used Swap</strong></td><td>{{ cpu_info.swap.used_bytes | filesizeformat }}</td></tr>
+                <tr><td><strong>Free Swap</strong></td><td>{{ cpu_info.swap.free_bytes | filesizeformat }}</td></tr>
+                <tr><td><strong>Swap Usage</strong></td><td>{{ cpu_info.swap.usage_percent }}%</td></tr>
+            </tbody>
+        </table>
+
+        {% endif %}
+    {% endif %}
+</div>
+
+            <div class="tab-pane" id="storage" role="tabpanel">
+                <h4 class="tab-title color">💽 Storage & Drives</h4>
+                <p>
+                    Displays information about system storage devices, including mounted drives,
+                    filesystem types, disk usage, I/O activity, and available SMART health data.
+                </p>
+
+                {% if storage_info %}
+                    {% if storage_info.error %}
+                        <div class="result_box mt-3">
+                            <p><strong>Error:</strong> {{ storage_info.error }}</p>
+                        </div>
+                    {% else %}
+
+                    <!-- Mounted Drives -->
+                    <h5 class="mt-4">📁 Mounted Drives</h5>
+                    <table class="table table-striped table-hover table-rounded">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Device</th>
+                                <th>Mount Point</th>
+                                <th>Filesystem</th>
+                                <th>Total</th>
+                                <th>Used</th>
+                                <th>Free</th>
+                                <th>Usage %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for drive in storage_info.drives %}
+                            <tr>
+                                <td>{{ drive.device }}</td>
+                                <td>{{ drive.mountpoint }}</td>
+                                <td>{{ drive.fstype or "Unknown" }}</td>
+                                {% if drive.usage and not drive.usage.error %}
+                                    <td>{{ drive.usage.total_gb }} GB</td>
+                                    <td>{{ drive.usage.used_gb }} GB</td>
+                                    <td>{{ drive.usage.free_gb }} GB</td>
+                                    <td>{{ drive.usage.percent }}%</td>
+                                {% else %}
+                                    <td colspan="4">Usage unavailable</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <!-- Disk I/O -->
+                    {% if storage_info.disk_io %}
+                    <h5 class="mt-4">📊 Disk I/O Activity</h5>
+                    <table class="table table-striped table-hover table-rounded">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Disk</th>
+                                <th>Read Speed</th>
+                                <th>Write Speed</th>
+                                <th>Read Ops/s</th>
+                                <th>Write Ops/s</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for disk, io in storage_info.disk_io.items() %}
+                            <tr>
+                                <td>{{ disk }}</td>
+                                <td>{{ io.read_bytes_per_sec }} MB/s</td>
+                                <td>{{ io.write_bytes_per_sec }} MB/s</td>
+                                <td>{{ io.read_ops_per_sec }}</td>
+                                <td>{{ io.write_ops_per_sec }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
+
+                    <!-- Notes -->
+                    {% if storage_info.notes %}
+                    <div class="result_box mt-3">
+                        <h6>Notes</h6>
+                        <ul class="mb-0">
+                            {% for note in storage_info.notes %}
+                            <li>{{ note }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    {% endif %}
+                {% endif %}
+            </div>
+
+    
+
+
         <div class="tab-pane" id="process" role="tabpanel">
           <form method="POST" action="/" class="scan-form">
                 <div class="tool-card">
