@@ -90,14 +90,6 @@ Utilities: Export Config, Public IP, Interface Info
 
 ⚙️ System Tab — Suggested Subtabs
 
-🌐 4. Network & Adapters
-Network adapters (Ethernet, Wi-Fi, virtual, loopback)
-IP address, MAC address, gateway, DNS servers
-Interface status (up/down, speed)
-Active TCP/UDP connections (like netstat)
-Bandwidth usage per interface
-Python libs/tools: psutil.net_if_addrs(), psutil.net_io_counters(), socket, subprocess(ipconfig/ifconfig/netstat)
-
 💻 5. GPU & Display
 GPU model, vendor, driver version
 GPU memory total / used

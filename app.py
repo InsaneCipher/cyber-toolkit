@@ -43,6 +43,13 @@ robots_result = None
 system_info = get_system_info()
 cpu_info = get_cpu_mem_info()
 storage_info = get_storage_info()
+network_info = get_network_adapters_info()
+display_info = get_gpu_display_info()
+power_info = get_system_info()
+sensor_info = get_system_info()
+motherboard_info = get_system_info()
+devices_info = get_system_info()
+software_info = get_system_info()
 
 
 def get_template(name, active):
@@ -78,6 +85,13 @@ def get_template(name, active):
         system_info=system_info,
         cpu_info=cpu_info,
         storage_info=storage_info,
+        network_info=network_info,
+        display_info=display_info,
+        power_info=power_info,
+        sensor_info=sensor_info,
+        motherboard_info=motherboard_info,
+        devices_info=devices_info,
+        software_info=software_info,
     )
 
 
@@ -257,7 +271,7 @@ def utils():
 
 @app.route("/system")
 def system():
-    global system_info
+    global system_info, running_services, running_processes
 
     if request.method == "POST":
         action = request.form.get("action")
