@@ -88,7 +88,7 @@
           <button class="nav-link" id="bios-tab" data-bs-toggle="tab" data-bs-target="#bios" type="button" role="tab"><span class="emoji">🧾</span> BIOS / Motherboard</button>
         </li>
         <li class="nav-item">
-          <button class="nav-link" id="device-tab" data-bs-toggle="tab" data-bs-target="#device" type="button" role="tab"><span class="emoji">🔌</span> Connected Devices</button>
+          <button class="nav-link" id="device-tab" data-bs-toggle="tab" data-bs-target="#devices" type="button" role="tab"><span class="emoji">🔌</span> Connected Devices</button>
         </li>
         <li class="nav-item">
           <button class="nav-link" id="software-tab" data-bs-toggle="tab" data-bs-target="#software" type="button" role="tab"><span class="emoji">🧱</span> Installed Software</button>
@@ -99,6 +99,7 @@
     <!-- Main content -->
     <main class="col-md-10 ms-sm-auto px-md-4">
         <div class="tab-content" id="toolTabsContent">
+
             <div class="tab-pane show active" id="overview" role="tabpanel">
                 <h4 class="tab-title color">System Overview</h4>
                 <p>Displays key information about your Windows device, including OS details, hardware specifications, and resource usage.</p>
@@ -151,635 +152,1310 @@
                 {% endif %}
                 </div>
             
-        <div class="tab-pane" id="cpu" role="tabpanel">
-            <h4 class="tab-title color">CPU & Memory</h4>
-            <p>Detailed information about the processor, real-time CPU usage, and system memory utilization.</p>
+            <div class="tab-pane" id="cpu" role="tabpanel">
+                <h4 class="tab-title color">CPU & Memory</h4>
+                <p>Detailed information about the processor, real-time CPU usage, and system memory utilization.</p>
 
-            {% if cpu_info %}
-                {% if cpu_info.error %}
-                <div class="result_box mt-3">
-                    <p><strong>Error:</strong> {{ cpu_info.error }}</p>
-                </div>
-                {% else %}
-
-                <!-- CPU INFORMATION -->
-                <table class="table table-striped table-hover table-rounded">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>CPU Field</th>
-                            <th>Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><strong>CPU Name</strong></td><td>{{ cpu_info.cpu.name }}</td></tr>
-                        <tr><td><strong>Vendor</strong></td><td>{{ cpu_info.cpu.vendor }}</td></tr>
-                        <tr><td><strong>Architecture</strong></td><td>{{ cpu_info.cpu.architecture }}</td></tr>
-                        <tr><td><strong>Physical Cores</strong></td><td>{{ cpu_info.cpu.cores_physical }}</td></tr>
-                        <tr><td><strong>Logical Threads</strong></td><td>{{ cpu_info.cpu.threads_logical }}</td></tr>
-
-                        {% if cpu_info.cpu.clock %}
-                        <tr>
-                            <td><strong>Clock Speed</strong></td>
-                            <td>
-                                Current: {{ cpu_info.cpu.clock.current_mhz }} MHz |
-                                Max: {{ cpu_info.cpu.clock.max_mhz }} MHz
-                            </td>
-                        </tr>
-                        {% endif %}
-
-                        <tr>
-                            <td><strong>Total CPU Usage</strong></td>
-                            <td>{{ cpu_info.cpu.utilization_percent }}%</td>
-                        </tr>
-
-                        {% if cpu_info.cpu.cache %}
-                        <tr>
-                            <td><strong>L2 Cache</strong></td>
-                            <td>{{ cpu_info.cpu.cache.l2_kb }} KB</td>
-                        </tr>
-                        <tr>
-                            <td><strong>L3 Cache</strong></td>
-                            <td>{{ cpu_info.cpu.cache.l3_kb }} KB</td>
-                        </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-
-                <!-- PER-CORE CPU USAGE -->
-                {% if cpu_info.cpu.per_core_percent %}
-                <h5 class="mt-4">Per-Core CPU Usage</h5>
-                <table class="table table-striped table-hover table-rounded">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Core</th>
-                            <th>Usage</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for usage in cpu_info.cpu.per_core_percent %}
-                        <tr>
-                            <td>Core {{ loop.index0 }}</td>
-                            <td>{{ usage }}%</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% endif %}
-
-                <!-- MEMORY INFORMATION -->
-                <h5 class="mt-4">Memory</h5>
-                <table class="table table-striped table-hover table-rounded">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Memory Field</th>
-                            <th>Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><strong>Total Memory</strong></td><td>{{ cpu_info.memory.total_bytes | filesizeformat }}</td></tr>
-                        <tr><td><strong>Available Memory</strong></td><td>{{ cpu_info.memory.available_bytes | filesizeformat }}</td></tr>
-                        <tr><td><strong>Used Memory</strong></td><td>{{ cpu_info.memory.used_bytes | filesizeformat }}</td></tr>
-                        <tr><td><strong>Memory Usage</strong></td><td>{{ cpu_info.memory.usage_percent }}%</td></tr>
-                    </tbody>
-                </table>
-
-                <!-- SWAP -->
-                <h5 class="mt-4">Swap / Page File</h5>
-                <table class="table table-striped table-hover table-rounded">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Swap Field</th>
-                            <th>Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><strong>Total Swap</strong></td><td>{{ cpu_info.swap.total_bytes | filesizeformat }}</td></tr>
-                        <tr><td><strong>Used Swap</strong></td><td>{{ cpu_info.swap.used_bytes | filesizeformat }}</td></tr>
-                        <tr><td><strong>Free Swap</strong></td><td>{{ cpu_info.swap.free_bytes | filesizeformat }}</td></tr>
-                        <tr><td><strong>Swap Usage</strong></td><td>{{ cpu_info.swap.usage_percent }}%</td></tr>
-                    </tbody>
-                </table>
-
-                {% endif %}
-            {% endif %}
-        </div>
-
-        <div class="tab-pane" id="storage" role="tabpanel">
-            <h4 class="tab-title color">💽 Storage & Drives</h4>
-                <p>
-                    Displays information about system storage devices, including mounted drives,
-                    filesystem types, disk usage, I/O activity, and available SMART health data.
-                </p>
-
-                {% if storage_info %}
-                    {% if storage_info.error %}
-                        <div class="result_box mt-3">
-                            <p><strong>Error:</strong> {{ storage_info.error }}</p>
-                        </div>
+                {% if cpu_info %}
+                    {% if cpu_info.error %}
+                    <div class="result_box mt-3">
+                        <p><strong>Error:</strong> {{ cpu_info.error }}</p>
+                    </div>
                     {% else %}
 
-                    <!-- Mounted Drives -->
-                    <h5 class="mt-4">📁 Mounted Drives</h5>
+                    <!-- CPU INFORMATION -->
                     <table class="table table-striped table-hover table-rounded">
                         <thead class="table-dark">
                             <tr>
-                                <th>Device</th>
-                                <th>Mount Point</th>
-                                <th>Filesystem</th>
-                                <th>Total</th>
-                                <th>Used</th>
-                                <th>Free</th>
-                                <th>Usage %</th>
+                                <th>CPU Field</th>
+                                <th>Value</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for drive in storage_info.drives %}
+                            <tr><td><strong>CPU Name</strong></td><td>{{ cpu_info.cpu.name }}</td></tr>
+                            <tr><td><strong>Vendor</strong></td><td>{{ cpu_info.cpu.vendor }}</td></tr>
+                            <tr><td><strong>Architecture</strong></td><td>{{ cpu_info.cpu.architecture }}</td></tr>
+                            <tr><td><strong>Physical Cores</strong></td><td>{{ cpu_info.cpu.cores_physical }}</td></tr>
+                            <tr><td><strong>Logical Threads</strong></td><td>{{ cpu_info.cpu.threads_logical }}</td></tr>
+
+                            {% if cpu_info.cpu.clock %}
                             <tr>
-                                <td>{{ drive.device }}</td>
-                                <td>{{ drive.mountpoint }}</td>
-                                <td>{{ drive.fstype or "Unknown" }}</td>
-                                {% if drive.usage and not drive.usage.error %}
-                                    <td>{{ drive.usage.total_gb }} GB</td>
-                                    <td>{{ drive.usage.used_gb }} GB</td>
-                                    <td>{{ drive.usage.free_gb }} GB</td>
-                                    <td>{{ drive.usage.percent }}%</td>
-                                {% else %}
-                                    <td colspan="4">Usage unavailable</td>
-                                {% endif %}
+                                <td><strong>Clock Speed</strong></td>
+                                <td>
+                                    Current: {{ cpu_info.cpu.clock.current_mhz }} MHz |
+                                    Max: {{ cpu_info.cpu.clock.max_mhz }} MHz
+                                </td>
                             </tr>
-                            {% endfor %}
+                            {% endif %}
+
+                            <tr>
+                                <td><strong>Total CPU Usage</strong></td>
+                                <td>{{ cpu_info.cpu.utilization_percent }}%</td>
+                            </tr>
+
+                            {% if cpu_info.cpu.cache %}
+                            <tr>
+                                <td><strong>L2 Cache</strong></td>
+                                <td>{{ cpu_info.cpu.cache.l2_kb }} KB</td>
+                            </tr>
+                            <tr>
+                                <td><strong>L3 Cache</strong></td>
+                                <td>{{ cpu_info.cpu.cache.l3_kb }} KB</td>
+                            </tr>
+                            {% endif %}
                         </tbody>
                     </table>
 
-                    <!-- Disk I/O -->
-                    {% if storage_info.disk_io %}
-                    <h5 class="mt-4">📊 Disk I/O Activity</h5>
+                    <!-- PER-CORE CPU USAGE -->
+                    {% if cpu_info.cpu.per_core_percent %}
+                    <h5 class="mt-4">Per-Core CPU Usage</h5>
                     <table class="table table-striped table-hover table-rounded">
                         <thead class="table-dark">
                             <tr>
-                                <th>Disk</th>
-                                <th>Read Speed</th>
-                                <th>Write Speed</th>
-                                <th>Read Ops/s</th>
-                                <th>Write Ops/s</th>
+                                <th>Core</th>
+                                <th>Usage</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for disk, io in storage_info.disk_io.items() %}
+                            {% for usage in cpu_info.cpu.per_core_percent %}
                             <tr>
-                                <td>{{ disk }}</td>
-                                <td>{{ io.read_bytes_per_sec }} MB/s</td>
-                                <td>{{ io.write_bytes_per_sec }} MB/s</td>
-                                <td>{{ io.read_ops_per_sec }}</td>
-                                <td>{{ io.write_ops_per_sec }}</td>
+                                <td>Core {{ loop.index0 }}</td>
+                                <td>{{ usage }}%</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                     {% endif %}
 
+                    <!-- MEMORY INFORMATION -->
+                    <h5 class="mt-4">Memory</h5>
+                    <table class="table table-striped table-hover table-rounded">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Memory Field</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Total Memory</strong></td><td>{{ cpu_info.memory.total_bytes | filesizeformat }}</td></tr>
+                            <tr><td><strong>Available Memory</strong></td><td>{{ cpu_info.memory.available_bytes | filesizeformat }}</td></tr>
+                            <tr><td><strong>Used Memory</strong></td><td>{{ cpu_info.memory.used_bytes | filesizeformat }}</td></tr>
+                            <tr><td><strong>Memory Usage</strong></td><td>{{ cpu_info.memory.usage_percent }}%</td></tr>
+                        </tbody>
+                    </table>
+
+                    <!-- SWAP -->
+                    <h5 class="mt-4">Swap / Page File</h5>
+                    <table class="table table-striped table-hover table-rounded">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Swap Field</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Total Swap</strong></td><td>{{ cpu_info.swap.total_bytes | filesizeformat }}</td></tr>
+                            <tr><td><strong>Used Swap</strong></td><td>{{ cpu_info.swap.used_bytes | filesizeformat }}</td></tr>
+                            <tr><td><strong>Free Swap</strong></td><td>{{ cpu_info.swap.free_bytes | filesizeformat }}</td></tr>
+                            <tr><td><strong>Swap Usage</strong></td><td>{{ cpu_info.swap.usage_percent }}%</td></tr>
+                        </tbody>
+                    </table>
+
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <div class="tab-pane" id="storage" role="tabpanel">
+                <h4 class="tab-title color">💽 Storage & Drives</h4>
+                    <p>
+                        Displays information about system storage devices, including mounted drives,
+                        filesystem types, disk usage, I/O activity, and available SMART health data.
+                    </p>
+
+                    {% if storage_info %}
+                        {% if storage_info.error %}
+                            <div class="result_box mt-3">
+                                <p><strong>Error:</strong> {{ storage_info.error }}</p>
+                            </div>
+                        {% else %}
+
+                        <!-- Mounted Drives -->
+                        <h5 class="mt-4">📁 Mounted Drives</h5>
+                        <table class="table table-striped table-hover table-rounded">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Device</th>
+                                    <th>Mount Point</th>
+                                    <th>Filesystem</th>
+                                    <th>Total</th>
+                                    <th>Used</th>
+                                    <th>Free</th>
+                                    <th>Usage %</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for drive in storage_info.drives %}
+                                <tr>
+                                    <td>{{ drive.device }}</td>
+                                    <td>{{ drive.mountpoint }}</td>
+                                    <td>{{ drive.fstype or "Unknown" }}</td>
+                                    {% if drive.usage and not drive.usage.error %}
+                                        <td>{{ drive.usage.total_gb }} GB</td>
+                                        <td>{{ drive.usage.used_gb }} GB</td>
+                                        <td>{{ drive.usage.free_gb }} GB</td>
+                                        <td>{{ drive.usage.percent }}%</td>
+                                    {% else %}
+                                        <td colspan="4">Usage unavailable</td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <!-- Disk I/O -->
+                        {% if storage_info.disk_io %}
+                        <h5 class="mt-4">📊 Disk I/O Activity</h5>
+                        <table class="table table-striped table-hover table-rounded">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Disk</th>
+                                    <th>Read Speed</th>
+                                    <th>Write Speed</th>
+                                    <th>Read Ops/s</th>
+                                    <th>Write Ops/s</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for disk, io in storage_info.disk_io.items() %}
+                                <tr>
+                                    <td>{{ disk }}</td>
+                                    <td>{{ io.read_bytes_per_sec }} MB/s</td>
+                                    <td>{{ io.write_bytes_per_sec }} MB/s</td>
+                                    <td>{{ io.read_ops_per_sec }}</td>
+                                    <td>{{ io.write_ops_per_sec }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endif %}
+
+                        <!-- Notes -->
+                        {% if storage_info.notes %}
+                        <div class="result_box mt-3">
+                            <h6>Notes</h6>
+                            <ul class="mb-0">
+                                {% for note in storage_info.notes %}
+                                <li>{{ note }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+            <div class="tab-pane" id="network" role="tabpanel">
+              <h4 class="tab-title color">🌐 Network & Adapters</h4>
+              <p>Shows adapter details, IP/MAC info, gateway/DNS, active connections, and interface bandwidth counters.</p>
+
+              {% if network_info %}
+                {% if network_info.error %}
+                  <div class="result_box mt-3">
+                    <p><strong>Error:</strong> {{ network_info.error }}</p>
+                  </div>
+                {% else %}
+
+                  <!-- Summary -->
+                  <div class="result_box mt-3">
+                    <p><strong>Platform:</strong> {{ network_info.platform }}</p>
+                    <p><strong>Default Gateway:</strong> {{ network_info.default_gateway or "N/A" }}</p>
+                    <p>
+                      <strong>DNS Servers:</strong>
+                      {% if network_info.dns_servers and network_info.dns_servers|length > 0 %}
+                        {{ network_info.dns_servers | join(", ") }}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </p>
+                  </div>
+
+                  <!-- Adapters -->
+                  <h5 class="mt-4">Adapters</h5>
+                  <table class="table table-striped table-hover table-rounded">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Adapter</th>
+                        <th>Status</th>
+                        <th>Speed</th>
+                        <th>MAC</th>
+                        <th>IPv4</th>
+                        <th>IPv6</th>
+                        <th>MTU</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for a in network_info.adapters %}
+                      <tr>
+                        <td><strong>{{ a.name }}</strong></td>
+                        <td>
+                          {% if a.is_up is not none %}
+                            {{ "Up" if a.is_up else "Down" }}
+                          {% else %}
+                            N/A
+                          {% endif %}
+                        </td>
+                        <td>
+                          {% if a.speed_mbps is not none %}
+                            {{ a.speed_mbps }} Mbps
+                          {% else %}
+                            N/A
+                          {% endif %}
+                        </td>
+                        <td>{{ a.mac or "N/A" }}</td>
+                        <td>
+                          {% if a.ipv4 and a.ipv4|length > 0 %}
+                            <ul class="mb-0">
+                              {% for ip in a.ipv4 %}
+                                <li>{{ ip.ip }}{% if ip.netmask %} / {{ ip.netmask }}{% endif %}</li>
+                              {% endfor %}
+                            </ul>
+                          {% else %}
+                            N/A
+                          {% endif %}
+                        </td>
+                        <td>
+                          {% if a.ipv6 and a.ipv6|length > 0 %}
+                            <ul class="mb-0">
+                              {% for ip in a.ipv6 %}
+                                <li>{{ ip.ip }}{% if ip.netmask %} / {{ ip.netmask }}{% endif %}</li>
+                              {% endfor %}
+                            </ul>
+                          {% else %}
+                            N/A
+                          {% endif %}
+                        </td>
+                        <td>{{ a.mtu or "N/A" }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+
+                  <!-- Bandwidth (cumulative counters) -->
+                  <h5 class="mt-4">Bandwidth Counters (since boot)</h5>
+                  <table class="table table-striped table-hover table-rounded">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Interface</th>
+                        <th>Bytes Sent</th>
+                        <th>Bytes Received</th>
+                        <th>Packets Sent</th>
+                        <th>Packets Received</th>
+                        <th>Errors In/Out</th>
+                        <th>Drops In/Out</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for if_name, b in network_info.bandwidth.per_interface.items() %}
+                      <tr>
+                        <td><strong>{{ if_name }}</strong></td>
+                        <td>{{ b.bytes_sent }}</td>
+                        <td>{{ b.bytes_recv }}</td>
+                        <td>{{ b.packets_sent }}</td>
+                        <td>{{ b.packets_recv }}</td>
+                        <td>{{ b.errin }} / {{ b.errout }}</td>
+                        <td>{{ b.dropin }} / {{ b.dropout }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                    <tfoot>
+                      <tr class="table-light">
+                        <td><strong>Totals</strong></td>
+                        <td><strong>{{ network_info.bandwidth.totals.bytes_sent }}</strong></td>
+                        <td><strong>{{ network_info.bandwidth.totals.bytes_recv }}</strong></td>
+                        <td><strong>{{ network_info.bandwidth.totals.packets_sent }}</strong></td>
+                        <td><strong>{{ network_info.bandwidth.totals.packets_recv }}</strong></td>
+                        <td><strong>{{ network_info.bandwidth.totals.errin }} / {{ network_info.bandwidth.totals.errout }}</strong></td>
+                        <td><strong>{{ network_info.bandwidth.totals.dropin }} / {{ network_info.bandwidth.totals.dropout }}</strong></td>
+                      </tr>
+                    </tfoot>
+                  </table>
+
+                  <!-- Connections -->
+                  <h5 class="mt-4">Active Connections</h5>
+
+                  <div class="result_box">
+                    <p>
+                      <strong>Counts:</strong>
+                      TCP {{ network_info.connections.counts.tcp }},
+                      UDP {{ network_info.connections.counts.udp }},
+                      Total {{ network_info.connections.counts.all }}
+                    </p>
+                  </div>
+
+                  <h6 class="mt-3">TCP</h6>
+                  {% if network_info.connections.tcp and network_info.connections.tcp|length > 0 %}
+                  <table class="table table-striped table-hover table-rounded">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Local</th>
+                        <th>Remote</th>
+                        <th>Status</th>
+                        <th>PID</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for c in network_info.connections.tcp %}
+                      <tr>
+                        <td>{{ c.local_address }}</td>
+                        <td>{{ c.remote_address or "-" }}</td>
+                        <td>{{ c.status or "-" }}</td>
+                        <td>{{ c.pid or "-" }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  {% else %}
+                    <p>No TCP connections found.</p>
+                  {% endif %}
+
+                  <h6 class="mt-4">UDP</h6>
+                  {% if network_info.connections.udp and network_info.connections.udp|length > 0 %}
+                  <table class="table table-striped table-hover table-rounded">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Local</th>
+                        <th>Remote</th>
+                        <th>PID</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for c in network_info.connections.udp %}
+                      <tr>
+                        <td>{{ c.local_address }}</td>
+                        <td>{{ c.remote_address or "-" }}</td>
+                        <td>{{ c.pid or "-" }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  {% else %}
+                    <p>No UDP sockets found.</p>
+                  {% endif %}
+
+                  <!-- Notes -->
+                  {% if network_info.notes and network_info.notes|length > 0 %}
+                  <div class="result_box mt-4">
+                    <p><strong>Notes</strong></p>
+                    <ul class="mb-0">
+                      {% for n in network_info.notes %}
+                        <li>{{ n }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                  {% endif %}
+
+                {% endif %}
+              {% endif %}
+            </div>
+
+            <div class="tab-pane" id="gpu" role="tabpanel">
+              <h4 class="tab-title color">💻 GPU & Display</h4>
+              <p>Shows GPU model/vendor/driver details, optional NVIDIA utilization & VRAM usage (if available), plus primary display resolution and refresh rate.</p>
+
+              {% if display_info %}
+                {% if display_info.error %}
+                  <div class="result_box mt-3">
+                    <p><strong>Error:</strong> {{ display_info.error }}</p>
+                  </div>
+                {% else %}
+
+                  <!-- Display -->
+                  <h5 class="mt-4">Display</h5>
+                  <table class="table table-striped table-hover table-rounded">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td><strong>Primary Resolution</strong></td><td>{{ display_info.display.primary_resolution }}</td></tr>
+                      <tr><td><strong>Refresh Rate (Hz)</strong></td><td>{{ display_info.display.refresh_rate_hz if display_info.display.refresh_rate_hz else "Unknown" }}</td></tr>
+                    </tbody>
+                  </table>
+
+                  <!-- GPU Inventory -->
+                  <h5 class="mt-4">GPU Inventory</h5>
+                  {% if display_info.gpus and display_info.gpus|length > 0 %}
+                    <table class="table table-striped table-hover table-rounded">
+                      <thead class="table-dark">
+                        <tr>
+                          <th>GPU</th>
+                          <th>Vendor</th>
+                          <th>Driver Version</th>
+                          <th>Driver Date</th>
+                          <th>VRAM Total</th>
+                          <th>VRAM Used</th>
+                          <th>GPU Util</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for g in display_info.gpus %}
+                          <tr>
+                            <td>{{ g.name or "Unknown" }}</td>
+                            <td>{{ g.vendor or "Unknown" }}</td>
+                            <td>
+                              {{ g.driver_version_nvml or g.driver_version or "Unknown" }}
+                            </td>
+                            <td>{{ g.driver_date or "Unknown" }}</td>
+                            <td>
+                              {% if g.vram_total_mb_nvml %}
+                                {{ "%.1f"|format(g.vram_total_mb_nvml) }} MB
+                              {% elif g.vram_total_mb %}
+                                {{ "%.1f"|format(g.vram_total_mb) }} MB
+                              {% else %}
+                                Unknown
+                              {% endif %}
+                            </td>
+                            <td>
+                              {% set used = g.get('vram_used_mb') %}
+                              {% if used is not none %}
+                                {{ "%.1f"|format(used) }} MB
+                              {% else %}
+                                —
+                              {% endif %}
+                            </td>
+                            <td>
+                              {% if g.gpu_util_percent is not none %}
+                                {{ g.gpu_util_percent }}%
+                              {% else %}
+                                —
+                              {% endif %}
+                            </td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  {% else %}
+                    <div class="result_box mt-3">
+                      <p>No GPU information detected.</p>
+                    </div>
+                  {% endif %}
+
+                  <!-- NVIDIA details (optional) -->
+                  <h5 class="mt-4">NVIDIA Details (Optional)</h5>
+                  {% if display_info.nvidia_stats and display_info.nvidia_stats.ok %}
+                    <table class="table table-striped table-hover table-rounded">
+                      <thead class="table-dark">
+                        <tr>
+                          <th>Index</th>
+                          <th>Name</th>
+                          <th>Driver</th>
+                          <th>GPU Util</th>
+                          <th>Mem Util</th>
+                          <th>VRAM Used</th>
+                          <th>VRAM Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for n in display_info.nvidia_stats.nvidia %}
+                          <tr>
+                            <td>{{ n.index }}</td>
+                            <td>{{ n.name }}</td>
+                            <td>{{ n.driver_version }}</td>
+                            <td>{{ n.gpu_util_percent }}%</td>
+                            <td>{{ n.mem_util_percent }}%</td>
+                            <td>{{ "%.1f"|format(n.vram_used_mb) }} MB</td>
+                            <td>{{ "%.1f"|format(n.vram_total_mb) }} MB</td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  {% else %}
+                    <div class="result_box mt-3">
+                      <p>
+                        NVIDIA live stats not available.
+                        {% if display_info.nvidia_stats and display_info.nvidia_stats.error %}
+                          <br><strong>Reason:</strong> {{ display_info.nvidia_stats.error }}
+                        {% endif %}
+                      </p>
+                    </div>
+                  {% endif %}
+
+                  <!-- Notes -->
+                  {% if display_info.notes and display_info.notes|length > 0 %}
+                    <div class="result_box mt-3">
+                      <p><strong>Notes</strong></p>
+                      <ul class="mb-0">
+                        {% for n in display_info.notes %}
+                          <li>{{ n }}</li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  {% endif %}
+
+                {% endif %}
+              {% endif %}
+            </div>
+
+            <div class="tab-pane" id="power" role="tabpanel">
+              <h4 class="tab-title color">🔋 Power & Battery</h4>
+              <p>Shows your current power source and battery status (if available).</p>
+
+              {% if power_info %}
+                {% if power_info.notes and (power_info.has_battery == false) %}
+                  <div class="result_box mt-3">
+                    <p><strong>Status:</strong> {{ power_info.notes[0] }}</p>
+                  </div>
+                {% endif %}
+
+                <table class="table table-striped table-hover table-rounded">
+                  <thead class="table-dark">
+                    <tr>
+                      <th>Field</th>
+                      <th>Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Power Source</strong></td>
+                      <td>{{ power_info.power_source }}</td>
+                    </tr>
+
+                    <tr>
+                      <td><strong>Battery Present</strong></td>
+                      <td>{{ "Yes" if power_info.has_battery else "No" }}</td>
+                    </tr>
+
+                    {% if power_info.has_battery %}
+                      <tr>
+                        <td><strong>Battery Level</strong></td>
+                        <td>
+                          {% if power_info.battery_percent is not none %}
+                            {{ "%.1f"|format(power_info.battery_percent) }}%
+                          {% else %}
+                            Unknown
+                          {% endif %}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td><strong>Status</strong></td>
+                        <td>{{ power_info.status }}</td>
+                      </tr>
+
+                      <tr>
+                        <td><strong>Estimated Time Remaining</strong></td>
+                        <td>{{ power_info.time_remaining }}</td>
+                      </tr>
+                    {% endif %}
+                  </tbody>
+                </table>
+
+                {% if power_info.notes and power_info.has_battery %}
+                  <div class="result_box mt-3">
+                    <p><strong>Notes</strong></p>
+                    <ul class="mb-0">
+                      {% for n in power_info.notes %}
+                        <li>{{ n }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endif %}
+              {% endif %}
+            </div>
+
+            <div class="tab-pane" id="sensors" role="tabpanel">
+              <h4 class="tab-title color">🧩 7. Sensors &amp; Temperatures</h4>
+              <p>Shows CPU/GPU temperatures and fan speeds (when available). On Windows this usually requires OpenHardwareMonitor (WMI).</p>
+
+              <form method="POST" action="/system" class="scan-form mt-2">
+                <input type="hidden" name="action" value="sensors_temps">
+                <button type="submit" class="btn-primary">Scan Sensors</button>
+              </form>
+
+              {% if sensors_info %}
+                {% if sensors_info.error %}
+                  <div class="result_box mt-3">
+                    <p><strong>Error:</strong> {{ sensors_info.error }}</p>
+                  </div>
+                {% else %}
+
+                  {% if sensors_info.available == false %}
+                    <div class="result_box mt-3">
+                      <p><strong>Not available:</strong> This device/app can’t read sensors right now.</p>
+                      {% if sensors_info.errors %}
+                          {% for e in sensors_info.errors %}
+                            <p>{{ e }}</p>
+                          {% endfor %}
+                      {% endif %}
+                    </div>
+                  {% else %}
+
+                    {% if sensors_info.errors and sensors_info.errors|length > 0 %}
+                      <div class="result_box mt-3">
+                        <p><strong>Warnings:</strong></p>
+                        <ul class="mb-0">
+                          {% for e in sensors_info.errors %}
+                            <li>{{ e }}</li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    {% endif %}
+
+                    <!-- CPU Temps -->
+                    <h5 class="mt-4">CPU Temperatures (°C)</h5>
+                    {% if sensors_info.cpu_temps_c and sensors_info.cpu_temps_c|length > 0 %}
+                      <table class="table table-striped table-hover table-rounded">
+                        <thead class="table-dark">
+                          <tr>
+                            <th>Sensor</th>
+                            <th class="text-end">Temp</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for t in sensors_info.cpu_temps_c %}
+                          <tr>
+                            <td>{{ t.name }}</td>
+                            <td class="text-end">{{ "%.1f"|format(t.value) }} °C</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    {% else %}
+                      <div class="result_box mt-2">
+                        <p class="mb-0">No CPU temperature sensors found.</p>
+                      </div>
+                    {% endif %}
+
+                    <!-- GPU Temps -->
+                    <h5 class="mt-4">GPU Temperatures (°C)</h5>
+                    {% if sensors_info.gpu_temps_c and sensors_info.gpu_temps_c|length > 0 %}
+                      <table class="table table-striped table-hover table-rounded">
+                        <thead class="table-dark">
+                          <tr>
+                            <th>Sensor</th>
+                            <th class="text-end">Temp</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for t in sensors_info.gpu_temps_c %}
+                          <tr>
+                            <td>{{ t.name }}</td>
+                            <td class="text-end">{{ "%.1f"|format(t.value) }} °C</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    {% else %}
+                      <div class="result_box mt-2">
+                        <p class="mb-0">No GPU temperature sensors found.</p>
+                      </div>
+                    {% endif %}
+
+                    <!-- System / Motherboard Temps -->
+                    <h5 class="mt-4">System Temperatures (°C)</h5>
+                    {% if sensors_info.system_temps_c and sensors_info.system_temps_c|length > 0 %}
+                      <table class="table table-striped table-hover table-rounded">
+                        <thead class="table-dark">
+                          <tr>
+                            <th>Sensor</th>
+                            <th class="text-end">Temp</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for t in sensors_info.system_temps_c %}
+                          <tr>
+                            <td>{{ t.name }}</td>
+                            <td class="text-end">{{ "%.1f"|format(t.value) }} °C</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    {% else %}
+                      <div class="result_box mt-2">
+                        <p class="mb-0">No motherboard/system temperature sensors found.</p>
+                      </div>
+                    {% endif %}
+
+                    <!-- Fans -->
+                    <h5 class="mt-4">Fan Speeds (RPM)</h5>
+                    {% if sensors_info.fan_speeds_rpm and sensors_info.fan_speeds_rpm|length > 0 %}
+                      <table class="table table-striped table-hover table-rounded">
+                        <thead class="table-dark">
+                          <tr>
+                            <th>Fan</th>
+                            <th class="text-end">Speed</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for f in sensors_info.fan_speeds_rpm %}
+                          <tr>
+                            <td>{{ f.name }}</td>
+                            <td class="text-end">{{ "%.0f"|format(f.value) }} RPM</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    {% else %}
+                      <div class="result_box mt-2">
+                        <p class="mb-0">No fan sensors found.</p>
+                      </div>
+                    {% endif %}
+
                     <!-- Notes -->
-                    {% if storage_info.notes %}
+                    {% if sensors_info.notes and sensors_info.notes|length > 0 %}
+                      <div class="result_box mt-3">
+                        <p><strong>Notes:</strong></p>
+                        <ul class="mt-3">
+                          {% for n in sensors_info.notes %}
+                            <li>{{ n }}</li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    {% endif %}
+
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+            </div>
+
+            <div class="tab-pane" id="process" role="tabpanel">
+              <h4 class="tab-title color">🧰 Processes</h4>
+              <p>Lists running processes (CPU/RAM usage).</p>
+
+              {% if procs_services %}
+                {% if procs_services.error %}
+                  <div class="result_box mt-3">
+                    <p><strong>Error:</strong> {{ procs_services.error }}</p>
+                  </div>
+                {% else %}
+
+                  {% if procs_services.notes and procs_services.notes|length > 0 %}
+                    <div class="result_box mt-3">
+                      <p><strong>Notes:</strong></p>
+                      <ul class="mb-0">
+                        {% for n in procs_services.notes %}
+                          <li class="text-white">{{ n }}</li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  {% endif %}
+
+                  <!-- Processes -->
+                  <div class="mt-3">
+                    <h5 class="tab-title color">Running Processes (Top {{ procs_services.processes_count }})</h5>
+
+                    {% if procs_services.processes and procs_services.processes|length > 0 %}
+                      <div class="table-responsive">
+                        <table class="table table-striped table-hover table-rounded">
+                          <thead class="table-dark">
+                            <tr>
+                              <th>PID</th>
+                              <th>Name</th>
+                              <th>User</th>
+                              <th class="text-end">CPU %</th>
+                              <th class="text-end">RAM %</th>
+                              <th>RAM (RSS)</th>
+                              <th>Start Time</th>
+                              <th>Command Line</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for p in procs_services.processes %}
+                              <tr>
+                                <td>{{ p.pid }}</td>
+                                <td>{{ p.name }}</td>
+                                <td>{{ p.user }}</td>
+                                <td class="text-end">{{ "%.1f"|format(p.cpu_percent or 0) }}</td>
+                                <td class="text-end">{{ "%.1f"|format(p.ram_percent or 0) }}</td>
+                                <td>{{ p.ram_rss or "N/A" }}</td>
+                                <td>{{ p.start_time or "N/A" }}</td>
+                                <td class="text-break" style="max-width: 520px;">
+                                  {{ p.cmdline if p.cmdline else "N/A" }}
+                                </td>
+                              </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    {% else %}
+                      <div class="result_box mt-3">
+                        <p>No process data available.</p>
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              {% endif %}
+            </div>
+
+            <div class="tab-pane" id="services" role="tabpanel">
+              <h4 class="tab-title color">🧰 Services</h4>
+              <p>Lists Windows services (state/start mode).</p>
+
+              {% if procs_services %}
+                {% if procs_services.error %}
+                  <div class="result_box mt-3">
+                    <p><strong>Error:</strong> {{ procs_services.error }}</p>
+                  </div>
+                {% else %}
+
+                  {% if procs_services.notes and procs_services.notes|length > 0 %}
+                    <div class="result_box mt-3">
+                      <p><strong>Notes:</strong></p>
+                      <ul class="mb-0">
+                        {% for n in procs_services.notes %}
+                          <li class="text-white">{{ n }}</li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  {% endif %}
+
+                  <!-- Services -->
+                  <div class="mt-3">
+                    <h5 class="tab-title color">Windows Services ({{ procs_services.services_count }})</h5>
+
+                    {% if procs_services.services and procs_services.services|length > 0 %}
+                      <div class="table-responsive">
+                        <table class="table table-striped table-hover table-rounded">
+                          <thead class="table-dark">
+                            <tr>
+                              <th>Name</th>
+                              <th>Display Name</th>
+                              <th>Status</th>
+                              <th>Startup</th>
+                              <th class="text-end">PID</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for s in procs_services.services %}
+                              <tr>
+                                <td class="text-break" style="max-width: 260px;">{{ s.name }}</td>
+                                <td class="text-break" style="max-width: 480px;">{{ s.display_name }}</td>
+                                <td>
+                                  {% if s.state == "Running" %}
+                                    <span class="badge bg-success">Running</span>
+                                  {% else %}
+                                    <span class="badge bg-secondary">{{ s.state or "Unknown" }}</span>
+                                  {% endif %}
+                                </td>
+                                <td>{{ s.start_mode or "N/A" }}</td>
+                                <td class="text-end">{{ s.pid if s.pid else "N/A" }}</td>
+                              </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    {% else %}
+                      <div class="result_box mt-3">
+                        <p>No service data available (WMI not installed or access blocked).</p>
+                      </div>
+                    {% endif %}
+                  </div>
+
+                {% endif %}
+              {% endif %}
+            </div>
+
+            <div class="tab-pane" id="bios" role="tabpanel">
+              <h4 class="tab-title color">🧾 BIOS / Motherboard Info</h4>
+              <p>Shows motherboard, BIOS, system UUID, and chassis details (Windows via WMI).</p>
+
+              {% if bios_info %}
+                {% if bios_info.error %}
+                  <div class="result_box mt-3">
+                    <p><strong>Error:</strong> {{ bios_info.error }}</p>
+                  </div>
+                {% else %}
+
+                  <!-- Motherboard -->
+                  <h5 class="tab-title color mt-4">Motherboard</h5>
+                  <table class="table table-striped table-hover table-rounded">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td><strong>Manufacturer</strong></td><td>{{ bios_info.motherboard.manufacturer or "N/A" }}</td></tr>
+                      <tr><td><strong>Model</strong></td><td>{{ bios_info.motherboard.model or "N/A" }}</td></tr>
+                      <tr><td><strong>Product</strong></td><td>{{ bios_info.motherboard.product or "N/A" }}</td></tr>
+                      <tr><td><strong>Version</strong></td><td>{{ bios_info.motherboard.version or "N/A" }}</td></tr>
+                      <tr><td><strong>Serial</strong></td><td>{{ bios_info.motherboard.serial or "N/A" }}</td></tr>
+                    </tbody>
+                  </table>
+
+                  <!-- BIOS -->
+                  <h5 class="tab-title color mt-4">BIOS</h5>
+                  <table class="table table-striped table-hover table-rounded">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td><strong>Vendor</strong></td><td>{{ bios_info.bios.vendor or "N/A" }}</td></tr>
+                      <tr><td><strong>Version</strong></td><td>{{ bios_info.bios.version or "N/A" }}</td></tr>
+                      <tr><td><strong>Release Date</strong></td><td>{{ bios_info.bios.release_date or "N/A" }}</td></tr>
+                      <tr><td><strong>Serial</strong></td><td>{{ bios_info.bios.serial or "N/A" }}</td></tr>
+                    </tbody>
+                  </table>
+
+                  <!-- System -->
+                  <h5 class="tab-title color mt-4">System</h5>
+                  <table class="table table-striped table-hover table-rounded">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td><strong>UUID</strong></td><td>{{ bios_info.system.uuid or "N/A" }}</td></tr>
+                      <tr><td><strong>Vendor</strong></td><td>{{ bios_info.system.vendor or "N/A" }}</td></tr>
+                      <tr><td><strong>Name / Model</strong></td><td>{{ bios_info.system.name or "N/A" }}</td></tr>
+                      <tr><td><strong>Version</strong></td><td>{{ bios_info.system.version or "N/A" }}</td></tr>
+                      <tr><td><strong>Identifying Number</strong></td><td>{{ bios_info.system.identifying_number or "N/A" }}</td></tr>
+                    </tbody>
+                  </table>
+
+                  <!-- Chassis -->
+                  <h5 class="tab-title color mt-4">Chassis</h5>
+                  <table class="table table-striped table-hover table-rounded">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td><strong>Type</strong></td><td>{{ bios_info.chassis.type_name or "N/A" }}</td></tr>
+                      <tr><td><strong>Type Code</strong></td><td>{{ bios_info.chassis.type_code if bios_info.chassis.type_code is not none else "N/A" }}</td></tr>
+                      <tr><td><strong>Manufacturer</strong></td><td>{{ bios_info.chassis.manufacturer or "N/A" }}</td></tr>
+                      <tr><td><strong>Serial</strong></td><td>{{ bios_info.chassis.serial or "N/A" }}</td></tr>
+                      <tr><td><strong>Asset Tag</strong></td><td>{{ bios_info.chassis.asset_tag or "N/A" }}</td></tr>
+                    </tbody>
+                  </table>
+
+                {% endif %}
+              {% endif %}
+            </div>
+
+            <div class="tab-pane" id="devices" role="tabpanel">
+              <h4 class="tab-title color">🔌 Connected Devices</h4>
+              <p>Shows connected devices detected on Windows (USB, monitors, HID, disks, and general Plug-and-Play entries).</p>
+
+              {% if devices_info %}
+                {% if devices_info.error %}
+                  <div class="result_box mt-3">
+                    <p><strong>Error:</strong> {{ devices_info.error }}</p>
+                  </div>
+                {% else %}
+
+                  <!-- USB Controllers -->
+                  <h5 class="mt-3">USB Controllers</h5>
+                  {% if devices_info.usb_devices and devices_info.usb_devices|length > 0 %}
+                  <table class="table table-striped table-hover table-rounded">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Name</th>
+                        <th>Manufacturer</th>
+                        <th>Status</th>
+                        <th>Device ID</th>
+                        <th>PNP Device ID</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for u in devices_info.usb_devices %}
+                      <tr>
+                        <td>{{ u.name or "N/A" }}</td>
+                        <td>{{ u.manufacturer or "N/A" }}</td>
+                        <td>{{ u.status or "N/A" }}</td>
+                        <td class="text-break">{{ u.device_id or "N/A" }}</td>
+                        <td class="text-break">{{ u.pnp_device_id or "N/A" }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  {% else %}
+                    <div class="result_box mt-2"><p>No USB controller entries found.</p></div>
+                  {% endif %}
+
+                  <hr>
+
+                  <!-- Monitors -->
+                  <h5 class="mt-3">Monitors</h5>
+                  {% if devices_info.monitors and devices_info.monitors|length > 0 %}
+                  <table class="table table-striped table-hover table-rounded">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Resolution</th>
+                        <th>Type</th>
+                        <th>Device ID</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for m in devices_info.monitors %}
+                      <tr>
+                        <td>{{ m.name or "N/A" }}</td>
+                        <td>{{ m.status or "N/A" }}</td>
+                        <td>
+                          {% if m.screen_width and m.screen_height %}
+                            {{ m.screen_width }} × {{ m.screen_height }}
+                          {% else %}
+                            N/A
+                          {% endif %}
+                        </td>
+                        <td>{{ m.monitor_type or "N/A" }}</td>
+                        <td class="text-break">{{ m.device_id or "N/A" }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  {% else %}
+                    <div class="result_box mt-2"><p>No monitor entries found.</p></div>
+                  {% endif %}
+
+                  <hr>
+
+                  <!-- HID Devices -->
+                  <h5 class="mt-3">HID Devices (Keyboard / Mouse / Controllers)</h5>
+                  {% if devices_info.hid_devices and devices_info.hid_devices|length > 0 %}
+                  <table class="table table-striped table-hover table-rounded">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Name</th>
+                        <th>Manufacturer</th>
+                        <th>Status</th>
+                        <th>Device ID</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for h in devices_info.hid_devices %}
+                      <tr>
+                        <td>{{ h.name or "N/A" }}</td>
+                        <td>{{ h.manufacturer or "N/A" }}</td>
+                        <td>{{ h.status or "N/A" }}</td>
+                        <td class="text-break">{{ h.device_id or "N/A" }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  {% else %}
+                    <div class="result_box mt-2"><p>No HID device entries found.</p></div>
+                  {% endif %}
+
+                  <hr>
+
+                  <!-- Disk Drives -->
+                  <h5 class="mt-3">Disk Drives (Physical)</h5>
+                  {% if devices_info.disk_drives and devices_info.disk_drives|length > 0 %}
+                  <table class="table table-striped table-hover table-rounded">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Model</th>
+                        <th>Interface</th>
+                        <th>Media Type</th>
+                        <th>Size (GB)</th>
+                        <th>Status</th>
+                        <th>Serial</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for d in devices_info.disk_drives %}
+                      <tr>
+                        <td>{{ d.model or "N/A" }}</td>
+                        <td>{{ d.interface_type or "N/A" }}</td>
+                        <td>{{ d.media_type or "N/A" }}</td>
+                        <td>
+                          {% if d.size_bytes %}
+                            {{ (d.size_bytes / (1024*1024*1024))|round(1) }}
+                          {% else %}
+                            N/A
+                          {% endif %}
+                        </td>
+                        <td>{{ d.status or "N/A" }}</td>
+                        <td class="text-break">{{ d.serial or "N/A" }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  {% else %}
+                    <div class="result_box mt-2"><p>No physical disk entries found.</p></div>
+                  {% endif %}
+
+                  <hr>
+
+                  <!-- Logical Drives -->
+                  <h5 class="mt-3">Drives (Logical)</h5>
+                  {% if devices_info.logical_drives and devices_info.logical_drives|length > 0 %}
+                  <table class="table table-striped table-hover table-rounded">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Drive</th>
+                        <th>Label</th>
+                        <th>File System</th>
+                        <th>Type</th>
+                        <th>Total (GB)</th>
+                        <th>Free (GB)</th>
+                        <th>Used %</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for ld in devices_info.logical_drives %}
+                      <tr>
+                        <td><strong>{{ ld.device_id or "N/A" }}</strong></td>
+                        <td>{{ ld.volume_name or "N/A" }}</td>
+                        <td>{{ ld.file_system or "N/A" }}</td>
+                        <td>{{ ld.drive_type or "N/A" }}</td>
+                        <td>
+                          {% if ld.size_bytes %}
+                            {{ (ld.size_bytes / (1024*1024*1024))|round(1) }}
+                          {% else %}
+                            N/A
+                          {% endif %}
+                        </td>
+                        <td>
+                          {% if ld.free_bytes %}
+                            {{ (ld.free_bytes / (1024*1024*1024))|round(1) }}
+                          {% else %}
+                            N/A
+                          {% endif %}
+                        </td>
+                        <td>{{ ld.percent_used if ld.percent_used is not none else "N/A" }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                  {% else %}
+                    <div class="result_box mt-2"><p>No logical drive entries found.</p></div>
+                  {% endif %}
+
+                  <hr>
+
+                  <!-- General PnP Devices (Optional - can be large) -->
+                  <details class="mt-3">
+                    <summary class="fw-bold">Show all Plug-and-Play devices (can be a large list)</summary>
+                    {% if devices_info.pnp_devices and devices_info.pnp_devices|length > 0 %}
+                    <table class="table table-striped table-hover table-rounded mt-3">
+                      <thead class="table-dark">
+                        <tr>
+                          <th>Name</th>
+                          <th>Class</th>
+                          <th>Manufacturer</th>
+                          <th>Status</th>
+                          <th>Device ID</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for p in devices_info.pnp_devices %}
+                        <tr>
+                          <td>{{ p.name or "N/A" }}</td>
+                          <td>{{ p.pnp_class or "N/A" }}</td>
+                          <td>{{ p.manufacturer or "N/A" }}</td>
+                          <td>{{ p.status or "N/A" }}</td>
+                          <td class="text-break">{{ p.device_id or "N/A" }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                    {% else %}
+                      <div class="result_box mt-2"><p>No PnP device entries found.</p></div>
+                    {% endif %}
+                  </details>
+
+                  <!-- Notes -->
+                  {% if devices_info.notes and devices_info.notes|length > 0 %}
+                    <div class="result_box mt-3">
+                      <p class="mb-2"><strong>Notes</strong></p>
+                      <ul class="mb-0">
+                        {% for n in devices_info.notes %}
+                          <li>{{ n }}</li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  {% endif %}
+
+                {% endif %}
+              {% endif %}
+            </div>
+
+            <div class="tab-pane" id="software" role="tabpanel">
+                <h4 class="tab-title color">🧱 Installed Software</h4>
+                <p>
+                    Lists applications installed on this Windows system, including version,
+                    publisher, and installation date (when available).
+                </p>
+
+                {% if software_info %}
+                    {% if software_info.apps and software_info.apps|length > 0 %}
+
+                    <p class="text-muted">
+                        Total applications detected: <strong>{{ software_info.count }}</strong>
+                    </p>
+
+                    <table class="table table-striped table-hover table-rounded table-responsive">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Name</th>
+                                <th>Version</th>
+                                <th>Publisher</th>
+                                <th>Install Date</th>
+                                <th>Source</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for app in software_info.apps %}
+                            <tr>
+                                <td class="align-middle">
+                                    <strong>{{ app.name }}</strong>
+                                </td>
+                                <td class="align-middle">
+                                    {{ app.version or "—" }}
+                                </td>
+                                <td class="align-middle">
+                                    {{ app.publisher or "—" }}
+                                </td>
+                                <td class="align-middle">
+                                    {{ app.install_date or "—" }}
+                                </td>
+                                <td class="align-middle">
+                                    {{ app.source }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    {% else %}
+                    <div class="result_box mt-3">
+                        <p>No installed software entries were detected.</p>
+                    </div>
+                    {% endif %}
+
+                    {% if software_info.notes and software_info.notes|length > 0 %}
                     <div class="result_box mt-3">
                         <h6>Notes</h6>
                         <ul class="mb-0">
-                            {% for note in storage_info.notes %}
+                            {% for note in software_info.notes %}
                             <li>{{ note }}</li>
                             {% endfor %}
                         </ul>
                     </div>
                     {% endif %}
 
-                    {% endif %}
+                {% else %}
+                    <div class="result_box mt-3">
+                        <p>Installed software information is not available.</p>
+                    </div>
                 {% endif %}
             </div>
 
-    
-
-
-        <div class="tab-pane" id="process" role="tabpanel">
-          <form method="POST" action="/" class="scan-form">
-                <div class="tool-card">
-                    <h4 class="tab-title color">Running Processes</h4>
-                    <p class="tool-description">View all running processes, their CPU/memory usage, and the user running them.</p>
-                    <button type="submit" class="btn-primary">Scan Processes</button>
-                    <input type="hidden" name="action" value="process_scan">
-                </div>
-            </form>
-
-            {% if running_processes %}
-            <table class="table table-striped table-hover table-responsive">
-                <thead class="table-dark">
-                    <tr>
-                        <th>PID</th>
-                        <th>Name</th>
-                        <th>User</th>
-                        <th>CPU %</th>
-                        <th>Mem %</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for p in running_processes %}
-                    <tr>
-                        <td>{{ p.pid }}</td>
-                        <td>{{ p.name }}</td>
-                        <td>{{ p.username or p.user or "N/A" }}</td>
-                        <td>{{ "%.1f"|format(p.cpu_percent or 0) }}</td>
-                        <td>{{ "%.1f"|format(p.memory_percent or p.mem_percent or 0) }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
-        </div>
-
-        <div class="tab-pane" id="network" role="tabpanel">
-          <h4 class="tab-title color">🌐 Network & Adapters</h4>
-          <p>Shows adapter details, IP/MAC info, gateway/DNS, active connections, and interface bandwidth counters.</p>
-
-          {% if network_info %}
-            {% if network_info.error %}
-              <div class="result_box mt-3">
-                <p><strong>Error:</strong> {{ network_info.error }}</p>
-              </div>
-            {% else %}
-
-              <!-- Summary -->
-              <div class="result_box mt-3">
-                <p><strong>Platform:</strong> {{ network_info.platform }}</p>
-                <p><strong>Default Gateway:</strong> {{ network_info.default_gateway or "N/A" }}</p>
-                <p>
-                  <strong>DNS Servers:</strong>
-                  {% if network_info.dns_servers and network_info.dns_servers|length > 0 %}
-                    {{ network_info.dns_servers | join(", ") }}
-                  {% else %}
-                    N/A
-                  {% endif %}
-                </p>
-              </div>
-
-              <!-- Adapters -->
-              <h5 class="mt-4">Adapters</h5>
-              <table class="table table-striped table-hover table-rounded">
-                <thead class="table-dark">
-                  <tr>
-                    <th>Adapter</th>
-                    <th>Status</th>
-                    <th>Speed</th>
-                    <th>MAC</th>
-                    <th>IPv4</th>
-                    <th>IPv6</th>
-                    <th>MTU</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for a in network_info.adapters %}
-                  <tr>
-                    <td><strong>{{ a.name }}</strong></td>
-                    <td>
-                      {% if a.is_up is not none %}
-                        {{ "Up" if a.is_up else "Down" }}
-                      {% else %}
-                        N/A
-                      {% endif %}
-                    </td>
-                    <td>
-                      {% if a.speed_mbps is not none %}
-                        {{ a.speed_mbps }} Mbps
-                      {% else %}
-                        N/A
-                      {% endif %}
-                    </td>
-                    <td>{{ a.mac or "N/A" }}</td>
-                    <td>
-                      {% if a.ipv4 and a.ipv4|length > 0 %}
-                        <ul class="mb-0">
-                          {% for ip in a.ipv4 %}
-                            <li>{{ ip.ip }}{% if ip.netmask %} / {{ ip.netmask }}{% endif %}</li>
-                          {% endfor %}
-                        </ul>
-                      {% else %}
-                        N/A
-                      {% endif %}
-                    </td>
-                    <td>
-                      {% if a.ipv6 and a.ipv6|length > 0 %}
-                        <ul class="mb-0">
-                          {% for ip in a.ipv6 %}
-                            <li>{{ ip.ip }}{% if ip.netmask %} / {{ ip.netmask }}{% endif %}</li>
-                          {% endfor %}
-                        </ul>
-                      {% else %}
-                        N/A
-                      {% endif %}
-                    </td>
-                    <td>{{ a.mtu or "N/A" }}</td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-
-              <!-- Bandwidth (cumulative counters) -->
-              <h5 class="mt-4">Bandwidth Counters (since boot)</h5>
-              <table class="table table-striped table-hover table-rounded">
-                <thead class="table-dark">
-                  <tr>
-                    <th>Interface</th>
-                    <th>Bytes Sent</th>
-                    <th>Bytes Received</th>
-                    <th>Packets Sent</th>
-                    <th>Packets Received</th>
-                    <th>Errors In/Out</th>
-                    <th>Drops In/Out</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for if_name, b in network_info.bandwidth.per_interface.items() %}
-                  <tr>
-                    <td><strong>{{ if_name }}</strong></td>
-                    <td>{{ b.bytes_sent }}</td>
-                    <td>{{ b.bytes_recv }}</td>
-                    <td>{{ b.packets_sent }}</td>
-                    <td>{{ b.packets_recv }}</td>
-                    <td>{{ b.errin }} / {{ b.errout }}</td>
-                    <td>{{ b.dropin }} / {{ b.dropout }}</td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-                <tfoot>
-                  <tr class="table-light">
-                    <td><strong>Totals</strong></td>
-                    <td><strong>{{ network_info.bandwidth.totals.bytes_sent }}</strong></td>
-                    <td><strong>{{ network_info.bandwidth.totals.bytes_recv }}</strong></td>
-                    <td><strong>{{ network_info.bandwidth.totals.packets_sent }}</strong></td>
-                    <td><strong>{{ network_info.bandwidth.totals.packets_recv }}</strong></td>
-                    <td><strong>{{ network_info.bandwidth.totals.errin }} / {{ network_info.bandwidth.totals.errout }}</strong></td>
-                    <td><strong>{{ network_info.bandwidth.totals.dropin }} / {{ network_info.bandwidth.totals.dropout }}</strong></td>
-                  </tr>
-                </tfoot>
-              </table>
-
-              <!-- Connections -->
-              <h5 class="mt-4">Active Connections</h5>
-
-              <div class="result_box">
-                <p>
-                  <strong>Counts:</strong>
-                  TCP {{ network_info.connections.counts.tcp }},
-                  UDP {{ network_info.connections.counts.udp }},
-                  Total {{ network_info.connections.counts.all }}
-                </p>
-              </div>
-
-              <h6 class="mt-3">TCP</h6>
-              {% if network_info.connections.tcp and network_info.connections.tcp|length > 0 %}
-              <table class="table table-striped table-hover table-rounded">
-                <thead class="table-dark">
-                  <tr>
-                    <th>Local</th>
-                    <th>Remote</th>
-                    <th>Status</th>
-                    <th>PID</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for c in network_info.connections.tcp %}
-                  <tr>
-                    <td>{{ c.local_address }}</td>
-                    <td>{{ c.remote_address or "-" }}</td>
-                    <td>{{ c.status or "-" }}</td>
-                    <td>{{ c.pid or "-" }}</td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-              {% else %}
-                <p>No TCP connections found.</p>
-              {% endif %}
-
-              <h6 class="mt-4">UDP</h6>
-              {% if network_info.connections.udp and network_info.connections.udp|length > 0 %}
-              <table class="table table-striped table-hover table-rounded">
-                <thead class="table-dark">
-                  <tr>
-                    <th>Local</th>
-                    <th>Remote</th>
-                    <th>PID</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for c in network_info.connections.udp %}
-                  <tr>
-                    <td>{{ c.local_address }}</td>
-                    <td>{{ c.remote_address or "-" }}</td>
-                    <td>{{ c.pid or "-" }}</td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-              {% else %}
-                <p>No UDP sockets found.</p>
-              {% endif %}
-
-              <!-- Notes -->
-              {% if network_info.notes and network_info.notes|length > 0 %}
-              <div class="result_box mt-4">
-                <p><strong>Notes</strong></p>
-                <ul class="mb-0">
-                  {% for n in network_info.notes %}
-                    <li>{{ n }}</li>
-                  {% endfor %}
-                </ul>
-              </div>
-              {% endif %}
-
-            {% endif %}
-          {% endif %}
-        </div>
-
-
-        <div class="tab-pane" id="gpu" role="tabpanel">
-          <h4 class="tab-title color">💻 GPU & Display</h4>
-          <p>Shows GPU model/vendor/driver details, optional NVIDIA utilization & VRAM usage (if available), plus primary display resolution and refresh rate.</p>
-
-          {% if display_info %}
-            {% if display_info.error %}
-              <div class="result_box mt-3">
-                <p><strong>Error:</strong> {{ display_info.error }}</p>
-              </div>
-            {% else %}
-
-              <!-- Display -->
-              <h5 class="mt-4">Display</h5>
-              <table class="table table-striped table-hover table-rounded">
-                <thead class="table-dark">
-                  <tr>
-                    <th>Field</th>
-                    <th>Value</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td><strong>Primary Resolution</strong></td><td>{{ display_info.display.primary_resolution }}</td></tr>
-                  <tr><td><strong>Refresh Rate (Hz)</strong></td><td>{{ display_info.display.refresh_rate_hz if display_info.display.refresh_rate_hz else "Unknown" }}</td></tr>
-                </tbody>
-              </table>
-
-              <!-- GPU Inventory -->
-              <h5 class="mt-4">GPU Inventory</h5>
-              {% if display_info.gpus and display_info.gpus|length > 0 %}
-                <table class="table table-striped table-hover table-rounded">
-                  <thead class="table-dark">
-                    <tr>
-                      <th>GPU</th>
-                      <th>Vendor</th>
-                      <th>Driver Version</th>
-                      <th>Driver Date</th>
-                      <th>VRAM Total</th>
-                      <th>VRAM Used</th>
-                      <th>GPU Util</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for g in display_info.gpus %}
-                      <tr>
-                        <td>{{ g.name or "Unknown" }}</td>
-                        <td>{{ g.vendor or "Unknown" }}</td>
-                        <td>
-                          {{ g.driver_version_nvml or g.driver_version or "Unknown" }}
-                        </td>
-                        <td>{{ g.driver_date or "Unknown" }}</td>
-                        <td>
-                          {% if g.vram_total_mb_nvml %}
-                            {{ "%.1f"|format(g.vram_total_mb_nvml) }} MB
-                          {% elif g.vram_total_mb %}
-                            {{ "%.1f"|format(g.vram_total_mb) }} MB
-                          {% else %}
-                            Unknown
-                          {% endif %}
-                        </td>
-                        <td>
-                          {% set used = g.get('vram_used_mb') %}
-                          {% if used is not none %}
-                            {{ "%.1f"|format(used) }} MB
-                          {% else %}
-                            —
-                          {% endif %}
-                        </td>
-                        <td>
-                          {% if g.gpu_util_percent is not none %}
-                            {{ g.gpu_util_percent }}%
-                          {% else %}
-                            —
-                          {% endif %}
-                        </td>
-                      </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              {% else %}
-                <div class="result_box mt-3">
-                  <p>No GPU information detected.</p>
-                </div>
-              {% endif %}
-
-              <!-- NVIDIA details (optional) -->
-              <h5 class="mt-4">NVIDIA Details (Optional)</h5>
-              {% if display_info.nvidia_stats and display_info.nvidia_stats.ok %}
-                <table class="table table-striped table-hover table-rounded">
-                  <thead class="table-dark">
-                    <tr>
-                      <th>Index</th>
-                      <th>Name</th>
-                      <th>Driver</th>
-                      <th>GPU Util</th>
-                      <th>Mem Util</th>
-                      <th>VRAM Used</th>
-                      <th>VRAM Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for n in display_info.nvidia_stats.nvidia %}
-                      <tr>
-                        <td>{{ n.index }}</td>
-                        <td>{{ n.name }}</td>
-                        <td>{{ n.driver_version }}</td>
-                        <td>{{ n.gpu_util_percent }}%</td>
-                        <td>{{ n.mem_util_percent }}%</td>
-                        <td>{{ "%.1f"|format(n.vram_used_mb) }} MB</td>
-                        <td>{{ "%.1f"|format(n.vram_total_mb) }} MB</td>
-                      </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              {% else %}
-                <div class="result_box mt-3">
-                  <p>
-                    NVIDIA live stats not available.
-                    {% if display_info.nvidia_stats and display_info.nvidia_stats.error %}
-                      <br><strong>Reason:</strong> {{ display_info.nvidia_stats.error }}
-                    {% endif %}
-                  </p>
-                </div>
-              {% endif %}
-
-              <!-- Notes -->
-              {% if display_info.notes and display_info.notes|length > 0 %}
-                <div class="result_box mt-3">
-                  <p><strong>Notes</strong></p>
-                  <ul class="mb-0">
-                    {% for n in display_info.notes %}
-                      <li>{{ n }}</li>
-                    {% endfor %}
-                  </ul>
-                </div>
-              {% endif %}
-
-            {% endif %}
-          {% endif %}
-        </div>
-
-
-
-        <div class="tab-pane" id="services" role="tabpanel">
-          <form method="POST" action="/" class="scan-form">
-                <div class="tool-card">
-                    <input type="hidden" name="action" value="service_scan">
-                    <h4 class="tab-title color">Windows Services</h4>
-                    <p class="text-description">Lists all Windows services with their display names, current status, and start type.</p>
-                    <button type="submit" class="btn-primary">Scan Services</button>
-                </div>
-            </form>
-
-            {% if running_services %}
-            <table class="table table-striped table-hover table-responsive table-rounded">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Name</th>
-                        <th>Display Name</th>
-                        <th>Status</th>
-                        <th>Startup</th>
-                        <th>PID</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for name, svc in running_services.items() %}
-                    <tr>
-                        <td>{{ name }}</td>
-                        <td>{{ svc.display_name }}</td>
-                        <td>{{ svc.status }}</td>
-                        <td>{{ svc.start_type }}</td>
-                        <td>{{ svc.pid or "N/A" }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% endif %}
-        </div>
-
-        <div class="tab-pane fade" id="about" role="tabpanel">
-            <h4 class="tab-title color">About</h4>
-            <p>Convert a string or file to various hashes.</p>
-        </div>
       </div>
     </main>
   </div>

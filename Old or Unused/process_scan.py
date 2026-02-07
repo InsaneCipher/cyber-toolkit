@@ -2,7 +2,7 @@ import psutil
 import time
 
 
-def scan_processes():
+def old_scan_processes():
     processes = []
 
     procs = []

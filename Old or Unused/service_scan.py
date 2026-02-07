@@ -1,7 +1,7 @@
 import psutil
 
 
-def scan_services():
+def old_scan_services():
     services = []
     for service in psutil.win_service_iter():
         try:

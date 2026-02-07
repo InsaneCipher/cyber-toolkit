@@ -1,3 +1,4 @@
+nvidia-ml-py
 scapy~=2.6.1
 psutil~=7.1.0
 python-whois~=0.9.5

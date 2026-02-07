@@ -1,23 +1,23 @@
 from flask import Flask, render_template, request
-from torch.utils.model_dump import get_storage_info
+import webview
+import argparse
+import threading
 
 from tools.diagnostics import get_dns_cache, ping_host, get_arp_table, get_interface_info
 from tools.net_scan import *
 from tools.port_scan import *
 from tools.recon_tools import *
-from tools.process_scan import *
-from tools.service_scan import *
 from tools.hashing_and_encoding import *
 from tools.subnet import *
 from tools.system_tools import *
+from tools.forensics_tools import *
+
 
 app = Flask(__name__)
 
 
 result = None
 port_results = None
-running_processes = None
-running_services = None
 dns_cache = None
 dns_result = None
 traceroute_result = None
@@ -40,16 +40,24 @@ header_result = None
 response_result = None
 tech_result = None
 robots_result = None
+
+# System Info Variables
 system_info = get_system_info()
 cpu_info = get_cpu_mem_info()
 storage_info = get_storage_info()
 network_info = get_network_adapters_info()
 display_info = get_gpu_display_info()
-power_info = get_system_info()
-sensor_info = get_system_info()
-motherboard_info = get_system_info()
-devices_info = get_system_info()
-software_info = get_system_info()
+power_info = get_power_battery_info()
+sensors_info = get_sensors_and_temps()
+process_services_info = get_processes_services_info()
+bios_info = get_bios_motherboard_info()
+devices_info = get_connected_devices_info()
+software_info = get_installed_software()
+
+# Forensics Info Variables
+forensics_info = collect_forensics_results()
+forensics_results = None
+target_path = None
 
 
 def get_template(name, active):
@@ -58,8 +66,6 @@ def get_template(name, active):
         active=active,
         result=result,
         port_results=port_results,
-        running_processes=running_processes,
-        running_services=running_services,
         dns_cache=dns_cache,
         dns_result=dns_result,
         traceroute_result=traceroute_result,
@@ -88,10 +94,13 @@ def get_template(name, active):
         network_info=network_info,
         display_info=display_info,
         power_info=power_info,
-        sensor_info=sensor_info,
-        motherboard_info=motherboard_info,
+        sensors_info=sensors_info,
+        bios_info=bios_info,
         devices_info=devices_info,
         software_info=software_info,
+        procs_services=process_services_info,
+        forensics_results=forensics_results,
+        target_path=target_path
     )
 
 
@@ -276,19 +285,33 @@ def system():
     if request.method == "POST":
         action = request.form.get("action")
 
-        if action == "process_scan":
-            print("Scanning processes...")
-            running_processes = scan_processes()
-
-        elif action == "service_scan":
-            print("Scanning services...")
-            running_services = scan_services()
-
     return get_template("system.html", "system")
 
 
-@app.route("/forensics")
+@app.route("/forensics", methods=["GET", "POST"])
 def forensics():
+    global forensics_info, target_path, forensics_results
+
+    target_path = None
+    forensics_results = None
+
+    if request.method == "POST":
+        # Matches the HTML input name="target_path"
+        target_path = (request.form.get("target_path") or "").strip()
+
+        if target_path:
+            try:
+                # Your collector (from tools.forensics_tools import *)
+                forensics_results = collect_forensics_results(target_path=target_path)
+            except Exception as e:
+                forensics_results = {"error": str(e)}
+        else:
+            forensics_results = {"error": "Please enter a valid file path."}
+
+        # Optional: store last run globally if you want it accessible elsewhere
+        forensics_info = forensics_results
+
+    # Render with your existing shared context + add forensics vars
     return get_template("forensics.html", "forensics")
 
 
@@ -307,5 +330,25 @@ def about():
     return render_template("about.html", title="About", active="about")
 
 
+def run_flask():
+    """Start Flask server (used for CLI mode or background threading)."""
+    app.run(debug=False, host="127.0.0.1", port=5000)
+
+
 if __name__ == "__main__":
-    app.run()
+    # Parse CLI arguments
+    parser = argparse.ArgumentParser(description="CyberToolkit App")
+    parser.add_argument('--nogui', action='store_true', default=False, help='Run without GUI (CLI mode)')
+    args = parser.parse_args()
+
+    # Run Flask server either as CLI only or with GUI using webview
+    if args.nogui:
+        print("Running without GUI...")
+        run_flask()
+    else:
+        print("Running with GUI...")
+        # Run Flask server in background thread
+        threading.Thread(target=run_flask, daemon=True).start()
+        webview.settings['OPEN_EXTERNAL_LINKS_IN_BROWSER'] = True
+        webview.create_window("CyberToolkit App", "http://127.0.0.1:5000/", js_api=Api())
+        webview.start()  # Start the GUI event loop

@@ -15,27 +15,11 @@
 - URL Scanner (safe) – extract domain, path, query params.
 - Common Wordlist Generator – based on input (for pentest prep
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Fixes/Improvements
+- Table Sorting
+- GPU tab fixes
+- Navbar screen break fix
+- Forensics analyse button fix
 
 
 🔍 Diagnostics & Monitoring
@@ -88,54 +72,105 @@ Utilities: Export Config, Public IP, Interface Info
 | **SSL Cipher & Protocol Tester** | Identify supported SSL/TLS versions. |
 
 
-⚙️ System Tab — Suggested Subtabs
+### **Forensics**
 
-💻 5. GPU & Display
-GPU model, vendor, driver version
-GPU memory total / used
-Current GPU utilization (%)
-Display resolution and refresh rate
-Python libs/tools: pynvml (NVIDIA), GPUtil, subprocess with wmic path win32_videocontroller, or lspci on Linux
+**Features**
 
-🔋 6. Power & Battery
-Power source (AC/Battery)
-Battery charge level (%)
-Status (charging/discharging)
-Estimated time remaining
-Python libs/tools: psutil.sensors_battery(), acpi on Linux
+* File metadata (timestamps, owner, attributes)
+* NTFS Alternate Data Streams (ADS) detection
+* EXIF / media metadata extraction
+* Windows Event Log (`.evtx`) parsing
+* Live & offline registry artifact extraction
+* Hidden/suspicious file indicators
+* Optional disk image browsing (best-effort)
 
-🧩 7. Sensors & Temperatures
-CPU temperature(s)
-GPU temperature
-Motherboard / system temperature
-Fan speeds (if available)
-Python libs/tools: psutil.sensors_temperatures(), lm-sensors, OpenHardwareMonitor (via WMI)
+**Libraries**
 
-🧰 8. Processes & Services
-Running processes (PID, name, user, CPU%, RAM%)
-Start time, command line
-Running services (name, status, startup type, PID)
-Python libs/tools: psutil.process_iter(), wmi (for Windows services), systemctl list-units (Linux)
+* `os`, `pathlib`, `stat`
+* `ctypes` (Win32 file attributes, owners, ADS)
+* `exifread`, `Pillow` (optional)
+* `python-evtx`
+* `winreg`
+* `python-registry`
+* `pytsk3` (optional, disk images)
 
-🧾 9. BIOS / Motherboard Info
-Motherboard manufacturer, model, serial
-BIOS vendor, version, release date
-System UUID
-Chassis type
-Python libs/tools: wmi (Win32_BaseBoard, Win32_BIOS), dmidecode (Linux)
+---
 
-🔌 10. Connected Devices
-USB devices
-PCI devices
-External drives
-Monitors / HID devices
-Python libs/tools: pyudev, subprocess(lsusb/lspci), wmi
+### **Vulnerability Scanner**
 
-🧱 11. Installed Software
-Application name
-Version
-Publisher / vendor
-Install date
-Python libs/tools:
-Windows: registry via winreg or WMI
-Linux: dpkg, rpm, flatpak list, etc.
+**Features**
+
+* Installed software → CVE lookup
+* Local listening service detection
+* Basic banner grabbing (HTTP, SMTP, FTP, SSH)
+* Executable version extraction (process → file)
+* CVE confidence scoring (exact / partial / keyword)
+* Cached results with export (CSV/JSON)
+* Optional user-installed Nmap integration
+
+**Libraries**
+
+* `psutil`
+* `socket`, `ssl`, `http.client`, `requests`
+* `ctypes` (Windows file version info)
+* `sqlite3` (local CVE cache)
+* `json`
+* External APIs: NVD / OSV (via `requests`)
+
+---
+
+### **File Analysis**
+
+**Features**
+
+* File type detection via magic signatures
+* Extension vs actual type mismatch detection
+* Cryptographic hashes (MD5, SHA-1, SHA-256)
+* Entropy analysis (packed/encrypted indicators)
+* Windows PE header inspection
+* Import/export and section analysis
+* Heuristic flags for suspicious files
+
+**Libraries**
+
+* `hashlib`
+* `math`
+* `os`, `pathlib`
+* Custom magic-signature table (pure Python)
+* `pefile`
+* `struct`
+
+---
+
+### **Malware Sandbox (Static)**
+
+**Features**
+
+* Safe file upload & quarantine
+* Hashing and basic metadata
+* ASCII & UTF-16LE strings extraction
+* PE import and section analysis
+* Static capability inference (networking, persistence, injection)
+* Indicator highlighting (URLs, commands, registry paths)
+* Single JSON report export
+* Future VirusTotal hash lookup
+
+**Libraries**
+
+* `hashlib`
+* `re`
+* `uuid`
+* `os`, `pathlib`
+* `pefile`
+* `json`
+* `requests` (future VirusTotal integration)
+
+---
+
+### **Notes (Applies to All)**
+
+* Windows-only
+* No execution of untrusted files
+* Defensive parsing (partial results > failure)
+* Client-side table sorting/filtering
+* CSV / JSON export support
