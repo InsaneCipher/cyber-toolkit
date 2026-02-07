@@ -55,9 +55,10 @@ devices_info = get_connected_devices_info()
 software_info = get_installed_software()
 
 # Forensics Info Variables
-forensics_info = collect_forensics_results()
+forensics_info = None
 forensics_results = None
 target_path = None
+file_analysis_results = None
 
 
 def get_template(name, active):
@@ -100,7 +101,8 @@ def get_template(name, active):
         software_info=software_info,
         procs_services=process_services_info,
         forensics_results=forensics_results,
-        target_path=target_path
+        target_path=target_path,
+        file_analysis_results=file_analysis_results,
     )
 
 
@@ -290,26 +292,42 @@ def system():
 
 @app.route("/forensics", methods=["GET", "POST"])
 def forensics():
-    global forensics_info, target_path, forensics_results
-
-    target_path = None
-    forensics_results = None
+    global forensics_info, target_path, forensics_results, file_analysis_results
 
     if request.method == "POST":
-        # Matches the HTML input name="target_path"
-        target_path = (request.form.get("target_path") or "").strip()
+        action = request.form.get("action")
 
-        if target_path:
-            try:
-                # Your collector (from tools.forensics_tools import *)
-                forensics_results = collect_forensics_results(target_path=target_path)
-            except Exception as e:
-                forensics_results = {"error": str(e)}
-        else:
-            forensics_results = {"error": "Please enter a valid file path."}
+        if action == "forensics":
+            target_path = None
+            forensics_results = None
 
-        # Optional: store last run globally if you want it accessible elsewhere
-        forensics_info = forensics_results
+            # Matches the HTML input name="target_path"
+            target_path = (request.form.get("target_path") or "").strip()
+
+            if target_path:
+                try:
+                    # Your collector (from tools.forensics_tools import *)
+                    forensics_results = collect_forensics_results(target_path=target_path)
+                except Exception as e:
+                    forensics_results = {"error": str(e)}
+            else:
+                forensics_results = {"error": "Please enter a valid file path."}
+
+            # Optional: store last run globally if you want it accessible elsewhere
+            forensics_info = forensics_results
+
+        if action == "file-analysis":
+            # HTML uses name="target_path" for the input in the File Analysis form
+            fa_target_path = (request.form.get("target_path") or "").strip()
+
+            if fa_target_path:
+                try:
+                    # Use your file analysis function (e.g., analyze_file from tools.forensics_tools)
+                    file_analysis_results = analyze_file(fa_target_path)
+                except Exception as e:
+                    file_analysis_results = {"error": str(e)}
+            else:
+                file_analysis_results = {"error": "Please enter a valid file path."}
 
     # Render with your existing shared context + add forensics vars
     return get_template("forensics.html", "forensics")
