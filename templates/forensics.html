@@ -212,30 +212,28 @@
 
               <!-- Input form -->
               <form method="POST" action="{{ url_for('forensics') }}" class="scan-form mt-3">
-                <input type="hidden" name="action" value="file_analysis">
+              <input type="hidden" name="action" value="file_analysis">
 
-                <div class="row g-3 align-items-end">
-                  <div class="col-md-8">
-                    <label for="fa_target_path" class="form-label">Target file path</label>
+              <div class="row g-3 align-items-end">
+                <div class="col-md-8">
+                  <label for="fa_target_path" class="form-label">Target file path</label>
 
-                    <div class="input-group">
-                        <input type="hidden" name="action" value="file-analysis">
-                        <input type="text" class="form-control" id="fa_target_path" name="target_path" placeholder="C:\Users\A\Downloads\suspicious.exe" value="{{ fa_target_path or '' }}">
-                      <button class="btn btn-outline-secondary" type="button" id="btnBrowseFileAnalysis">
-                        Browse…
-                      </button>
-                    </div>
-
-                    <div class="form-text">
-                      Desktop-only: uses native Windows file picker (pywebview).
-                    </div>
-                  </div>
-
-                  <div class="col-md-4 d-grid">
-                    <button type="submit" class="btn btn-primary">Analyze</button>
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="fa_target_path" name="target_path"
+                           placeholder="C:\Users\A\Downloads\suspicious.exe"
+                           value="{{ fa_target_path or '' }}">
+                    <button class="btn btn-outline-secondary" type="button" id="btnBrowseFileAnalysis">
+                      Browse…
+                    </button>
                   </div>
                 </div>
-              </form>
+
+                <div class="col-md-4 d-grid">
+                  <button type="submit" class="btn btn-primary">Analyze</button>
+                </div>
+              </div>
+            </form>
+
 
               {% if file_analysis_results %}
                 {% if file_analysis_results.error %}

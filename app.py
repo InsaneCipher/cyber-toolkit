@@ -316,7 +316,7 @@ def forensics():
             # Optional: store last run globally if you want it accessible elsewhere
             forensics_info = forensics_results
 
-        if action == "file-analysis":
+        elif action == "file_analysis":
             # HTML uses name="target_path" for the input in the File Analysis form
             fa_target_path = (request.form.get("target_path") or "").strip()
 
