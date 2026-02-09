@@ -20,6 +20,7 @@
 - GPU tab fixes
 - Navbar screen break fix
 - Forensics analyse button fix
+- Clicking analyse should disable it and change button colour while waiting
 
 
 🔍 Diagnostics & Monitoring
@@ -96,28 +97,6 @@ Utilities: Export Config, Public IP, Interface Info
 
 ---
 
-### **Vulnerability Scanner**
-
-**Features**
-
-* Installed software → CVE lookup
-* Local listening service detection
-* Basic banner grabbing (HTTP, SMTP, FTP, SSH)
-* Executable version extraction (process → file)
-* CVE confidence scoring (exact / partial / keyword)
-* Cached results with export (CSV/JSON)
-* Optional user-installed Nmap integration
-
-**Libraries**
-
-* `psutil`
-* `socket`, `ssl`, `http.client`, `requests`
-* `ctypes` (Windows file version info)
-* `sqlite3` (local CVE cache)
-* `json`
-* External APIs: NVD / OSV (via `requests`)
-
----
 
 ### **File Analysis**
 

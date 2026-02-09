@@ -58,6 +58,7 @@ software_info = get_installed_software()
 forensics_info = None
 forensics_results = None
 target_path = None
+vulnerability_info = run_vulnerability_scanner()
 file_analysis_results = None
 
 
@@ -102,6 +103,7 @@ def get_template(name, active):
         procs_services=process_services_info,
         forensics_results=forensics_results,
         target_path=target_path,
+        vuln_results=vulnerability_info,
         file_analysis_results=file_analysis_results,
     )
 
