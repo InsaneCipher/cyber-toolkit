@@ -1,2 +1,6 @@
 cve_cache.sqlite
 *.json
+/dist
+/build
+*.spec
+/Old or Unused

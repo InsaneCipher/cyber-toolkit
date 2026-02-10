@@ -2,6 +2,9 @@ from flask import Flask, render_template, request
 import webview
 import argparse
 import threading
+import sys
+import os
+import multiprocessing
 
 from tools.diagnostics import get_dns_cache, ping_host, get_arp_table, get_interface_info
 from tools.net_scan import *
@@ -13,99 +16,111 @@ from tools.system_tools import *
 from tools.forensics_tools import *
 from tools.caching_tools import *
 
-app = Flask(__name__)
+STATE = {
+    # network
+    "result": None,
+    "port_results": None,
+    "dns_cache": None,
+    "ping_result": None,
+    "arp_table": None,
+    "interface_info": None,
 
-result = None
-port_results = None
-dns_cache = None
-dns_result = None
-traceroute_result = None
-whois_result = None
-rev_whois_result = None
-cert_result = None
-trace_target = None
-cert_target = None
-hashed_strings = None
-encoded_string = None
-decoded_string = None
-subnet = None
-ping_result = None
-arp_table = None
-interface_info = None
-rev_dns_result = None
-geo_result = None
-asn_result = None
-header_result = None
-response_result = None
-tech_result = None
-robots_result = None
+    # recon
+    "dns_result": None,
+    "traceroute_result": None,
+    "whois_result": None,
+    "rev_whois_result": None,
+    "cert_result": None,
+    "trace_target": None,
+    "cert_target": None,
+    "rev_dns_result": None,
+    "geo_result": None,
+    "asn_result": None,
+    "header_result": None,
+    "response_result": None,
+    "tech_result": None,
+    "robots_result": None,
 
-# System Info Variables
-system_info = get_or_refresh("system_info", get_system_info)
-cpu_info = get_or_refresh("cpu_info", get_cpu_mem_info)
-storage_info = get_or_refresh("storage_info", get_storage_info)
-network_info = get_or_refresh("network_info", get_network_adapters_info)
-display_info = get_or_refresh("display_info", get_gpu_display_info)
-power_info = get_or_refresh("power_info", get_power_battery_info)
-sensors_info = get_or_refresh("sensors_info", get_sensors_and_temps)
-process_services_info = get_or_refresh("process_services_info", get_processes_services_info)
-bios_info = get_or_refresh("bios_info", get_bios_motherboard_info)
-devices_info = get_or_refresh("devices_info", get_connected_devices_info)
-software_info = get_or_refresh("software_info", get_installed_software)
+    # utils
+    "hashed_strings": None,
+    "encoded_string": None,
+    "decoded_string": None,
+    "subnet": None,
 
-# Forensics Info Variables
-forensics_results = get_or_refresh("forensics_results", get_system_info, load_only=True)
-vuln_results = get_or_refresh("vuln_results", get_system_info, load_only=True)
-file_analysis_results = get_or_refresh("file_analysis_results", get_system_info, load_only=True)
-malware_report = get_or_refresh("malware_report", get_system_info, load_only=True)
-image_analysis_results = get_or_refresh("image_analysis_results", get_system_info, load_only=True)
+    # system (loaded lazily)
+    "system_info": None,
+    "cpu_info": None,
+    "storage_info": None,
+    "network_info": None,
+    "display_info": None,
+    "power_info": None,
+    "sensors_info": None,
+    "process_services_info": None,
+    "bios_info": None,
+    "devices_info": None,
+    "software_info": None,
+
+    # forensics tools (load cache only initially)
+    "forensics_results": None,
+    "vuln_results": None,
+    "file_analysis_results": None,
+    "malware_report": None,
+    "image_analysis_results": None,
+}
+
+
+def init_cached_state():
+    # system info: don’t compute at import. load cache only if present.
+    for key in [
+        "system_info", "cpu_info", "storage_info", "network_info", "display_info",
+        "power_info", "sensors_info", "process_services_info", "bios_info",
+        "devices_info", "software_info",
+    ]:
+        if STATE[key] is None:
+            STATE[key] = get_or_refresh(key, lambda: {"error": "not loaded"}, load_only=True)
+
+    # forensics outputs: load cache only
+    for key in ["forensics_results", "vuln_results", "file_analysis_results", "malware_report", "image_analysis_results"]:
+        if STATE[key] is None:
+            STATE[key] = get_or_refresh(key, lambda: {"error": "not loaded"}, load_only=True)
+
+
+def resource_path(relative_path: str) -> str:
+    # When packaged, PyInstaller extracts to sys._MEIPASS
+    base = getattr(sys, "_MEIPASS", os.path.abspath("."))
+    return os.path.join(base, relative_path)
+
+
+def create_app():
+    app = Flask(
+        __name__,
+        template_folder=resource_path("templates"),
+        static_folder=resource_path("static"),
+    )
+    # register routes here
+    return app
+
+
+app = create_app()
 
 
 def get_template(name, active):
     return render_template(
         name,
         active=active,
-        result=result,
-        port_results=port_results,
-        dns_cache=dns_cache,
-        dns_result=dns_result,
-        traceroute_result=traceroute_result,
-        whois_result=whois_result,
-        cert_result=cert_result,
-        trace_target=trace_target,
-        cert_target=cert_target,
-        hashed_strings=hashed_strings,
-        encoded_string=encoded_string,
-        decoded_string=decoded_string,
-        subnet=subnet,
-        ping_result=ping_result,
-        arp_table=arp_table,
-        interface_info=interface_info,
-        rev_dns_result=rev_dns_result,
-        geo_result=geo_result,
-        rev_whois_result=rev_whois_result,
-        asn_result=asn_result,
-        header_result=header_result,
-        response_result=response_result,
-        tech_result=tech_result,
-        robots_result=robots_result,
-        system_info=system_info,
-        cpu_info=cpu_info,
-        storage_info=storage_info,
-        network_info=network_info,
-        display_info=display_info,
-        power_info=power_info,
-        sensors_info=sensors_info,
-        bios_info=bios_info,
-        devices_info=devices_info,
-        software_info=software_info,
-        procs_services=process_services_info,
-        forensics_results=forensics_results,
-        vuln_results=vuln_results,
-        file_analysis_results=file_analysis_results,
-        malware_report=malware_report,
-        image_analysis_results=image_analysis_results,
+        **STATE
     )
+
+
+_state_inited = False
+
+
+@app.before_request
+def _before():
+    global _state_inited
+    if not _state_inited:
+        init_cached_state()
+        _state_inited = True
 
 
 # -------------------------------------
@@ -115,8 +130,6 @@ def get_template(name, active):
 @app.route("/", methods=["GET", "POST"])
 @app.route("/network", methods=["GET", "POST"])
 def network():
-    global result, port_results, dns_cache, ping_result, arp_table, interface_info
-
     if request.method == "POST":
         action = request.form.get("action")
 
@@ -124,7 +137,7 @@ def network():
             timeout = int(request.form.get("timeout", 5))
             print(f"Running network scan for {timeout} seconds...")
             results = net_scan(timeout)
-            result = {
+            STATE["result"]= {
                 "all": results[0],
                 "inbound": results[1],
                 "outbound": results[2],
@@ -134,24 +147,24 @@ def network():
         elif action == "port_scan":
             ports = int(request.form.get("ports"))
             print(f"Scanning ports 1–{ports}...")
-            port_results = scan_ports(range(1, ports))
+            STATE["port_results"] = scan_ports(range(1, ports))
 
         elif action == "ping_host":
             host = request.form.get("ping_target")
             print(f"Pinging {host}...")
-            ping_result = ping_host(host)
+            STATE["ping_result"] = ping_host(host)
 
         elif action == "arp_table":
             print("Scanning dns cache...")
-            arp_table = get_arp_table()
+            STATE["arp_table"] = get_arp_table()
 
         elif action == "interface_info":
             print("Scanning dns cache...")
-            interface_info = get_interface_info()
+            STATE["interface_info"] = get_interface_info()
 
         elif action == "dns_cache":
             print("Scanning dns cache...")
-            dns_cache = get_dns_cache()
+            STATE["dns_cache"] = get_dns_cache()
 
     return get_template("index.html", "network")
 
@@ -161,76 +174,70 @@ def network():
 # -------------------------------------
 @app.route("/recon", methods=["GET", "POST"])
 def recon():
-    global dns_result, traceroute_result, whois_result, cert_result, trace_target, cert_target, \
-        rev_dns_result, geo_result, rev_whois_result, asn_result, header_result, response_result, \
-        tech_result, robots_result
-
     if request.method == "POST":
         action = request.form.get("action")
 
         if action == "dns_lookup":
             domain = request.form.get("dns_domain")
             print(f"Running DNS lookup on {domain}...")
-            dns_result = dns_lookup(domain)
+            STATE["dns_result"] = dns_lookup(domain)
 
         elif action == "rev_dns_lookup":
             ip = request.form.get("dns_ip")
             print(f"Running Reverse DNS lookup on {ip}...")
-            rev_dns_result = reverse_dns_lookup(ip)
-            print(rev_dns_result)
+            STATE["rev_dns_result"] = reverse_dns_lookup(ip)
 
         elif action == "traceroute":
-            trace_target = request.form.get("trace_target")
-            print(f"Running traceroute on {trace_target}...")
-            traceroute_result = traceroute(trace_target)
+            STATE["trace_target"] = request.form.get("trace_target")
+            print(f"Running traceroute on {STATE["trace_target"]}...")
+            STATE["traceroute_result"] = traceroute(STATE["trace_target"])
 
         elif action == "ip_geo":
             ip = request.form.get("geo_ip")
             print(f"Running geolocation finding on {ip}...")
-            geo_result = ip_geolocation(ip)
+            STATE["geo_result"] = ip_geolocation(ip)
 
         elif action == "whois":
             target = request.form.get("whois_target")
             print(f"Running WHOIS lookup on {target}...")
-            whois_result = whois_lookup(target)
+            STATE["whois_result"] = whois_lookup(target)
 
         elif action == "rev_whois":
             query = request.form.get("rev_whois_target")
             tld_filter = request.form.get("tld_filter", "").strip()
             exact_match = bool(request.form.get("exact_match"))
             print(f"Running reverse WHOIS lookup on {query}, exact match: {exact_match} and filter: {tld_filter}...")
-            # rev_whois_result = reverse_whois(query, tld_filter, exact_match)
-            rev_whois_result = {"query": query, "error": "Feature currently unavailable!"}
+            STATE["rev_whois_result"] = {"query": query, "error": "Feature currently unavailable!"}
 
         elif action == "cert_lookup":
-            cert_target = request.form.get("cert_target")
-            print(f"Inspecting certificate for {cert_target}...")
-            cert_result = cert_lookup(cert_target)
+            STATE["cert_target"] = request.form.get("cert_target")
+            print(f"Inspecting certificate for {STATE["cert_target"]}...")
+            STATE["cert_result"] = cert_lookup(STATE["cert_target"])
 
         elif action == "asn_lookup":
             asn_ip = request.form.get("asn_ip")
             print(f"Inspecting certificate for {asn_ip}...")
-            asn_result = asn_lookup(asn_ip)
+            STATE["asn_result"] = asn_lookup(asn_ip)
 
         elif action == "http_headers":
             url = request.form.get("header_url")
             print(f"Analysing headers for {url}...")
-            header_result = http_header_analyser(url)
+            STATE["header_result"] = http_header_analyser(url)
 
         elif action == "http_response":
             url = request.form.get("resp_url")
             print(f"Analysing headers for {url}...")
-            response_result = http_response_viewer(url)
+            STATE["response_result"] = http_response_viewer(url)
 
         elif action == "tech_fingerprint":
             url = request.form.get("tech_url")
             print(f"Analysing headers for {url}...")
-            tech_result = technology_fingerprinting(url)
+            STATE["tech_result"] = technology_fingerprinting(url)
 
         elif action == "robots_sitemap":
             url = request.form.get("robots_url")
             print(f"Analysing headers for {url}...")
-            robots_result = robots_sitemap_viewer(url)
+            STATE["robots_result"] = robots_sitemap_viewer(url)
 
     return get_template("recon.html", "recon")
 
@@ -240,10 +247,6 @@ def recon():
 # -------------------------------------
 @app.route("/utils", methods=["GET", "POST"])
 def utils():
-    global result, port_results, running_processes, running_services, dns_cache, dns_result, \
-        traceroute_result, whois_result, cert_result, trace_target, cert_target, \
-        hashed_strings, encoded_string, decoded_string, subnet
-
     if request.method == "POST":
         action = request.form.get("action")
 
@@ -252,40 +255,38 @@ def utils():
             uploaded_file = request.files.get("file_input")
 
             if plain_string and uploaded_file and uploaded_file.filename != "":
-                hashed_strings = None
+                STATE["hashed_strings"] = None
             elif uploaded_file and uploaded_file.filename != "":
                 file_bytes = uploaded_file.read()
                 print(f"Hashing file: {uploaded_file.filename}")
-                hashed_strings = hash_bytes(file_bytes)
+                STATE["hashed_strings"] = hash_bytes(file_bytes)
             elif plain_string:
                 print(f"Hashing string: {plain_string}")
-                hashed_strings = hash_string(plain_string)
+                STATE["hashed_strings"] = hash_string(plain_string)
             else:
-                hashed_strings = None
+                STATE["hashed_strings"] = None
 
         elif action == "encode_string":
             data = request.form.get("encode_string")
             print(f"Encoding: {data}")
-            encoded_string = encode_string(data)
+            STATE["encoded_string"] = encode_string(data)
 
         elif action == "decode_string":
             data = request.form.get("decode_string")
             print(f"Decoding: {data}")
-            decoded_string = decode_string(data)
+            STATE["decoded_string"] = decode_string(data)
 
         elif action == "subnet_calc":
             base_network = request.form.get("base_network")
             requirements = request.form.get("requirements")
-            print(f"Calculating subnets for {base_network}")
-            subnet = allocate_subnets(base_network, requirements)
+            print(f"Calculating subnet's for {base_network}")
+            STATE["subnet"] = allocate_subnets(base_network, requirements)
 
     return get_template("utils.html", "utils")
 
 
 @app.route("/system", methods=["GET", "POST"])
 def system():
-    global system_info, cpu_info, storage_info, network_info, display_info, power_info, sensors_info, \
-        process_services_info, bios_info, devices_info, software_info
 
     # Page load
     if request.method == "GET":
@@ -310,22 +311,19 @@ def system():
 
     if action in REFRESH_MAP:
         key, func = REFRESH_MAP[action]
-        globals()[key] = get_or_refresh(key, func, force=True)
+        STATE[key] = get_or_refresh(key, func, force=True)
 
     return get_template("system.html", "system")
 
 
 @app.route("/forensics", methods=["GET", "POST"])
 def forensics():
-    global forensics_results, file_analysis_results, vuln_results, \
-        software_info, malware_report, image_analysis_results
-
     if request.method == "POST":
         action = request.form.get("action")
 
         if action == "forensics":
             target_path = None
-            forensics_results = None
+            STATE["forensics_results"] = None
 
             # Matches the HTML input name="target_path"
             target_path = (request.form.get("target_path") or "").strip()
@@ -333,14 +331,14 @@ def forensics():
             if target_path:
                 try:
                     # Your collector (from tools.forensics_tools import *)
-                    forensics_results = collect_forensics_results(target_path=target_path)
+                    STATE["forensics_results"] = collect_forensics_results(target_path=target_path)
                 except Exception as e:
-                    forensics_results = {"error": str(e)}
+                    STATE["forensics_results"] = {"error": str(e)}
             else:
-                forensics_results = {"error": "Please enter a valid file path."}
+                STATE["forensics_results"] = {"error": "Please enter a valid file path."}
 
             # Optional: store last run globally if you want it accessible elsewhere
-            save_cache("forensics_results", forensics_results)
+            save_cache("forensics_results", STATE["forensics_results"])
 
         elif action == "vuln_scan":
             # Read form inputs
@@ -352,24 +350,24 @@ def forensics():
             vs_limit = max(1, min(vs_limit, 500))
             vs_nmap = (request.form.get("vs_nmap", "1") == "1")
 
-            # Your installed software is in software_info["apps"]
+            # Your installed software is in STATE["software_info"]["apps"]
             apps = []
             try:
-                apps = (software_info or {}).get("apps", [])
+                apps = (STATE["software_info"] or {}).get("apps", [])
                 if not isinstance(apps, list):
                     apps = []
             except Exception:
                 apps = []
 
             try:
-                vuln_results = run_vulnerability_scanner(
+                STATE["vuln_results"] = run_vulnerability_scanner(
                     installed_software=apps[:vs_limit],
                     use_nmap_if_available=vs_nmap
                 )
             except Exception as e:
-                vuln_results = {"error": str(e)}
+                STATE["vuln_results"] = {"error": str(e)}
 
-            save_cache("vuln_results", vuln_results)
+            save_cache("vuln_results", STATE["vuln_results"])
 
         elif action == "file_analysis":
             # HTML uses name="target_path" for the input in the File Analysis form
@@ -378,16 +376,16 @@ def forensics():
             if fa_target_path:
                 try:
                     # Use your file analysis function (e.g., analyze_file from tools.forensics_tools)
-                    file_analysis_results = analyze_file(fa_target_path)
+                    STATE["file_analysis_results"] = analyze_file(fa_target_path)
                 except Exception as e:
-                    file_analysis_results = {"error": str(e)}
+                    STATE["file_analysis_results"] = {"error": str(e)}
             else:
-                file_analysis_results = {"error": "Please enter a valid file path."}
+                STATE["file_analysis_results"] = {"error": "Please enter a valid file path."}
 
-            save_cache("file_analysis_results", file_analysis_results)
+            save_cache("file_analysis_results", STATE["file_analysis_results"])
 
         elif action == "malware_sandbox":
-            malware_report = None
+            STATE["malware_report"] = None
 
             try:
                 file = request.files.get("malware_file")
@@ -398,7 +396,7 @@ def forensics():
                 if not uploaded_bytes:
                     raise ValueError("Uploaded file is empty")
 
-                malware_report = run_malware_sandbox(
+                STATE["malware_report"] = run_malware_sandbox(
                     uploaded_bytes=uploaded_bytes,
                     original_filename=file.filename,
                     quarantine_dir="quarantine",
@@ -406,9 +404,9 @@ def forensics():
                 )
 
             except Exception as e:
-                malware_report = {"error": str(e)}
+                STATE["malware_report"] = {"error": str(e)}
 
-            save_cache("malware_report", malware_report)
+            save_cache("malware_report", STATE["malware_report"])
 
         elif action == "image_analysis":
             # HTML uses name="target_path" for the input in the Image Analysis form
@@ -417,13 +415,13 @@ def forensics():
             if target_path:
                 try:
                     # Use your image analysis function
-                    image_analysis_results = analyze_image(target_path)
+                    STATE["image_analysis_results"] = analyze_image(target_path)
                 except Exception as e:
-                    image_analysis_results = {"error": str(e)}
+                    STATE["image_analysis_results"] = {"error": str(e)}
             else:
-                image_analysis_results = {"error": "Please enter a valid image file path."}
+                STATE["image_analysis_results"] = {"error": "Please enter a valid image file path."}
 
-            save_cache("image_analysis_results", image_analysis_results)
+            save_cache("image_analysis_results", STATE["image_analysis_results"])
 
     # Render with your existing shared context + add forensics vars
     return get_template("forensics.html", "forensics")
@@ -446,10 +444,12 @@ def about():
 
 def run_flask():
     """Start Flask server (used for CLI mode or background threading)."""
-    app.run(debug=False, host="127.0.0.1", port=5000)
+    app.run(debug=False, host="127.0.0.1", port=5000, use_reloader=False)
 
 
 if __name__ == "__main__":
+    multiprocessing.freeze_support()
+
     # Parse CLI arguments
     parser = argparse.ArgumentParser(description="CyberToolkit App")
     parser.add_argument('--nogui', action='store_true', default=False, help='Run without GUI (CLI mode)')

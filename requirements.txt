@@ -7,6 +7,5 @@ requests~=2.32.3
 Django~=5.2.1
 py-cpuinfo~=9.0.0
 WMI~=1.5.1
-typing~=3.7.4.3
 Flask~=3.1.2
 torch~=2.4.1
