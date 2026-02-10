@@ -9,7 +9,6 @@ import hashlib
 import math
 import struct
 import pefile
-import os
 import re
 import json
 import time
@@ -23,6 +22,8 @@ import psutil
 import requests
 import ctypes
 from ctypes import wintypes
+import uuid
+from pathlib import Path
 
 
 class Api:
@@ -486,6 +487,7 @@ def run_vulnerability_scanner(
     use_nmap_if_available: bool = True,
     nvd_api_key: str | None = None,
 ) -> dict:
+
     """
     Windows-focused, practical vulnerability scanner.
 
@@ -982,4 +984,351 @@ def run_vulnerability_scanner(
 
     return results
 
+
+def run_malware_sandbox(uploaded_bytes: bytes,
+                        original_filename: str,
+                        quarantine_dir: str | Path,
+                        *,
+                        export_json_path: str | Path | None = None,
+                        max_bytes: int = 50 * 1024 * 1024,
+                        strings_min_len: int = 4,
+                        strings_max_count: int = 20000
+                        ):
+    print("Running Malware Sandbox...")
+
+    # -----------------------------
+    # Regex indicators (static)
+    # -----------------------------
+    URL_RE = re.compile(r"(https?://[^\s\"\'<>]{6,})", re.IGNORECASE)
+    DOMAIN_RE = re.compile(r"\b([a-z0-9-]{2,}\.)+[a-z]{2,}\b", re.IGNORECASE)
+    IP_RE = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")
+    REG_RE = re.compile(
+        r"\b(?:HKLM|HKCU|HKCR|HKU|HKEY_LOCAL_MACHINE|HKEY_CURRENT_USER|HKEY_CLASSES_ROOT|HKEY_USERS)\\[^\s\"\'<>]{3,}",
+        re.IGNORECASE,
+    )
+    CMD_RE = re.compile(
+        r"\b(?:powershell|cmd\.exe|wscript|cscript|mshta|rundll32|reg\.exe|schtasks|wmic|bitsadmin|certutil|curl|wget)\b",
+        re.IGNORECASE,
+    )
+
+    # Rough “suspicious keywords” (strings-based)
+    SUS_KEYWORDS = {
+        "persistence": [
+            "runonce", "run\\", "startup", "schtasks", "schedule.service",
+            "winlogon", "services\\", "currentversion\\run",
+            "taskschd", "at.exe",
+        ],
+        "networking": [
+            "http", "https", "user-agent", "socket", "connect", "recv", "send",
+            "wininet", "winhttp", "urlmon", "ws2_32", "internetopen", "internetconnect",
+        ],
+        "injection": [
+            "virtualalloc", "virtualallocex", "writeprocessmemory", "createremotethread",
+            "ntmapviewofsection", "setthreadcontext", "queueuserapc",
+            "openprocess", "suspendthread", "resumethread",
+        ],
+    }
+
+    def malware_sandbox_static() -> dict:
+        """
+        Static “malware sandbox” report:
+          - Safe quarantine write (UUID name)
+          - Hashes + metadata
+          - ASCII + UTF-16LE strings extraction
+          - PE imports/sections (if PE)
+          - Capability inference (network/persistence/injection) from imports+strings
+          - Indicator highlighting (URLs/domains/IPs/commands/registry paths)
+          - Optional JSON report export
+
+        IMPORTANT: This does NOT execute the file. Static inspection only.
+        """
+        if uploaded_bytes is None:
+            raise ValueError("uploaded_bytes is required")
+        if len(uploaded_bytes) == 0:
+            raise ValueError("Empty upload")
+        if len(uploaded_bytes) > max_bytes:
+            raise ValueError(f"File too large ({len(uploaded_bytes)} bytes); max is {max_bytes}")
+
+        q_dir = Path(quarantine_dir)
+        q_dir.mkdir(parents=True, exist_ok=True)
+
+        sample_id = str(uuid.uuid4())
+        safe_name = _sanitize_filename(original_filename) or "sample.bin"
+        quarantine_name = f"{sample_id}__{safe_name}"
+        quarantine_path = q_dir / quarantine_name
+
+        # Write to quarantine (no execution)
+        quarantine_path.write_bytes(uploaded_bytes)
+
+        # Basic metadata + hashes
+        stat = quarantine_path.stat()
+        meta = {
+            "sample_id": sample_id,
+            "original_filename": original_filename,
+            "quarantine_path": str(quarantine_path),
+            "size_bytes": stat.st_size,
+            "created_utc": datetime.utcnow().isoformat(timespec="seconds") + "Z",
+            "mtime_utc": datetime.utcfromtimestamp(stat.st_mtime).isoformat(timespec="seconds") + "Z",
+        }
+        hashes = _hashes(uploaded_bytes)
+
+        # Strings
+        ascii_strings = extract_ascii_strings(
+            uploaded_bytes,
+            min_len=strings_min_len,
+            max_count=strings_max_count,
+        )
+        utf16le_strings = extract_utf16le_strings(
+            uploaded_bytes,
+            min_len=strings_min_len,
+            max_count=strings_max_count,
+        )
+
+        # Indicators from strings
+        indicators = highlight_indicators(ascii_strings, utf16le_strings)
+
+        # PE analysis (if applicable)
+        pe_report = analyze_pe_if_present(quarantine_path)
+
+        # Capability inference
+        capabilities = infer_capabilities(
+            ascii_strings=ascii_strings,
+            utf16le_strings=utf16le_strings,
+            pe_report=pe_report,
+        )
+
+        report = {
+            "meta": meta,
+            "hashes": hashes,
+            "strings": {
+                "ascii_count": len(ascii_strings),
+                "utf16le_count": len(utf16le_strings),
+                # Store a bounded preview so JSON doesn't explode
+                "ascii_preview": ascii_strings[:300],
+                "utf16le_preview": utf16le_strings[:300],
+            },
+            "indicators": indicators,
+            "pe": pe_report,
+            "capabilities": capabilities,
+        }
+
+        if export_json_path is not None:
+            export_path = Path(export_json_path)
+            export_path.parent.mkdir(parents=True, exist_ok=True)
+            export_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+
+        try:
+            quarantine_path.unlink()  # delete the quarantined file
+        except Exception:
+            pass  # never crash cleanup
+
+        return report
+
+
+    # -----------------------------
+    # Helpers
+    # -----------------------------
+    def _sanitize_filename(name: str) -> str:
+        if not name:
+            return ""
+        # remove path and weird chars
+        base = os.path.basename(name)
+        base = re.sub(r"[^a-zA-Z0-9._-]+", "_", base).strip("._")
+        return base[:120]
+
+    def _hashes(data: bytes) -> dict:
+        return {
+            "md5": hashlib.md5(data).hexdigest(),
+            "sha1": hashlib.sha1(data).hexdigest(),
+            "sha256": hashlib.sha256(data).hexdigest(),
+        }
+
+    def extract_ascii_strings(data: bytes, *, min_len: int = 4, max_count: int = 20000) -> list[str]:
+        # Printable ASCII range + common whitespace
+        pattern = rb"[ -~]{%d,}" % min_len  # 0x20..0x7E
+        out = []
+        for m in re.finditer(pattern, data):
+            s = m.group(0).decode("ascii", errors="ignore")
+            out.append(s)
+            if len(out) >= max_count:
+                break
+        return out
+
+    def extract_utf16le_strings(data: bytes, *, min_len: int = 4, max_count: int = 20000) -> list[str]:
+        # Find sequences like: 'H\x00T\x00T\x00P\x00...'
+        # Match (printable)\x00 repeated, length measured in characters.
+        # This is a heuristic and intentionally conservative.
+        pattern = rb"(?:[ -~]\x00){%d,}" % min_len
+        out = []
+        for m in re.finditer(pattern, data):
+            raw = m.group(0)
+            s = raw.decode("utf-16le", errors="ignore")
+            s = s.strip("\x00")
+            if s:
+                out.append(s)
+            if len(out) >= max_count:
+                break
+        return out
+
+    def highlight_indicators(ascii_strings: list[str], utf16le_strings: list[str]) -> dict:
+        haystack = "\n".join(ascii_strings[:5000] + utf16le_strings[:5000])
+
+        urls = sorted(set(URL_RE.findall(haystack)))[:2000]
+        domains = sorted(set(DOMAIN_RE.findall(haystack)))[:2000]
+        ips = sorted(set(IP_RE.findall(haystack)))[:2000]
+        registry_paths = sorted(set(REG_RE.findall(haystack)))[:2000]
+        commands = sorted(set(CMD_RE.findall(haystack)))[:2000]
+
+        # Extra: simple “suspicious” substrings
+        suspicious_hits = []
+        lowered = haystack.lower()
+        for category, keys in SUS_KEYWORDS.items():
+            for k in keys:
+                if k in lowered:
+                    suspicious_hits.append({"category": category, "keyword": k})
+        suspicious_hits = suspicious_hits[:5000]
+
+        return {
+            "urls": urls,
+            "domains": domains,
+            "ips": ips,
+            "registry_paths": registry_paths,
+            "commands": commands,
+            "suspicious_keywords": suspicious_hits,
+        }
+
+    def analyze_pe_if_present(file_path: Path) -> dict:
+        """
+        Returns PE analysis if file is a PE, else {"is_pe": False}.
+        """
+        try:
+            pe = pefile.PE(str(file_path), fast_load=True)
+        except Exception:
+            return {"is_pe": False}
+
+        report: dict = {"is_pe": True}
+
+        # Basic headers
+        try:
+            report["machine"] = hex(pe.FILE_HEADER.Machine)
+            report["timestamp"] = int(pe.FILE_HEADER.TimeDateStamp)
+            report["characteristics"] = hex(pe.FILE_HEADER.Characteristics)
+            report["subsystem"] = int(pe.OPTIONAL_HEADER.Subsystem)
+            report["image_base"] = hex(pe.OPTIONAL_HEADER.ImageBase)
+            report["entry_point"] = hex(pe.OPTIONAL_HEADER.AddressOfEntryPoint)
+            report["is_dll"] = bool(pe.FILE_HEADER.Characteristics & 0x2000)
+        except Exception:
+            pass
+
+        # Sections
+        sections = []
+        try:
+            for s in pe.sections:
+                name = s.Name.rstrip(b"\x00").decode(errors="ignore")
+                sections.append({
+                    "name": name,
+                    "virtual_address": hex(s.VirtualAddress),
+                    "virtual_size": int(s.Misc_VirtualSize),
+                    "raw_size": int(s.SizeOfRawData),
+                    "entropy": float(getattr(s, "get_entropy", lambda: 0.0)()),
+                    "characteristics": hex(s.Characteristics),
+                })
+        except Exception:
+            pass
+        report["sections"] = sections
+
+        # Imports
+        imports = []
+        try:
+            pe.parse_data_directories(
+                directories=[
+                    pefile.DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_IMPORT"],
+                ]
+            )
+            if hasattr(pe, "DIRECTORY_ENTRY_IMPORT"):
+                for entry in pe.DIRECTORY_ENTRY_IMPORT:
+                    dll = entry.dll.decode(errors="ignore")
+                    funcs = []
+                    for imp in entry.imports:
+                        if imp.name:
+                            funcs.append(imp.name.decode(errors="ignore"))
+                        else:
+                            funcs.append(f"ord_{imp.ordinal}")
+                    imports.append({"dll": dll, "functions": funcs[:5000]})
+        except Exception:
+            pass
+        report["imports"] = imports
+
+        # Flattened import set (useful for inference)
+        report["import_set"] = sorted(
+            {f.lower() for d in imports for f in d.get("functions", [])}
+            | {d["dll"].lower() for d in imports if "dll" in d}
+        )
+
+        return report
+
+    def infer_capabilities(*, ascii_strings: list[str], utf16le_strings: list[str], pe_report: dict) -> dict:
+        """
+        Heuristic inference from strings + PE imports.
+        """
+        s = "\n".join((ascii_strings[:8000] + utf16le_strings[:8000])).lower()
+        import_set = set((pe_report or {}).get("import_set", []))
+
+        def hit_any(needles: list[str]) -> bool:
+            return any(n in s for n in needles) or any(n in import_set for n in needles)
+
+        # Basic buckets
+        networking = hit_any([
+            "wininet", "winhttp", "urlmon", "ws2_32",
+            "internetopen", "internetconnect", "recv", "send", "connect",
+            "http", "https", "user-agent",
+        ])
+        persistence = hit_any([
+            "schtasks", "reg.exe", "runonce", "currentversion\\run",
+            "startup", "winlogon", "services\\",
+            "createService".lower(), "openSCManager".lower(),
+        ])
+        injection = hit_any([
+            "virtualalloc", "virtualallocex", "writeprocessmemory",
+            "createremotethread", "openprocess", "setthreadcontext",
+            "queueuserapc", "ntmapviewofsection",
+        ])
+
+        # Add some notes
+        notes = []
+        if pe_report.get("is_pe"):
+            # Packed/high entropy section hint
+            high_entropy = [sec for sec in pe_report.get("sections", []) if sec.get("entropy", 0) >= 7.2]
+            if high_entropy:
+                notes.append({
+                    "type": "packing_hint",
+                    "detail": f"{len(high_entropy)} section(s) with high entropy (>=7.2).",
+                })
+
+        return {
+            "networking": bool(networking),
+            "persistence": bool(persistence),
+            "injection": bool(injection),
+            "notes": notes,
+            "confidence": {
+                # very rough: count signals
+                "networking": _confidence_score(networking, s, import_set, SUS_KEYWORDS["networking"]),
+                "persistence": _confidence_score(persistence, s, import_set, SUS_KEYWORDS["persistence"]),
+                "injection": _confidence_score(injection, s, import_set, SUS_KEYWORDS["injection"]),
+            },
+        }
+
+    def _confidence_score(flag: bool, s: str, import_set: set[str], keywords: list[str]) -> int:
+        if not flag:
+            return 0
+        hits = 0
+        for k in keywords:
+            if k in s:
+                hits += 1
+            if k in import_set:
+                hits += 1
+        # clamp to 100
+        return min(100, 20 + hits * 10)
+
+    return malware_sandbox_static()
 

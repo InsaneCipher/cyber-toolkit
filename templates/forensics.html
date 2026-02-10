@@ -449,7 +449,6 @@
               {% endif %}
             </div>
 
-
             <!-- File Analysis Sub-Tab -->
             <div class="tab-pane" id="file-analysis" role="tabpanel">
               <h4 class="tab-title color">File Analysis</h4>
@@ -689,6 +688,277 @@
                   {% endif %}
 
                 {% endif %}
+              {% endif %}
+            </div>
+
+            <!-- Malware Sandbox (Static) -->
+            <div class="tab-pane" id="malware" role="tabpanel">
+              <div class="d-flex align-items-center gap-3 mb-2">
+                <h4 class="tab-title color mb-0">Malware Sandbox (Static)</h4>
+
+                <form method="POST"
+                      action="{{ url_for('forensics') }}"
+                      enctype="multipart/form-data"
+                      class="m-0">
+                  <input type="hidden" name="action" value="malware_sandbox">
+
+                  <div class="d-flex align-items-center gap-2">
+                    <input type="file"
+                           name="malware_file"
+                           class="form-control form-control-sm"
+                           required>
+                    <button type="submit" class="btn btn-sm btn-danger">
+                      Analyze
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <p class="text-muted mb-3">
+                Static-only analysis (no execution). Hashing, strings, PE inspection,
+                indicators, and heuristic capability inference.
+              </p>
+
+            {% if malware_report %}
+                {% if malware_report.error %}
+                  <div class="alert alert-danger py-2">
+                    <p class="mb-0"><strong>Error:</strong> {{ malware_report.error }}</p>
+                  </div>
+                {% else %}
+              <!-- Summary -->
+              <div class="card mb-3">
+                <div class="card-body">
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <div class="fw-semibold mb-1">Sample</div>
+                      <div>
+                        <span class="text-muted">File:</span>
+                        {{ malware_report["meta"]["original_filename"] }}
+                      </div>
+                      <div>
+                        <span class="text-muted">Size:</span>
+                        {{ malware_report["meta"]["size_bytes"] }} bytes
+                      </div>
+                      <div>
+                        <span class="text-muted">Sample ID:</span>
+                        <code>{{ malware_report["meta"]["sample_id"] }}</code>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="fw-semibold mb-1">Hashes</div>
+                      <div class="small">
+                        <span class="text-muted">MD5:</span>
+                        <code>{{ malware_report["hashes"]["md5"] }}</code>
+                      </div>
+                      <div class="small">
+                        <span class="text-muted">SHA1:</span>
+                        <code>{{ malware_report["hashes"]["sha1"] }}</code>
+                      </div>
+                      <div class="small">
+                        <span class="text-muted">SHA256:</span>
+                        <code>{{ malware_report["hashes"]["sha256"] }}</code>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Capabilities -->
+              <div class="card mb-3">
+                <div class="card-header fw-semibold">
+                  Static Capability Inference
+                </div>
+                <div class="card-body">
+                  <div class="d-flex flex-wrap gap-2">
+                    <span class="badge {{ 'bg-danger' if malware_report['capabilities']['networking'] else 'bg-secondary' }}">
+                      Networking
+                      ({{ malware_report["capabilities"]["confidence"]["networking"] }}%)
+                    </span>
+
+                    <span class="badge {{ 'bg-danger' if malware_report['capabilities']['persistence'] else 'bg-secondary' }}">
+                      Persistence
+                      ({{ malware_report["capabilities"]["confidence"]["persistence"] }}%)
+                    </span>
+
+                    <span class="badge {{ 'bg-danger' if malware_report['capabilities']['injection'] else 'bg-secondary' }}">
+                      Injection
+                      ({{ malware_report["capabilities"]["confidence"]["injection"] }}%)
+                    </span>
+                  </div>
+
+                  {% if malware_report["capabilities"]["notes"] %}
+                    <hr>
+                    <ul class="mb-0">
+                      {% for note in malware_report["capabilities"]["notes"] %}
+                        <li class="small">{{ note["detail"] }}</li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- Indicators -->
+              <div class="card mb-3">
+                <div class="card-header fw-semibold">Indicators</div>
+                <div class="card-body">
+                  <div class="row g-3">
+
+                    <div class="col-md-6">
+                      <div class="fw-semibold mb-1">URLs</div>
+                      {% if malware_report["indicators"]["urls"] %}
+                        <div class="table-responsive" style="max-height:220px;">
+                          <table class="table table-sm table-hover mb-0">
+                            <tbody>
+                              {% for u in malware_report["indicators"]["urls"] %}
+                                <tr><td class="small"><code>{{ u }}</code></td></tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                      {% else %}
+                        <div class="text-muted small">None found</div>
+                      {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="fw-semibold mb-1">Domains</div>
+                      {% if malware_report["indicators"]["domains"] %}
+                        <div class="table-responsive" style="max-height:220px;">
+                          <table class="table table-sm table-hover mb-0">
+                            <tbody>
+                              {% for d in malware_report["indicators"]["domains"] %}
+                                <tr><td class="small"><code>{{ d }}</code></td></tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                      {% else %}
+                        <div class="text-muted small">None found</div>
+                      {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="fw-semibold mt-2 mb-1">IPs</div>
+                      {% if malware_report["indicators"]["ips"] %}
+                        <div class="table-responsive" style="max-height:220px;">
+                          <table class="table table-sm table-hover mb-0">
+                            <tbody>
+                              {% for ip in malware_report["indicators"]["ips"] %}
+                                <tr><td class="small"><code>{{ ip }}</code></td></tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                      {% else %}
+                        <div class="text-muted small">None found</div>
+                      {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="fw-semibold mt-2 mb-1">Registry Paths</div>
+                      {% if malware_report["indicators"]["registry_paths"] %}
+                        <div class="table-responsive" style="max-height:220px;">
+                          <table class="table table-sm table-hover mb-0">
+                            <tbody>
+                              {% for r in malware_report["indicators"]["registry_paths"] %}
+                                <tr><td class="small"><code>{{ r }}</code></td></tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                      {% else %}
+                        <div class="text-muted small">None found</div>
+                      {% endif %}
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- PE Analysis -->
+              <div class="card mb-3">
+                <div class="card-header fw-semibold">PE Analysis</div>
+                <div class="card-body">
+                  {% if malware_report["pe"]["is_pe"] %}
+                    <div class="row g-3 small mb-2">
+                      <div class="col-md-6">
+                        <div><span class="text-muted">Entry Point:</span>
+                          <code>{{ malware_report["pe"]["entry_point"] }}</code></div>
+                        <div><span class="text-muted">Image Base:</span>
+                          <code>{{ malware_report["pe"]["image_base"] }}</code></div>
+                        <div><span class="text-muted">Subsystem:</span>
+                          {{ malware_report["pe"]["subsystem"] }}</div>
+                      </div>
+                      <div class="col-md-6">
+                        <div><span class="text-muted">Is DLL:</span>
+                          {{ "Yes" if malware_report["pe"]["is_dll"] else "No" }}</div>
+                      </div>
+                    </div>
+
+                    <div class="fw-semibold mb-1">Sections</div>
+                    <div class="table-responsive" style="max-height:260px;">
+                      <table class="table table-sm table-striped mb-0">
+                        <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>Entropy</th>
+                            <th>Raw Size</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for s in malware_report["pe"]["sections"] %}
+                            <tr>
+                              <td><code>{{ s["name"] }}</code></td>
+                              <td>{{ "%.2f"|format(s["entropy"]) }}</td>
+                              <td>{{ s["raw_size"] }}</td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  {% else %}
+                    <div class="text-muted">Not a PE file.</div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- Strings -->
+              <div class="card mb-3">
+                <div class="card-header fw-semibold">Strings (Preview)</div>
+                <div class="card-body">
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <div class="fw-semibold mb-1">
+                        ASCII ({{ malware_report["strings"]["ascii_count"] }})
+                      </div>
+                      <pre class="bg-dark text-light p-2 small rounded"
+                           style="max-height:260px; overflow:auto;">
+            {% for s in malware_report["strings"]["ascii_preview"] %}
+            {{ s }}
+            {% endfor %}
+                      </pre>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="fw-semibold mb-1">
+                        UTF-16LE ({{ malware_report["strings"]["utf16le_count"] }})
+                      </div>
+                      <pre class="bg-dark text-light p-2 small rounded"
+                           style="max-height:260px; overflow:auto;">
+            {% for s in malware_report["strings"]["utf16le_preview"] %}
+            {{ s }}
+            {% endfor %}
+                      </pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                {% endif %}
+              {% else %}
+                <div class="alert alert-secondary">
+                  Upload a file to generate a static malware analysis report.
+                </div>
               {% endif %}
             </div>
 

@@ -101,8 +101,22 @@
         <div class="tab-content" id="toolTabsContent">
 
             <div class="tab-pane show active" id="overview" role="tabpanel">
-                <h4 class="tab-title color">System Overview</h4>
-                <p>Displays key information about your Windows device, including OS details, hardware specifications, and resource usage.</p>
+                <div class="d-flex justify-content-between align-items-center gap-3">
+                  <h4 class="tab-title color mb-0">System Overview</h4>
+
+                  <form method="POST" action="{{ url_for('system') }}" class="scan-form">
+                    <input type="hidden" name="action" value="refresh_system">
+                    <button type="submit" class="btn btn-sm btn-primary">
+                      ⟳ Refresh
+                    </button>
+                  </form>
+                </div>
+
+
+                  <p class="mt-2">
+                    Displays key information about your Windows device, including OS details,
+                    hardware specifications, and resource usage.
+                  </p>
 
                 {% if system_info %}
                     {% if system_info.error %}
@@ -153,7 +167,14 @@
                 </div>
             
             <div class="tab-pane" id="cpu" role="tabpanel">
-                <h4 class="tab-title color">CPU & Memory</h4>
+                <div class="d-flex justify-content-between align-items-center gap-3">
+                  <h4 class="tab-title color mb-0">CPU & Memory</h4>
+                  <form method="POST" action="{{ url_for('system') }}" class="scan-form">
+                    <input type="hidden" name="action" value="refresh_cpu">
+                    <button type="submit" class="btn btn-sm btn-primary">⟳ Refresh</button>
+                  </form>
+                </div>
+
                 <p>Detailed information about the processor, real-time CPU usage, and system memory utilization.</p>
 
                 {% if cpu_info %}
@@ -266,7 +287,14 @@
             </div>
 
             <div class="tab-pane" id="storage" role="tabpanel">
-                <h4 class="tab-title color">💽 Storage & Drives</h4>
+                <div class="d-flex justify-content-between align-items-center gap-3">
+                  <h4 class="tab-title color mb-0">💽 Storage & Drives</h4>
+                  <form method="POST" action="{{ url_for('system') }}" class="scan-form">
+                    <input type="hidden" name="action" value="refresh_storage">
+                    <button type="submit" class="btn btn-sm btn-primary">⟳ Refresh</button>
+                  </form>
+                </div>
+
                     <p>
                         Displays information about system storage devices, including mounted drives,
                         filesystem types, disk usage, I/O activity, and available SMART health data.
@@ -356,7 +384,14 @@
                 </div>
 
             <div class="tab-pane" id="network" role="tabpanel">
-              <h4 class="tab-title color">🌐 Network & Adapters</h4>
+                <div class="d-flex justify-content-between align-items-center gap-3">
+                  <h4 class="tab-title color mb-0">🌐 Network & Adapters</h4>
+                  <form method="POST" action="{{ url_for('system') }}" class="scan-form">
+                    <input type="hidden" name="action" value="refresh_network">
+                    <button type="submit" class="btn btn-sm btn-primary">⟳ Refresh</button>
+                  </form>
+                </div>
+
               <p>Shows adapter details, IP/MAC info, gateway/DNS, active connections, and interface bandwidth counters.</p>
 
               {% if network_info %}
@@ -560,7 +595,14 @@
             </div>
 
             <div class="tab-pane" id="gpu" role="tabpanel">
-              <h4 class="tab-title color">💻 GPU & Display</h4>
+                <div class="d-flex justify-content-between align-items-center gap-3">
+                  <h4 class="tab-title color mb-0">💻 GPU & Display</h4>
+                  <form method="POST" action="{{ url_for('system') }}" class="scan-form">
+                    <input type="hidden" name="action" value="refresh_gpu">
+                    <button type="submit" class="btn btn-sm btn-primary">⟳ Refresh</button>
+                  </form>
+                </div>
+
               <p>Shows GPU model/vendor/driver details, optional NVIDIA utilization & VRAM usage (if available), plus primary display resolution and refresh rate.</p>
 
               {% if display_info %}
@@ -700,7 +742,14 @@
             </div>
 
             <div class="tab-pane" id="power" role="tabpanel">
-              <h4 class="tab-title color">🔋 Power & Battery</h4>
+                <div class="d-flex justify-content-between align-items-center gap-3">
+                  <h4 class="tab-title color mb-0">🔋 Power & Battery</h4>
+                  <form method="POST" action="{{ url_for('system') }}" class="scan-form">
+                    <input type="hidden" name="action" value="refresh_power">
+                    <button type="submit" class="btn btn-sm btn-primary">⟳ Refresh</button>
+                  </form>
+                </div>
+
               <p>Shows your current power source and battery status (if available).</p>
 
               {% if power_info %}
@@ -767,7 +816,14 @@
             </div>
 
             <div class="tab-pane" id="sensors" role="tabpanel">
-              <h4 class="tab-title color">🧩 7. Sensors &amp; Temperatures</h4>
+                <div class="d-flex justify-content-between align-items-center gap-3">
+                  <h4 class="tab-title color mb-0">🧩 7. Sensors &amp; Temperatures</h4>
+                  <form method="POST" action="{{ url_for('system') }}" class="scan-form">
+                    <input type="hidden" name="action" value="refresh_sensors">
+                    <button type="submit" class="btn btn-sm btn-primary">⟳ Refresh</button>
+                  </form>
+                </div>
+
               <p>Shows CPU/GPU temperatures and fan speeds (when available). On Windows this usually requires OpenHardwareMonitor (WMI).</p>
 
               <form method="POST" action="/system" class="scan-form mt-2">
@@ -922,7 +978,14 @@
             </div>
 
             <div class="tab-pane" id="process" role="tabpanel">
-              <h4 class="tab-title color">🧰 Processes</h4>
+                <div class="d-flex justify-content-between align-items-center gap-3">
+                  <h4 class="tab-title color mb-0">🧰 Processes</h4>
+                  <form method="POST" action="{{ url_for('system') }}" class="scan-form">
+                    <input type="hidden" name="action" value="refresh_process_services">
+                    <button type="submit" class="btn btn-sm btn-primary">⟳ Refresh</button>
+                  </form>
+                </div>
+
               <p>Lists running processes (CPU/RAM usage).</p>
 
               {% if procs_services %}
@@ -991,7 +1054,14 @@
             </div>
 
             <div class="tab-pane" id="services" role="tabpanel">
-              <h4 class="tab-title color">🧰 Services</h4>
+                <div class="d-flex justify-content-between align-items-center gap-3">
+                  <h4 class="tab-title color mb-0">🧰 Services</h4>
+                  <form method="POST" action="{{ url_for('system') }}" class="scan-form">
+                    <input type="hidden" name="action" value="refresh_process_services">
+                    <button type="submit" class="btn btn-sm btn-primary">⟳ Refresh</button>
+                  </form>
+                </div>
+
               <p>Lists Windows services (state/start mode).</p>
 
               {% if procs_services %}
@@ -1059,7 +1129,14 @@
             </div>
 
             <div class="tab-pane" id="bios" role="tabpanel">
-              <h4 class="tab-title color">🧾 BIOS / Motherboard Info</h4>
+                <div class="d-flex justify-content-between align-items-center gap-3">
+                  <h4 class="tab-title color mb-0">🧾 BIOS / Motherboard Info</h4>
+                  <form method="POST" action="{{ url_for('system') }}" class="scan-form">
+                    <input type="hidden" name="action" value="refresh_bios">
+                    <button type="submit" class="btn btn-sm btn-primary">⟳ Refresh</button>
+                  </form>
+                </div>
+
               <p>Shows motherboard, BIOS, system UUID, and chassis details (Windows via WMI).</p>
 
               {% if bios_info %}
@@ -1145,7 +1222,14 @@
             </div>
 
             <div class="tab-pane" id="devices" role="tabpanel">
-              <h4 class="tab-title color">🔌 Connected Devices</h4>
+                <div class="d-flex justify-content-between align-items-center gap-3">
+                  <h4 class="tab-title color mb-0">🔌 Connected Devices</h4>
+                  <form method="POST" action="{{ url_for('system') }}" class="scan-form">
+                    <input type="hidden" name="action" value="refresh_devices">
+                    <button type="submit" class="btn btn-sm btn-primary">⟳ Refresh</button>
+                  </form>
+                </div>
+
               <p>Shows connected devices detected on Windows (USB, monitors, HID, disks, and general Plug-and-Play entries).</p>
 
               {% if devices_info %}
@@ -1386,7 +1470,14 @@
             </div>
 
             <div class="tab-pane" id="software" role="tabpanel">
-                <h4 class="tab-title color">🧱 Installed Software</h4>
+                <div class="d-flex justify-content-between align-items-center gap-3">
+                  <h4 class="tab-title color mb-0">🧱 Installed Software</h4>
+                  <form method="POST" action="{{ url_for('system') }}" class="scan-form">
+                    <input type="hidden" name="action" value="refresh_software">
+                    <button type="submit" class="btn btn-sm btn-primary">⟳ Refresh</button>
+                  </form>
+                </div>
+
                 <p>
                     Lists applications installed on this Windows system, including version,
                     publisher, and installation date (when available).
@@ -1517,6 +1608,7 @@ function copyDigest(id) {
     }
   }).catch(()=>{/* ignore */});
 }
+
 </script>
 </body>
 </html>

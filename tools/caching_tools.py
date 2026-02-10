@@ -55,8 +55,9 @@ def get_or_refresh(
     key: str,
     fn: Callable[[], Dict[str, Any]],
     max_age_seconds: Optional[int] = None,
-    force: bool = False
-) -> Dict[str, Any]:
+    force: bool = False,
+    load_only: bool = False,
+):
     """
     Return cached value unless forced or stale/missing, then recompute and cache.
     """
@@ -64,6 +65,9 @@ def get_or_refresh(
         cached = load_cache(key, max_age_seconds=max_age_seconds)
         if cached is not None:
             return cached
+
+    if load_only:
+        return None
 
     try:
         data = fn()

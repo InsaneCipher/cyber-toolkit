@@ -13,9 +13,7 @@ from tools.system_tools import *
 from tools.forensics_tools import *
 from tools.caching_tools import *
 
-
 app = Flask(__name__)
-
 
 result = None
 port_results = None
@@ -43,30 +41,23 @@ tech_result = None
 robots_result = None
 
 # System Info Variables
-# Cache policy (seconds). Set None for "never expires unless user refreshes".
-STATIC_TTL = 24 * 3600  # 24h for things that rarely change
-DYNAMIC_TTL = 60        # 60s for things that change often
-
 system_info = get_or_refresh("system_info", get_system_info)
-cpu_info = get_or_refresh("cpu_info", get_cpu_mem_info)  # more dynamic
+cpu_info = get_or_refresh("cpu_info", get_cpu_mem_info)
 storage_info = get_or_refresh("storage_info", get_storage_info)
 network_info = get_or_refresh("network_info", get_network_adapters_info)
 display_info = get_or_refresh("display_info", get_gpu_display_info)
 power_info = get_or_refresh("power_info", get_power_battery_info)
 sensors_info = get_or_refresh("sensors_info", get_sensors_and_temps)
 process_services_info = get_or_refresh("process_services_info", get_processes_services_info)
-bios_info = get_or_refresh("bios_info", get_bios_motherboard_info)  # basically static
+bios_info = get_or_refresh("bios_info", get_bios_motherboard_info)
 devices_info = get_or_refresh("devices_info", get_connected_devices_info)
 software_info = get_or_refresh("software_info", get_installed_software)
 
 # Forensics Info Variables
-forensics_info = None
-forensics_results = None
-target_path = None
-vuln_results = None
-file_analysis_results = None
-vs_limit = 50
-vs_nmap = False
+forensics_results = get_or_refresh("forensics_results", get_system_info, load_only=True)
+vuln_results = get_or_refresh("vuln_results", get_system_info, load_only=True)
+file_analysis_results = get_or_refresh("file_analysis_results", get_system_info, load_only=True)
+malware_report = get_or_refresh("malware_report", get_system_info, load_only=True)
 
 
 def get_template(name, active):
@@ -109,9 +100,9 @@ def get_template(name, active):
         software_info=software_info,
         procs_services=process_services_info,
         forensics_results=forensics_results,
-        target_path=target_path,
         vuln_results=vuln_results,
         file_analysis_results=file_analysis_results,
+        malware_report=malware_report,
     )
 
 
@@ -289,19 +280,42 @@ def utils():
     return get_template("utils.html", "utils")
 
 
-@app.route("/system")
+@app.route("/system", methods=["GET", "POST"])
 def system():
-    global system_info, running_services, running_processes
+    global system_info, cpu_info, storage_info, network_info, display_info, power_info, sensors_info, \
+        process_services_info, bios_info, devices_info, software_info
 
-    if request.method == "POST":
-        action = request.form.get("action")
+    # Page load
+    if request.method == "GET":
+        return get_template("system.html", "system")
+
+    # AJAX actions
+    action = request.form.get("action")
+
+    REFRESH_MAP = {
+        "refresh_system": ("system_info", get_system_info),
+        "refresh_cpu": ("cpu_info", get_cpu_mem_info),
+        "refresh_storage": ("storage_info", get_storage_info),
+        "refresh_network": ("network_info", get_network_adapters_info),
+        "refresh_display": ("display_info", get_gpu_display_info),
+        "refresh_power": ("power_info", get_power_battery_info),
+        "refresh_sensors": ("sensors_info", get_sensors_and_temps),
+        "refresh_process_services": ("process_services_info", get_processes_services_info),
+        "refresh_bios": ("bios_info", get_bios_motherboard_info),
+        "refresh_devices": ("devices_info", get_connected_devices_info),
+        "refresh_software": ("software_info", get_installed_software),
+    }
+
+    if action in REFRESH_MAP:
+        key, func = REFRESH_MAP[action]
+        globals()[key] = get_or_refresh(key, func, force=True)
 
     return get_template("system.html", "system")
 
 
 @app.route("/forensics", methods=["GET", "POST"])
 def forensics():
-    global forensics_info, target_path, forensics_results, file_analysis_results
+    global forensics_results, file_analysis_results, vuln_results, software_info, malware_report
 
     if request.method == "POST":
         action = request.form.get("action")
@@ -323,11 +337,9 @@ def forensics():
                 forensics_results = {"error": "Please enter a valid file path."}
 
             # Optional: store last run globally if you want it accessible elsewhere
-            forensics_info = forensics_results
+            save_cache("forensics_results", forensics_results)
 
         elif action == "vuln_scan":
-            global vuln_results, vs_limit, vs_nmap, software_info
-
             # Read form inputs
             try:
                 vs_limit = int(request.form.get("vs_limit", 50))
@@ -354,6 +366,8 @@ def forensics():
             except Exception as e:
                 vuln_results = {"error": str(e)}
 
+            save_cache("vuln_results", vuln_results)
+
         elif action == "file_analysis":
             # HTML uses name="target_path" for the input in the File Analysis form
             fa_target_path = (request.form.get("target_path") or "").strip()
@@ -366,6 +380,32 @@ def forensics():
                     file_analysis_results = {"error": str(e)}
             else:
                 file_analysis_results = {"error": "Please enter a valid file path."}
+
+            save_cache("file_analysis_results", file_analysis_results)
+
+        elif action == "malware_sandbox":
+            malware_report = None
+
+            try:
+                file = request.files.get("malware_file")
+                if not file or file.filename == "":
+                    raise ValueError("No file uploaded")
+
+                uploaded_bytes = file.read()
+                if not uploaded_bytes:
+                    raise ValueError("Uploaded file is empty")
+
+                malware_report = run_malware_sandbox(
+                    uploaded_bytes=uploaded_bytes,
+                    original_filename=file.filename,
+                    quarantine_dir="quarantine",
+                    export_json_path=None,  # or f"reports/{uuid}.json"
+                )
+
+            except Exception as e:
+                malware_report = {"error": str(e)}
+
+            save_cache("malware_report", malware_report)
 
     # Render with your existing shared context + add forensics vars
     return get_template("forensics.html", "forensics")
@@ -406,5 +446,11 @@ if __name__ == "__main__":
         # Run Flask server in background thread
         threading.Thread(target=run_flask, daemon=True).start()
         webview.settings['OPEN_EXTERNAL_LINKS_IN_BROWSER'] = True
-        webview.create_window("CyberToolkit App", "http://127.0.0.1:5000/", js_api=Api())
+        webview.create_window(
+            "Cyber Toolkit App",
+            "http://127.0.0.1:5000/",
+            js_api=Api(),
+            maximized=True,
+            text_select=True
+        )
         webview.start()  # Start the GUI event loop
