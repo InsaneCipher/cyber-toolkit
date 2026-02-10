@@ -484,7 +484,7 @@ def run_vulnerability_scanner(
     host: str = "127.0.0.1",
     max_ports: int = 200,
     banner_timeout: float = 1.5,
-    cache_db_path: str = "cve_cache.sqlite",
+    cache_db_path: str = "cache/cve_cache.sqlite",
     use_nmap_if_available: bool = True,
     nvd_api_key: str | None = None,
 ) -> dict:
