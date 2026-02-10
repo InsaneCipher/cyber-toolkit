@@ -11,6 +11,7 @@ from tools.hashing_and_encoding import *
 from tools.subnet import *
 from tools.system_tools import *
 from tools.forensics_tools import *
+from tools.caching_tools import *
 
 
 app = Flask(__name__)
@@ -42,17 +43,21 @@ tech_result = None
 robots_result = None
 
 # System Info Variables
-system_info = get_system_info()
-cpu_info = get_cpu_mem_info()
-storage_info = get_storage_info()
-network_info = get_network_adapters_info()
-display_info = get_gpu_display_info()
-power_info = get_power_battery_info()
-sensors_info = get_sensors_and_temps()
-process_services_info = get_processes_services_info()
-bios_info = get_bios_motherboard_info()
-devices_info = get_connected_devices_info()
-software_info = get_installed_software()
+# Cache policy (seconds). Set None for "never expires unless user refreshes".
+STATIC_TTL = 24 * 3600  # 24h for things that rarely change
+DYNAMIC_TTL = 60        # 60s for things that change often
+
+system_info = get_or_refresh("system_info", get_system_info)
+cpu_info = get_or_refresh("cpu_info", get_cpu_mem_info)  # more dynamic
+storage_info = get_or_refresh("storage_info", get_storage_info)
+network_info = get_or_refresh("network_info", get_network_adapters_info)
+display_info = get_or_refresh("display_info", get_gpu_display_info)
+power_info = get_or_refresh("power_info", get_power_battery_info)
+sensors_info = get_or_refresh("sensors_info", get_sensors_and_temps)
+process_services_info = get_or_refresh("process_services_info", get_processes_services_info)
+bios_info = get_or_refresh("bios_info", get_bios_motherboard_info)  # basically static
+devices_info = get_or_refresh("devices_info", get_connected_devices_info)
+software_info = get_or_refresh("software_info", get_installed_software)
 
 # Forensics Info Variables
 forensics_info = None
