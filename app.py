@@ -58,6 +58,7 @@ forensics_results = get_or_refresh("forensics_results", get_system_info, load_on
 vuln_results = get_or_refresh("vuln_results", get_system_info, load_only=True)
 file_analysis_results = get_or_refresh("file_analysis_results", get_system_info, load_only=True)
 malware_report = get_or_refresh("malware_report", get_system_info, load_only=True)
+image_analysis_results = get_or_refresh("image_analysis_results", get_system_info, load_only=True)
 
 
 def get_template(name, active):
@@ -103,6 +104,7 @@ def get_template(name, active):
         vuln_results=vuln_results,
         file_analysis_results=file_analysis_results,
         malware_report=malware_report,
+        image_analysis_results=image_analysis_results,
     )
 
 
@@ -315,7 +317,8 @@ def system():
 
 @app.route("/forensics", methods=["GET", "POST"])
 def forensics():
-    global forensics_results, file_analysis_results, vuln_results, software_info, malware_report
+    global forensics_results, file_analysis_results, vuln_results, \
+        software_info, malware_report, image_analysis_results
 
     if request.method == "POST":
         action = request.form.get("action")
@@ -406,6 +409,21 @@ def forensics():
                 malware_report = {"error": str(e)}
 
             save_cache("malware_report", malware_report)
+
+        elif action == "image_analysis":
+            # HTML uses name="target_path" for the input in the Image Analysis form
+            target_path = (request.form.get("target_path") or "").strip()
+
+            if target_path:
+                try:
+                    # Use your image analysis function
+                    image_analysis_results = analyze_image(target_path)
+                except Exception as e:
+                    image_analysis_results = {"error": str(e)}
+            else:
+                image_analysis_results = {"error": "Please enter a valid image file path."}
+
+            save_cache("image_analysis_results", image_analysis_results)
 
     # Render with your existing shared context + add forensics vars
     return get_template("forensics.html", "forensics")

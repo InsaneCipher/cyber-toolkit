@@ -64,5 +64,14 @@ Analysis: Top Talkers, Protocol Breakdown, Latency Graph
 Diagnostics: Ping, Port Tester, DNS Cache Viewer
 Utilities: Export Config, Public IP, Interface Info
 
+Security – (Vulnerability scans, file hashes, signatures, password tools)
 
-
+Developer / Admin
+Scripting
+Run small Python or Bash snippets safely in a sandboxed environment.
+Show output/logs.
+Task Automation
+Cron viewer, scheduled tasks inspector, or script execution manager.
+Logs
+View system, network, or app logs in one place.
+Filter and search through them — extremely handy for diagnostics.

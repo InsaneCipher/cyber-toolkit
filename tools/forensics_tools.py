@@ -1,5 +1,4 @@
 import pytsk3
-import exifread
 from Evtx.Evtx import Evtx
 from Registry import Registry
 import webview
@@ -24,6 +23,8 @@ import ctypes
 from ctypes import wintypes
 import uuid
 from pathlib import Path
+from PIL import Image
+import exifread
 
 
 class Api:
@@ -1124,7 +1125,6 @@ def run_malware_sandbox(uploaded_bytes: bytes,
 
         return report
 
-
     # -----------------------------
     # Helpers
     # -----------------------------
@@ -1331,4 +1331,56 @@ def run_malware_sandbox(uploaded_bytes: bytes,
         return min(100, 20 + hits * 10)
 
     return malware_sandbox_static()
+
+
+def analyze_image(path: str) -> dict:
+    results = {
+        "path": path,
+        "size_bytes": None,
+        "hashes": {},
+        "format": None,
+        "exif": {},
+        "entropy": None,
+        "flags": [],
+        "errors": [],
+    }
+
+    try:
+        with open(path, "rb") as f:
+            data = f.read()
+            results["size_bytes"] = len(data)
+            results["hashes"]["sha256"] = hashlib.sha256(data).hexdigest()
+
+            # Entropy
+            freq = [0] * 256
+            for b in data:
+                freq[b] += 1
+            ent = 0.0
+            for c in freq:
+                if c:
+                    p = c / len(data)
+                    ent -= p * math.log2(p)
+            results["entropy"] = round(ent, 3)
+
+            if ent > 7.9:
+                results["flags"].append("High entropy (compressed or encrypted payload possible)")
+
+        # Pillow format
+        with Image.open(path) as img:
+            results["format"] = img.format
+
+        # EXIF
+        with open(path, "rb") as f:
+            tags = exifread.process_file(f, details=False)
+            for k, v in tags.items():
+                results["exif"][k] = str(v)
+
+        if not results["exif"]:
+            results["flags"].append("No EXIF metadata present")
+
+    except Exception as e:
+        results["errors"].append(str(e))
+
+    return results
+
 
