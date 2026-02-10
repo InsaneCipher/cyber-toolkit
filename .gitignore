@@ -3,4 +3,4 @@ cve_cache.sqlite
 /dist
 /build
 *.spec
-/Old or Unused
+/Old
