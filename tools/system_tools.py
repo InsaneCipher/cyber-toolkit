@@ -27,6 +27,7 @@ def _bytes_to_mb(n: int) -> float:
 
 
 def get_system_info():
+    print("Getting System Information...")
     info = {}
 
     try:
@@ -98,11 +99,7 @@ def get_system_info():
 
 
 def get_cpu_mem_info() -> dict:
-    """
-    Windows-focused CPU & Memory info.
-    Requires: psutil, py-cpuinfo
-    Optional (better cache/vendor/clock details): wmi (pip install wmi)
-    """
+    print("Getting CPU Memory Information...")
 
     # --- CPU basic info (cpuinfo is cross-platform; decent on Windows) ---
     cpu_i = {}
@@ -222,18 +219,8 @@ def get_cpu_mem_info() -> dict:
 
 
 def get_storage_info(sample_interval_sec: float = 1.0) -> Dict[str, Any]:
-    """
-    Windows-focused storage inventory + usage + I/O + Windows HealthStatus (Get-PhysicalDisk).
+    print("Getting Storage Information...")
 
-    Returns a dict shaped like:
-    {
-      "platform": "...",
-      "drives": [...],
-      "disk_io": {...},
-      "health": {...},
-      "notes": [...]
-    }
-    """
     result: Dict[str, Any] = {
         "platform": platform.platform(),
         "drives": [],
@@ -310,6 +297,8 @@ def get_storage_info(sample_interval_sec: float = 1.0) -> Dict[str, Any]:
 
 
 def get_network_adapters_info() -> Dict[str, Any]:
+    print("Getting Network Adapters Information...")
+
     def _fmt_addr(addr_obj) -> Optional[str]:
         if not addr_obj:
             return None
@@ -570,6 +559,7 @@ def get_network_adapters_info() -> Dict[str, Any]:
 
 
 def get_gpu_display_info() -> Dict[str, Any]:
+    print("Getting GPU And Display Information...")
 
     # --- Helpers ---------------------------------------------------------------
     def _run_powershell_json(ps_script: str, timeout: int = 10) -> Dict[str, Any]:
@@ -849,6 +839,8 @@ $gpus | ConvertTo-Json -Depth 4
 
 
 def get_power_battery_info() -> Dict[str, Any]:
+    print("Getting Power Information...")
+
     result = {
         "has_battery": False,
         "power_source": "Unknown",
@@ -903,6 +895,7 @@ def get_power_battery_info() -> Dict[str, Any]:
 
 # Currently Not In Use
 def get_sensors_and_temps() -> Dict[str, Any]:
+    print("Getting Sensors and Temperature Information...")
 
     # Helper
     def _run_powershell_json(ps_script: str, timeout: int = 8) -> Dict[str, Any]:
@@ -1024,6 +1017,7 @@ def get_sensors_and_temps() -> Dict[str, Any]:
 
 
 def get_processes_services_info(top_n: int = 200, include_cmdline: bool = True, include_services: bool = True, ) -> Dict[str, Any]:
+    print("Getting Processes And Services Information...")
 
     # Helpers
     def _fmt_bytes(num: float) -> str:
@@ -1136,6 +1130,8 @@ def get_processes_services_info(top_n: int = 200, include_cmdline: bool = True, 
 
 
 def get_bios_motherboard_info() -> Dict[str, Any]:
+    print("Getting Bios And Motherboard Info...")
+
     # Map Win32_SystemEnclosure.ChassisTypes codes to friendly names (partial but useful)
     chassis_type_map = {
         1: "Other",
@@ -1257,6 +1253,7 @@ def get_bios_motherboard_info() -> Dict[str, Any]:
 
 
 def get_connected_devices_info() -> Dict[str, Any]:
+    print("Getting Connected Devices Info...")
     result: Dict[str, Any] = {
         "usb_devices": [],
         "pnp_devices": [],
@@ -1380,6 +1377,7 @@ def get_connected_devices_info() -> Dict[str, Any]:
 
 
 def get_installed_software() -> Dict[str, Any]:
+    print("Getting Installed Software Information...")
 
     # Helpers
     def _read_reg_value(_key, name: str) -> Optional[str]:

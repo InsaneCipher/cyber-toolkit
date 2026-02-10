@@ -47,6 +47,7 @@ def _bytes_to_mb(n: int) -> float:
 
 
 def collect_forensics_results(target_path=None, evtx_path=None, registry_hive_path=None, disk_image_path=None):
+    print("Collecting Forensics Results...")
     results = {
         "file_metadata": {},
         "ads_streams": [],
@@ -199,6 +200,8 @@ def collect_forensics_results(target_path=None, evtx_path=None, registry_hive_pa
 
 
 def analyze_file(target_path: str) -> dict:
+    print("Running File Analyzer...")
+
     results = {
         "path": target_path,
         "exists": False,
@@ -504,6 +507,8 @@ def run_vulnerability_scanner(
     - cache_stats, errors
     """
 
+    print("Running Vulnerability Scan...")
+
     results = {
         "meta": {
             "host": host,
@@ -642,13 +647,21 @@ def run_vulnerability_scanner(
     # -----------------------------
     # CVE lookup: OSV (easy) + NVD keyword fallback (best-effort)
     # -----------------------------
-    def osv_query(keyword: str) -> dict:
+    def osv_query_from_package(package_name: str, ecosystem: str, version: str | None = None) -> dict:
         if not requests:
             return {"error": "requests not installed"}
+
+        payload = {"package": {"name": package_name, "ecosystem": ecosystem}}
+        if version:
+            payload["version"] = version
+
         url = "https://api.osv.dev/v1/query"
-        payload = {"query": keyword}
-        r = requests.post(url, json=payload, timeout=8)
-        r.raise_for_status()
+        r = requests.post(url, json=payload, timeout=10)
+
+        # Helpful error output
+        if not r.ok:
+            return {"error": f"OSV HTTP {r.status_code}: {r.text[:400]}"}
+
         return r.json()
 
     def nvd_keyword_query(keyword: str) -> dict:
@@ -752,8 +765,8 @@ def run_vulnerability_scanner(
         query = f"{name} {nver}".strip()
 
         # OSV first (fast and good for open-source), then NVD keyword
-        osv_data = cached_cve_lookup("osv", query)
-        osv_cves = extract_cves_from_osv(osv_data) if "error" not in osv_data else []
+        osv_data = {"vulns": []}
+        osv_cves = []
 
         nvd_data = cached_cve_lookup("nvd", query)
         nvd_cves = extract_cves_from_nvd(nvd_data) if "error" not in nvd_data else []

@@ -58,8 +58,10 @@ software_info = get_installed_software()
 forensics_info = None
 forensics_results = None
 target_path = None
-vulnerability_info = run_vulnerability_scanner()
+vuln_results = None
 file_analysis_results = None
+vs_limit = 50
+vs_nmap = False
 
 
 def get_template(name, active):
@@ -103,7 +105,7 @@ def get_template(name, active):
         procs_services=process_services_info,
         forensics_results=forensics_results,
         target_path=target_path,
-        vuln_results=vulnerability_info,
+        vuln_results=vuln_results,
         file_analysis_results=file_analysis_results,
     )
 
@@ -317,6 +319,35 @@ def forensics():
 
             # Optional: store last run globally if you want it accessible elsewhere
             forensics_info = forensics_results
+
+        elif action == "vuln_scan":
+            global vuln_results, vs_limit, vs_nmap, software_info
+
+            # Read form inputs
+            try:
+                vs_limit = int(request.form.get("vs_limit", 50))
+            except ValueError:
+                vs_limit = 50
+
+            vs_limit = max(1, min(vs_limit, 500))
+            vs_nmap = (request.form.get("vs_nmap", "1") == "1")
+
+            # Your installed software is in software_info["apps"]
+            apps = []
+            try:
+                apps = (software_info or {}).get("apps", [])
+                if not isinstance(apps, list):
+                    apps = []
+            except Exception:
+                apps = []
+
+            try:
+                vuln_results = run_vulnerability_scanner(
+                    installed_software=apps[:vs_limit],
+                    use_nmap_if_available=vs_nmap
+                )
+            except Exception as e:
+                vuln_results = {"error": str(e)}
 
         elif action == "file_analysis":
             # HTML uses name="target_path" for the input in the File Analysis form
