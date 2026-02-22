@@ -340,35 +340,6 @@ def forensics():
             # Optional: store last run globally if you want it accessible elsewhere
             save_cache("forensics_results", STATE["forensics_results"])
 
-        elif action == "vuln_scan":
-            # Read form inputs
-            try:
-                vs_limit = int(request.form.get("vs_limit", 50))
-            except ValueError:
-                vs_limit = 50
-
-            vs_limit = max(1, min(vs_limit, 500))
-            vs_nmap = (request.form.get("vs_nmap", "1") == "1")
-
-            # Your installed software is in STATE["software_info"]["apps"]
-            apps = []
-            try:
-                apps = (STATE["software_info"] or {}).get("apps", [])
-                if not isinstance(apps, list):
-                    apps = []
-            except Exception:
-                apps = []
-
-            try:
-                STATE["vuln_results"] = run_vulnerability_scanner(
-                    installed_software=apps[:vs_limit],
-                    use_nmap_if_available=vs_nmap
-                )
-            except Exception as e:
-                STATE["vuln_results"] = {"error": str(e)}
-
-            save_cache("vuln_results", STATE["vuln_results"])
-
         elif action == "file_analysis":
             # HTML uses name="target_path" for the input in the File Analysis form
             fa_target_path = (request.form.get("target_path") or "").strip()
@@ -427,8 +398,40 @@ def forensics():
     return get_template("forensics.html", "forensics")
 
 
-@app.route("/security")
+@app.route("/security", methods=["GET", "POST"])
 def security():
+    if request.method == "POST":
+        action = request.form.get("action")
+
+        if action == "vuln_scan":
+            # Read form inputs
+            try:
+                vs_limit = int(request.form.get("vs_limit", 50))
+            except ValueError:
+                vs_limit = 50
+
+            vs_limit = max(1, min(vs_limit, 500))
+            vs_nmap = (request.form.get("vs_nmap", "1") == "1")
+
+            # Your installed software is in STATE["software_info"]["apps"]
+            apps = []
+            try:
+                apps = (STATE["software_info"] or {}).get("apps", [])
+                if not isinstance(apps, list):
+                    apps = []
+            except Exception:
+                apps = []
+
+            try:
+                STATE["vuln_results"] = run_vulnerability_scanner(
+                    installed_software=apps[:vs_limit],
+                    use_nmap_if_available=vs_nmap
+                )
+            except Exception as e:
+                STATE["vuln_results"] = {"error": str(e)}
+
+            save_cache("vuln_results", STATE["vuln_results"])
+
     return get_template("security.html", "security")
 
 
