@@ -2,10 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Network Tools - Cyber Toolkit</title>
+    <title>Forensics - Cyber Toolkit</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -21,537 +19,383 @@
   </div>
 </nav>
 
-<!-- Navigation Bar (Below Brand) -->
+<!-- Navigation Bar -->
 <nav class="horizontal-navbar navbar navbar-expand-lg fixed-top" style="top: 56px;">
     <div class="container-fluid">
         <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'network' %}active{% endif %}" href="{{ url_for('network') }}">Network</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'recon' %}active{% endif %}" href="{{ url_for('recon') }}">Recon</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'system' %}active{% endif %}" href="{{ url_for('system') }}">System</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'forensics' %}active{% endif %}" href="{{ url_for('forensics') }}">Forensics</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'security' %}active{% endif %}" href="{{ url_for('security') }}">Security</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'utils' %}active{% endif %}" href="{{ url_for('utils') }}">Utilities</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'developer' %}active{% endif %}" href="{{ url_for('developer') }}">Developer</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'about' %}active{% endif %}" href="{{ url_for('about') }}">About</a>
-            </li>
+            <li class="nav-item"><a class="nav-link {% if active == 'network' %}active{% endif %}" href="{{ url_for('network') }}">Network</a></li>
+            <li class="nav-item"><a class="nav-link {% if active == 'recon' %}active{% endif %}" href="{{ url_for('recon') }}">Recon</a></li>
+            <li class="nav-item"><a class="nav-link {% if active == 'system' %}active{% endif %}" href="{{ url_for('system') }}">System</a></li>
+            <li class="nav-item"><a class="nav-link {% if active == 'forensics' %}active{% endif %}" href="{{ url_for('forensics') }}">Forensics</a></li>
+            <li class="nav-item"><a class="nav-link {% if active == 'security' %}active{% endif %}" href="{{ url_for('security') }}">Security</a></li>
+            <li class="nav-item"><a class="nav-link {% if active == 'utils' %}active{% endif %}" href="{{ url_for('utils') }}">Utilities</a></li>
+            <li class="nav-item"><a class="nav-link {% if active == 'developer' %}active{% endif %}" href="{{ url_for('developer') }}">Developer</a></li>
+            <li class="nav-item"><a class="nav-link {% if active == 'about' %}active{% endif %}" href="{{ url_for('about') }}">About</a></li>
         </ul>
     </div>
 </nav>
 
 <div class="container-fluid">
   <div class="row">
+
     <!-- Sidebar -->
     <nav class="vert-sidebar">
-  <ul class="nav flex-column nav-pills" id="toolTabs" role="tablist">
-    <li class="nav-item">
-      <button class="nav-link active" id="forensics-tab" data-bs-toggle="tab" data-bs-target="#forensics" type="button" role="tab">
-        <i class="bi bi-fingerprint me-2" style="color:#4da6ff;"></i> Forensics
-      </button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link" id="file-analysis-tab" data-bs-toggle="tab" data-bs-target="#file-analysis" type="button" role="tab">
-        <i class="bi bi-file-earmark-text me-2" style="color:#4ecca3;"></i> File Analysis
-      </button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link" id="malware-tab" data-bs-toggle="tab" data-bs-target="#malware" type="button" role="tab">
-        <i class="bi bi-bug me-2" style="color:#e05c5c;"></i> Malware Sandbox
-      </button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link" id="image-tab" data-bs-toggle="tab" data-bs-target="#image-analysis" type="button" role="tab">
-        <i class="bi bi-image me-2" style="color:#c77dff;"></i> Image Analysis
-      </button>
-    </li>
-  </ul>
-</nav>
+      <ul class="nav flex-column nav-pills" id="toolTabs" role="tablist">
+        <li class="nav-item">
+          <button class="nav-link active" id="forensics-tab" data-bs-toggle="tab" data-bs-target="#forensics" type="button" role="tab">
+            <i class="bi bi-fingerprint me-2" style="color:#4da6ff;"></i> Forensics
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="file-analysis-tab" data-bs-toggle="tab" data-bs-target="#file-analysis" type="button" role="tab">
+            <i class="bi bi-file-earmark-text me-2" style="color:#4ecca3;"></i> File Analysis
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="malware-tab" data-bs-toggle="tab" data-bs-target="#malware" type="button" role="tab">
+            <i class="bi bi-bug me-2" style="color:#e05c5c;"></i> Malware Sandbox
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="image-tab" data-bs-toggle="tab" data-bs-target="#image-analysis" type="button" role="tab">
+            <i class="bi bi-image me-2" style="color:#c77dff;"></i> Image Analysis
+          </button>
+        </li>
+      </ul>
+    </nav>
 
     <!-- Main content -->
     <main class="col-md-10 ms-sm-auto px-md-4">
-        <div class="tab-content" id="toolTabsContent">
+      <div class="tab-content" id="toolTabsContent">
 
-            <!-- Forensics Sub-Tab -->
-            <div class="tab-pane show active" id="forensics" role="tabpanel">
-              <h4 class="tab-title color">Forensics</h4>
-              <p>Analyze a file for metadata, NTFS ADS, optional EXIF, and surface basic suspicious indicators.</p>
 
-              <!-- Input form -->
-              <form method="POST" action="{{ url_for('forensics') }}" class="scan-form mt-3">
-                <div class="row g-3 align-items-end">
-                  <div class="col-md-8">
-                    <label for="target_path" class="form-label">Target file path</label>
+        {# ═══════════════════════════════════════════════════════════════
+           FORENSICS
+        ═══════════════════════════════════════════════════════════════ #}
+        <div class="tab-pane show active" id="forensics" role="tabpanel">
+          <h4 class="tab-title color">Forensics</h4>
+          <p>Analyse a file for metadata, NTFS ADS, optional EXIF, and surface basic suspicious indicators.</p>
 
-                    <div class="input-group">
-                        <input type="hidden" name="action" value="forensics">
-                        <input type="text" class="form-control" id="target_path" name="target_path" placeholder="C:\Users\A\Downloads\sample.exe" value="{{ target_path or '' }}">
-                      <button class="btn btn-outline-secondary" type="button" onclick="pickForensicsFile()">
-                        Browse…
-                      </button>
-                    </div>
-
-                    <div class="form-text">
-                      Desktop-only: uses native Windows file picker (pywebview).
-                    </div>
-                  </div>
-
-                  <div class="col-md-4 d-grid">
-                    <button type="submit" class="btn btn-primary">Analyze</button>
-                  </div>
-                </div>
-              </form>
-
-              {% if forensics_results %}
-                {% if forensics_results.error %}
-                  <div class="result_box mt-3">
-                    <p><strong>Error:</strong> {{ forensics_results.error }}</p>
-                  </div>
-                {% else %}
-
-                  <!-- Summary / Indicators -->
-                  {% if forensics_results.suspicious_indicators and forensics_results.suspicious_indicators|length > 0 %}
-                    <div class="result_box mt-3">
-                      <p class="mb-2"><strong>Indicators</strong></p>
-                      <ul class="mb-0">
-                        {% for ind in forensics_results.suspicious_indicators %}
-                          <li>{{ ind }}</li>
-                        {% endfor %}
-                      </ul>
-                    </div>
-                  {% endif %}
-
-                  <!-- File Metadata -->
-                  <h5 class="mt-4">File Metadata</h5>
-                  {% if forensics_results.file_metadata %}
-                    <table class="table table-striped table-hover table-rounded">
-                      <thead class="table-dark">
-                        <tr>
-                          <th>Field</th>
-                          <th>Value</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr><td><strong>Path</strong></td><td>{{ forensics_results.file_metadata.path }}</td></tr>
-                        <tr><td><strong>Size (MB)</strong></td><td>{{ forensics_results.file_metadata.size_bytes }}</td></tr>
-                        <tr><td><strong>Created</strong></td><td>{{ forensics_results.file_metadata.created }}</td></tr>
-                        <tr><td><strong>Modified</strong></td><td>{{ forensics_results.file_metadata.modified }}</td></tr>
-                        <tr><td><strong>Accessed</strong></td><td>{{ forensics_results.file_metadata.accessed }}</td></tr>
-                        <tr><td><strong>Hidden</strong></td><td>{{ forensics_results.file_metadata.hidden }}</td></tr>
-                        <tr><td><strong>System</strong></td><td>{{ forensics_results.file_metadata.system }}</td></tr>
-                      </tbody>
-                    </table>
-                  {% else %}
-                    <div class="result_box mt-3">
-                      <p class="mb-0">No file metadata available.</p>
-                    </div>
-                  {% endif %}
-
-                  <!-- ADS Streams -->
-                  <h5 class="mt-4">NTFS Alternate Data Streams (ADS)</h5>
-                  {% if forensics_results.ads_streams and forensics_results.ads_streams|length > 0 %}
-                    <table class="table table-striped table-hover table-rounded">
-                      <thead class="table-dark">
-                        <tr>
-                          <th>Stream</th>
-                          <th>Size (MB)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for s in forensics_results.ads_streams %}
-                          <tr>
-                            <td>{{ s.name }}</td>
-                            <td>{{ s.size }}</td>
-                          </tr>
-                        {% endfor %}
-                      </tbody>
-                    </table>
-                  {% else %}
-                    <div class="result_box mt-3">
-                      <p class="mb-0">No ADS streams detected (or not supported on this filesystem).</p>
-                    </div>
-                  {% endif %}
-
-                  <!-- EXIF Metadata -->
-                  <h5 class="mt-4">EXIF / Media Metadata</h5>
-                  {% if forensics_results.exif_metadata and forensics_results.exif_metadata|length > 0 %}
-                    <table class="table table-striped table-hover table-rounded">
-                      <thead class="table-dark">
-                        <tr>
-                          <th>Tag</th>
-                          <th>Value</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for k, v in forensics_results.exif_metadata.items() %}
-                          <tr>
-                            <td><strong>{{ k }}</strong></td>
-                            <td>{{ v }}</td>
-                          </tr>
-                        {% endfor %}
-                      </tbody>
-                    </table>
-                  {% else %}
-                    <div class="result_box mt-3">
-                      <p class="mb-0">No EXIF metadata found (or file is not an EXIF-supported format).</p>
-                    </div>
-                  {% endif %}
-
-                {% endif %}
-              {% endif %}
+          <form method="POST" action="{{ url_for('forensics') }}" class="mt-3" enctype="multipart/form-data">
+            <input type="hidden" name="action" value="forensics">
+            <div class="row g-3 align-items-end">
+              <div class="col-md-8">
+                <label class="form-label">Upload file</label>
+                <input type="file" class="form-control" name="target_file"
+                       onchange="document.getElementById('forensics_path_display').value = this.files[0] ? this.files[0].name : ''">
+                <label class="form-label mt-2">Or enter full path manually</label>
+                <input type="text" class="form-control" id="forensics_path_display" name="target_path"
+                       placeholder="C:\Users\A\Downloads\sample.exe">
+              </div>
+              <div class="col-md-4 d-grid">
+                <button type="submit" class="btn btn-primary">Analyse</button>
+              </div>
             </div>
+          </form>
 
-            <!-- File Analysis Sub-Tab -->
-            <div class="tab-pane" id="file-analysis" role="tabpanel">
-              <h4 class="tab-title color">File Analysis</h4>
-              <p>Static inspection of a file: type (magic), hashes, entropy, and PE headers/imports/sections (if applicable).</p>
+          {% if forensics_results %}
+            {% if forensics_results.error %}
+              <div class="result_box mt-3">
+                <p><strong>Error:</strong> {{ forensics_results.error }}</p>
+              </div>
+            {% else %}
 
-              <!-- Input form -->
-              <form method="POST" action="{{ url_for('forensics') }}" class="scan-form mt-3">
-              <input type="hidden" name="action" value="file_analysis">
-
-              <div class="row g-3 align-items-end">
-                <div class="col-md-8">
-                  <label for="fa_target_path" class="form-label">Target file path</label>
-
-                  <div class="input-group">
-                    <input type="text" class="form-control" id="fa_target_path" name="target_path"
-                           placeholder="C:\Users\A\Downloads\suspicious.exe"
-                           value="{{ fa_target_path or '' }}">
-                    <button class="btn btn-outline-secondary" type="button" id="btnBrowseFileAnalysis">
-                      Browse…
-                    </button>
-                  </div>
+              {% if forensics_results.suspicious_indicators and forensics_results.suspicious_indicators|length > 0 %}
+                <div class="result_box mt-3">
+                  <p class="mb-2"><strong>Indicators</strong></p>
+                  <ul class="mb-0">
+                    {% for ind in forensics_results.suspicious_indicators %}
+                      <li>{{ ind }}</li>
+                    {% endfor %}
+                  </ul>
                 </div>
+              {% endif %}
 
-                <div class="col-md-4 d-grid">
-                  <button type="submit" class="btn btn-primary">Analyze</button>
+              <h5 class="mt-4">File Metadata</h5>
+              {% if forensics_results.file_metadata %}
+                <table class="table table-striped table-hover table-rounded">
+                  <thead class="table-dark"><tr><th>Field</th><th>Value</th></tr></thead>
+                  <tbody>
+                    <tr><td><strong>Path</strong></td><td>{{ forensics_results.file_metadata.path }}</td></tr>
+                    <tr><td><strong>Size (MB)</strong></td><td>{{ forensics_results.file_metadata.size_bytes }}</td></tr>
+                    <tr><td><strong>Created</strong></td><td>{{ forensics_results.file_metadata.created }}</td></tr>
+                    <tr><td><strong>Modified</strong></td><td>{{ forensics_results.file_metadata.modified }}</td></tr>
+                    <tr><td><strong>Accessed</strong></td><td>{{ forensics_results.file_metadata.accessed }}</td></tr>
+                    <tr><td><strong>Hidden</strong></td><td>{{ forensics_results.file_metadata.hidden }}</td></tr>
+                    <tr><td><strong>System</strong></td><td>{{ forensics_results.file_metadata.system }}</td></tr>
+                  </tbody>
+                </table>
+              {% else %}
+                <div class="result_box mt-3"><p class="mb-0">No file metadata available.</p></div>
+              {% endif %}
+
+              <h5 class="mt-4">NTFS Alternate Data Streams (ADS)</h5>
+              {% if forensics_results.ads_streams and forensics_results.ads_streams|length > 0 %}
+                <table class="table table-striped table-hover table-rounded">
+                  <thead class="table-dark"><tr><th>Stream</th><th>Size (MB)</th></tr></thead>
+                  <tbody>
+                    {% for s in forensics_results.ads_streams %}
+                      <tr><td>{{ s.name }}</td><td>{{ s.size }}</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              {% else %}
+                <div class="result_box mt-3"><p class="mb-0">No ADS streams detected.</p></div>
+              {% endif %}
+
+              <h5 class="mt-4">EXIF / Media Metadata</h5>
+              {% if forensics_results.exif_metadata and forensics_results.exif_metadata|length > 0 %}
+                <table class="table table-striped table-hover table-rounded">
+                  <thead class="table-dark"><tr><th>Tag</th><th>Value</th></tr></thead>
+                  <tbody>
+                    {% for k, v in forensics_results.exif_metadata.items() %}
+                      <tr><td><strong>{{ k }}</strong></td><td>{{ v }}</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              {% else %}
+                <div class="result_box mt-3"><p class="mb-0">No EXIF metadata found.</p></div>
+              {% endif %}
+
+            {% endif %}
+          {% endif %}
+        </div>
+
+
+        {# ═══════════════════════════════════════════════════════════════
+           FILE ANALYSIS
+        ═══════════════════════════════════════════════════════════════ #}
+        <div class="tab-pane" id="file-analysis" role="tabpanel">
+          <h4 class="tab-title color">File Analysis</h4>
+          <p>Static inspection: type (magic), hashes, entropy, and PE headers/imports/sections (if applicable).</p>
+
+          <form method="POST" action="{{ url_for('forensics') }}" class="mt-3" enctype="multipart/form-data">
+            <input type="hidden" name="action" value="file_analysis">
+            <div class="row g-3 align-items-end">
+              <div class="col-md-8">
+                <label class="form-label">Upload file</label>
+                <input type="file" class="form-control" name="target_file"
+                       onchange="document.getElementById('fa_path_display').value = this.files[0] ? this.files[0].name : ''">
+                <label class="form-label mt-2">Or enter full path manually</label>
+                <input type="text" class="form-control" id="fa_path_display" name="target_path"
+                       placeholder="C:\Users\A\Downloads\suspicious.exe">
+              </div>
+              <div class="col-md-4 d-grid">
+                <button type="submit" class="btn btn-primary">Analyse</button>
+              </div>
+            </div>
+          </form>
+
+          {% if file_analysis_results %}
+            {% if file_analysis_results.error %}
+              <div class="result_box mt-3">
+                <p class="mb-0"><strong>Error:</strong> {{ file_analysis_results.error }}</p>
+              </div>
+            {% else %}
+
+              {% if file_analysis_results.heuristics and file_analysis_results.heuristics|length > 0 %}
+                <div class="result_box mt-3">
+                  <p class="mb-2"><strong>Heuristic Flags</strong></p>
+                  {% for h in file_analysis_results.heuristics %}
+                    <p>{{ h }}</p>
+                  {% endfor %}
                 </div>
+              {% endif %}
+
+              <h5 class="mt-4">Overview</h5>
+              <table class="table table-striped table-hover table-rounded">
+                <thead class="table-dark"><tr><th>Field</th><th>Value</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>Path</strong></td><td>{{ file_analysis_results.path }}</td></tr>
+                  <tr><td><strong>Size (bytes)</strong></td><td>{{ file_analysis_results.size_bytes }}</td></tr>
+                  <tr><td><strong>Extension</strong></td><td>{{ file_analysis_results.extension }}</td></tr>
+                  <tr>
+                    <td><strong>Detected Type</strong></td>
+                    <td>{{ file_analysis_results.detected_type.label }} ({{ file_analysis_results.detected_type.confidence }})</td>
+                  </tr>
+                  <tr><td><strong>Extension Mismatch</strong></td><td>{{ file_analysis_results.extension_mismatch }}</td></tr>
+                  <tr>
+                    <td><strong>Entropy</strong></td>
+                    <td>{{ file_analysis_results.entropy.shannon }} ({{ file_analysis_results.entropy.label }})</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h5 class="mt-4">Hashes</h5>
+              <table class="table table-striped table-hover table-rounded">
+                <thead class="table-dark"><tr><th>Algorithm</th><th>Digest</th><th style="width:120px;">Action</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td><strong>MD5</strong></td>
+                    <td id="fa_md5">{{ file_analysis_results.hashes.md5 }}</td>
+                    <td><button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyDigest('fa_md5')">Copy</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>SHA-1</strong></td>
+                    <td id="fa_sha1">{{ file_analysis_results.hashes.sha1 }}</td>
+                    <td><button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyDigest('fa_sha1')">Copy</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>SHA-256</strong></td>
+                    <td id="fa_sha256">{{ file_analysis_results.hashes.sha256 }}</td>
+                    <td><button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyDigest('fa_sha256')">Copy</button></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h5 class="mt-4">PE Analysis</h5>
+              {% if file_analysis_results.pe and file_analysis_results.pe.is_pe %}
+                {% if file_analysis_results.pe.available %}
+                  <table class="table table-striped table-hover table-rounded">
+                    <thead class="table-dark"><tr><th>Field</th><th>Value</th></tr></thead>
+                    <tbody>
+                      {% for k, v in file_analysis_results.pe.summary.items() %}
+                        <tr><td><strong>{{ k }}</strong></td><td>{{ v }}</td></tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+
+                  <h6 class="mt-3">Sections</h6>
+                  {% if file_analysis_results.pe.sections and file_analysis_results.pe.sections|length > 0 %}
+                    <table class="table table-striped table-hover table-rounded">
+                      <thead class="table-dark">
+                        <tr><th>Name</th><th>VA</th><th>VSize</th><th>RawSize</th><th>Entropy</th><th>Characteristics</th></tr>
+                      </thead>
+                      <tbody>
+                        {% for s in file_analysis_results.pe.sections %}
+                          <tr>
+                            <td>{{ s.name }}</td><td>{{ s.virtual_address }}</td>
+                            <td>{{ s.virtual_size }}</td><td>{{ s.raw_size }}</td>
+                            <td>{{ s.entropy }}</td><td>{{ s.characteristics }}</td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  {% else %}
+                    <div class="result_box mt-2"><p class="mb-0">No sections found.</p></div>
+                  {% endif %}
+
+                  <h6 class="mt-3">Imports</h6>
+                  {% if file_analysis_results.pe.imports and file_analysis_results.pe.imports|length > 0 %}
+                    <div class="accordion" id="faImportsAcc">
+                      {% for lib in file_analysis_results.pe.imports %}
+                        <div class="accordion-item">
+                          <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#faImpC{{ loop.index }}">
+                              {{ lib.dll }}
+                            </button>
+                          </h2>
+                          <div id="faImpC{{ loop.index }}" class="accordion-collapse collapse">
+                            <div class="accordion-body">
+                              <ul class="mb-0">
+                                {% for fn in lib.functions[:150] %}
+                                  <li>{{ fn }}</li>
+                                {% endfor %}
+                              </ul>
+                              {% if lib.functions|length > 150 %}
+                                <div class="form-text mt-2">Showing first 150 functions.</div>
+                              {% endif %}
+                            </div>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    <div class="result_box mt-2"><p class="mb-0">No imports found.</p></div>
+                  {% endif %}
+
+                  <h6 class="mt-3">Exports</h6>
+                  {% if file_analysis_results.pe.exports and file_analysis_results.pe.exports|length > 0 %}
+                    <table class="table table-striped table-hover table-rounded">
+                      <thead class="table-dark"><tr><th>Name</th><th>Ordinal</th><th>Address</th></tr></thead>
+                      <tbody>
+                        {% for e in file_analysis_results.pe.exports %}
+                          <tr><td>{{ e.name or '—' }}</td><td>{{ e.ordinal }}</td><td>{{ e.address }}</td></tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  {% else %}
+                    <div class="result_box mt-2"><p class="mb-0">No exports found.</p></div>
+                  {% endif %}
+
+                {% else %}
+                  <div class="result_box mt-3"><p class="mb-0">PE detected but <strong>pefile</strong> is not installed.</p></div>
+                {% endif %}
+              {% else %}
+                <div class="result_box mt-3"><p class="mb-0">Not a PE file (or PE signature not detected).</p></div>
+              {% endif %}
+
+              {% if file_analysis_results.errors and file_analysis_results.errors|length > 0 %}
+                <div class="result_box mt-3">
+                  <p class="mb-2"><strong>Errors / Warnings</strong></p>
+                  <ul class="mb-0">
+                    {% for err in file_analysis_results.errors %}<li>{{ err }}</li>{% endfor %}
+                  </ul>
+                </div>
+              {% endif %}
+
+            {% endif %}
+          {% endif %}
+        </div>
+
+
+        {# ═══════════════════════════════════════════════════════════════
+           MALWARE SANDBOX
+        ═══════════════════════════════════════════════════════════════ #}
+        <div class="tab-pane" id="malware" role="tabpanel">
+          <div class="d-flex align-items-center gap-3 mb-2">
+            <h4 class="tab-title color mb-0">Malware Sandbox (Static)</h4>
+            <form method="POST" action="{{ url_for('forensics') }}" enctype="multipart/form-data" class="m-0">
+              <input type="hidden" name="action" value="malware_sandbox">
+              <div class="d-flex align-items-center gap-2">
+                <input type="file" name="malware_file" class="form-control form-control-sm" required>
+                <button type="submit" class="btn btn-sm btn-danger">Analyse</button>
               </div>
             </form>
+          </div>
+          <p class="text-muted mb-3">Static-only analysis (no execution). Hashing, strings, PE inspection, indicators, and heuristic capability inference.</p>
 
-
-              {% if file_analysis_results %}
-                {% if file_analysis_results.error %}
-                  <div class="result_box mt-3">
-                    <p class="mb-0"><strong>Error:</strong> {{ file_analysis_results.error }}</p>
-                  </div>
-                {% else %}
-
-                  <!-- Indicators -->
-                  {% if file_analysis_results.heuristics and file_analysis_results.heuristics|length > 0 %}
-                    <div class="result_box mt-3">
-                      <p class="mb-2"><strong>Heuristic Flags:</strong></p>
-                        {% for h in file_analysis_results.heuristics %}
-                          <p>{{ h }}</p>
-                        {% endfor %}
-                    </div>
-                  {% endif %}
-
-                  <!-- Overview -->
-                  <h5 class="mt-4">Overview</h5>
-                  <table class="table table-striped table-hover table-rounded">
-                    <thead class="table-dark">
-                      <tr>
-                        <th>Field</th>
-                        <th>Value</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr><td><strong>Path</strong></td><td>{{ file_analysis_results.path }}</td></tr>
-                      <tr><td><strong>Size (bytes)</strong></td><td>{{ file_analysis_results.size_bytes }}</td></tr>
-                      <tr><td><strong>Extension</strong></td><td>{{ file_analysis_results.extension }}</td></tr>
-                      <tr>
-                        <td><strong>Detected Type</strong></td>
-                        <td>
-                          {{ file_analysis_results.detected_type.label }}
-                          ({{ file_analysis_results.detected_type.confidence }})
-                        </td>
-                      </tr>
-                      <tr><td><strong>Extension Mismatch</strong></td><td>{{ file_analysis_results.extension_mismatch }}</td></tr>
-                      <tr>
-                        <td><strong>Entropy</strong></td>
-                        <td>{{ file_analysis_results.entropy.shannon }} ({{ file_analysis_results.entropy.label }})</td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-                  <!-- Hashes -->
-                  <h5 class="mt-4">Hashes</h5>
-                  <table class="table table-striped table-hover table-rounded">
-                    <thead class="table-dark">
-                      <tr>
-                        <th>Algorithm</th>
-                        <th>Digest</th>
-                        <th style="width: 120px;">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td><strong>MD5</strong></td>
-                        <td id="fa_md5">{{ file_analysis_results.hashes.md5 }}</td>
-                        <td><button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyDigest('fa_md5')">Copy</button></td>
-                      </tr>
-                      <tr>
-                        <td><strong>SHA-1</strong></td>
-                        <td id="fa_sha1">{{ file_analysis_results.hashes.sha1 }}</td>
-                        <td><button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyDigest('fa_sha1')">Copy</button></td>
-                      </tr>
-                      <tr>
-                        <td><strong>SHA-256</strong></td>
-                        <td id="fa_sha256">{{ file_analysis_results.hashes.sha256 }}</td>
-                        <td><button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyDigest('fa_sha256')">Copy</button></td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-                  <!-- PE Summary -->
-                  <h5 class="mt-4">PE Analysis</h5>
-                  {% if file_analysis_results.pe and file_analysis_results.pe.is_pe %}
-                    {% if file_analysis_results.pe.available %}
-                      <table class="table table-striped table-hover table-rounded">
-                        <thead class="table-dark">
-                          <tr>
-                            <th>Field</th>
-                            <th>Value</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {% for k, v in file_analysis_results.pe.summary.items() %}
-                            <tr><td><strong>{{ k }}</strong></td><td>{{ v }}</td></tr>
-                          {% endfor %}
-                        </tbody>
-                      </table>
-
-                      <!-- Sections -->
-                      <h6 class="mt-3">Sections</h6>
-                      {% if file_analysis_results.pe.sections and file_analysis_results.pe.sections|length > 0 %}
-                        <table class="table table-striped table-hover table-rounded">
-                          <thead class="table-dark">
-                            <tr>
-                              <th>Name</th>
-                              <th>VA</th>
-                              <th>VSize</th>
-                              <th>RawSize</th>
-                              <th>Entropy</th>
-                              <th>Characteristics</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {% for s in file_analysis_results.pe.sections %}
-                              <tr>
-                                <td>{{ s.name }}</td>
-                                <td>{{ s.virtual_address }}</td>
-                                <td>{{ s.virtual_size }}</td>
-                                <td>{{ s.raw_size }}</td>
-                                <td>{{ s.entropy }}</td>
-                                <td>{{ s.characteristics }}</td>
-                              </tr>
-                            {% endfor %}
-                          </tbody>
-                        </table>
-                      {% else %}
-                        <div class="result_box mt-2">
-                          <p class="mb-0">No sections found.</p>
-                        </div>
-                      {% endif %}
-
-                      <!-- Imports -->
-                      <h6 class="mt-3">Imports</h6>
-                      {% if file_analysis_results.pe.imports and file_analysis_results.pe.imports|length > 0 %}
-                        <div class="accordion" id="faImportsAcc">
-                          {% for lib in file_analysis_results.pe.imports %}
-                            <div class="accordion-item">
-                              <h2 class="accordion-header" id="faImpH{{ loop.index }}">
-                                <button class="accordion-button collapsed" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#faImpC{{ loop.index }}">
-                                  {{ lib.dll }}
-                                </button>
-                              </h2>
-                              <div id="faImpC{{ loop.index }}" class="accordion-collapse collapse"
-                                   data-bs-parent="#faImportsAcc">
-                                <div class="accordion-body">
-                                  <ul class="mb-0">
-                                    {% for fn in lib.functions[:150] %}
-                                      <li>{{ fn }}</li>
-                                    {% endfor %}
-                                  </ul>
-                                  {% if lib.functions|length > 150 %}
-                                    <div class="form-text mt-2">Showing first 150 functions.</div>
-                                  {% endif %}
-                                </div>
-                              </div>
-                            </div>
-                          {% endfor %}
-                        </div>
-                      {% else %}
-                        <div class="result_box mt-2">
-                          <p class="mb-0">No imports found (or not a PE).</p>
-                        </div>
-                      {% endif %}
-
-                      <!-- Exports -->
-                      <h6 class="mt-3">Exports</h6>
-                      {% if file_analysis_results.pe.exports and file_analysis_results.pe.exports|length > 0 %}
-                        <table class="table table-striped table-hover table-rounded">
-                          <thead class="table-dark">
-                            <tr>
-                              <th>Name</th>
-                              <th>Ordinal</th>
-                              <th>Address</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {% for e in file_analysis_results.pe.exports %}
-                              <tr>
-                                <td>{{ e.name or '—' }}</td>
-                                <td>{{ e.ordinal }}</td>
-                                <td>{{ e.address }}</td>
-                              </tr>
-                            {% endfor %}
-                          </tbody>
-                        </table>
-                      {% else %}
-                        <div class="result_box mt-2">
-                          <p class="mb-0">No exports found.</p>
-                        </div>
-                      {% endif %}
-                    {% else %}
-                      <div class="result_box mt-3">
-                        <p class="mb-0">PE detected, but <strong>pefile</strong> is not installed.</p>
-                      </div>
-                    {% endif %}
-                  {% else %}
-                    <div class="result_box mt-3">
-                      <p class="mb-0">Not a PE file (or PE signature not detected).</p>
-                    </div>
-                  {% endif %}
-
-                  <!-- Errors -->
-                  {% if file_analysis_results.errors and file_analysis_results.errors|length > 0 %}
-                    <div class="result_box mt-3">
-                      <p class="mb-2"><strong>Errors / Warnings</strong></p>
-                      <ul class="mb-0">
-                        {% for err in file_analysis_results.errors %}
-                          <li>{{ err }}</li>
-                        {% endfor %}
-                      </ul>
-                    </div>
-                  {% endif %}
-
-                {% endif %}
-              {% endif %}
-            </div>
-
-            <!-- Malware Sandbox (Static) -->
-            <div class="tab-pane" id="malware" role="tabpanel">
-              <div class="d-flex align-items-center gap-3 mb-2">
-                <h4 class="tab-title color mb-0">Malware Sandbox (Static)</h4>
-
-                <form method="POST"
-                      action="{{ url_for('forensics') }}"
-                      enctype="multipart/form-data"
-                      class="m-0">
-                  <input type="hidden" name="action" value="malware_sandbox">
-
-                  <div class="d-flex align-items-center gap-2">
-                    <input type="file"
-                           name="malware_file"
-                           class="form-control form-control-sm"
-                           required>
-                    <button type="submit" class="btn btn-sm btn-danger">
-                      Analyze
-                    </button>
-                  </div>
-                </form>
+          {% if malware_report %}
+            {% if malware_report.error %}
+              <div class="alert alert-danger py-2">
+                <p class="mb-0"><strong>Error:</strong> {{ malware_report.error }}</p>
               </div>
+            {% else %}
 
-              <p class="text-muted mb-3">
-                Static-only analysis (no execution). Hashing, strings, PE inspection,
-                indicators, and heuristic capability inference.
-              </p>
-
-            {% if malware_report %}
-                {% if malware_report.error %}
-                  <div class="alert alert-danger py-2">
-                    <p class="mb-0"><strong>Error:</strong> {{ malware_report.error }}</p>
-                  </div>
-                {% else %}
-              <!-- Summary -->
               <div class="card mb-3">
                 <div class="card-body">
                   <div class="row g-3">
                     <div class="col-md-6">
                       <div class="fw-semibold mb-1">Sample</div>
-                      <div>
-                        <span class="text-muted">File:</span>
-                        {{ malware_report["meta"]["original_filename"] }}
-                      </div>
-                      <div>
-                        <span class="text-muted">Size:</span>
-                        {{ malware_report["meta"]["size_bytes"] }} bytes
-                      </div>
-                      <div>
-                        <span class="text-muted">Sample ID:</span>
-                        <code>{{ malware_report["meta"]["sample_id"] }}</code>
-                      </div>
+                      <div><span class="text-muted">File:</span> {{ malware_report["meta"]["original_filename"] }}</div>
+                      <div><span class="text-muted">Size:</span> {{ malware_report["meta"]["size_bytes"] }} bytes</div>
+                      <div><span class="text-muted">Sample ID:</span> <code>{{ malware_report["meta"]["sample_id"] }}</code></div>
                     </div>
-
                     <div class="col-md-6">
                       <div class="fw-semibold mb-1">Hashes</div>
-                      <div class="small">
-                        <span class="text-muted">MD5:</span>
-                        <code>{{ malware_report["hashes"]["md5"] }}</code>
-                      </div>
-                      <div class="small">
-                        <span class="text-muted">SHA1:</span>
-                        <code>{{ malware_report["hashes"]["sha1"] }}</code>
-                      </div>
-                      <div class="small">
-                        <span class="text-muted">SHA256:</span>
-                        <code>{{ malware_report["hashes"]["sha256"] }}</code>
-                      </div>
+                      <div class="small"><span class="text-muted">MD5:</span> <code>{{ malware_report["hashes"]["md5"] }}</code></div>
+                      <div class="small"><span class="text-muted">SHA1:</span> <code>{{ malware_report["hashes"]["sha1"] }}</code></div>
+                      <div class="small"><span class="text-muted">SHA256:</span> <code>{{ malware_report["hashes"]["sha256"] }}</code></div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <!-- Capabilities -->
               <div class="card mb-3">
-                <div class="card-header fw-semibold">
-                  Static Capability Inference
-                </div>
+                <div class="card-header fw-semibold">Static Capability Inference</div>
                 <div class="card-body">
                   <div class="d-flex flex-wrap gap-2">
                     <span class="badge {{ 'bg-danger' if malware_report['capabilities']['networking'] else 'bg-secondary' }}">
-                      Networking
-                      ({{ malware_report["capabilities"]["confidence"]["networking"] }}%)
+                      Networking ({{ malware_report["capabilities"]["confidence"]["networking"] }}%)
                     </span>
-
                     <span class="badge {{ 'bg-danger' if malware_report['capabilities']['persistence'] else 'bg-secondary' }}">
-                      Persistence
-                      ({{ malware_report["capabilities"]["confidence"]["persistence"] }}%)
+                      Persistence ({{ malware_report["capabilities"]["confidence"]["persistence"] }}%)
                     </span>
-
                     <span class="badge {{ 'bg-danger' if malware_report['capabilities']['injection'] else 'bg-secondary' }}">
-                      Injection
-                      ({{ malware_report["capabilities"]["confidence"]["injection"] }}%)
+                      Injection ({{ malware_report["capabilities"]["confidence"]["injection"] }}%)
                     </span>
                   </div>
-
                   {% if malware_report["capabilities"]["notes"] %}
                     <hr>
                     <ul class="mb-0">
@@ -563,20 +407,19 @@
                 </div>
               </div>
 
-              <!-- Indicators -->
               <div class="card mb-3">
                 <div class="card-header fw-semibold">Indicators</div>
                 <div class="card-body">
                   <div class="row g-3">
-
+                    {% for label, key in [('URLs','urls'),('Domains','domains'),('IPs','ips'),('Registry Paths','registry_paths')] %}
                     <div class="col-md-6">
-                      <div class="fw-semibold mb-1">URLs</div>
-                      {% if malware_report["indicators"]["urls"] %}
+                      <div class="fw-semibold mb-1">{{ label }}</div>
+                      {% if malware_report["indicators"][key] %}
                         <div class="table-responsive" style="max-height:220px;">
                           <table class="table table-sm table-hover mb-0">
                             <tbody>
-                              {% for u in malware_report["indicators"]["urls"] %}
-                                <tr><td class="small"><code>{{ u }}</code></td></tr>
+                              {% for item in malware_report["indicators"][key] %}
+                                <tr><td class="small"><code>{{ item }}</code></td></tr>
                               {% endfor %}
                             </tbody>
                           </table>
@@ -585,92 +428,29 @@
                         <div class="text-muted small">None found</div>
                       {% endif %}
                     </div>
-
-                    <div class="col-md-6">
-                      <div class="fw-semibold mb-1">Domains</div>
-                      {% if malware_report["indicators"]["domains"] %}
-                        <div class="table-responsive" style="max-height:220px;">
-                          <table class="table table-sm table-hover mb-0">
-                            <tbody>
-                              {% for d in malware_report["indicators"]["domains"] %}
-                                <tr><td class="small"><code>{{ d }}</code></td></tr>
-                              {% endfor %}
-                            </tbody>
-                          </table>
-                        </div>
-                      {% else %}
-                        <div class="text-muted small">None found</div>
-                      {% endif %}
-                    </div>
-
-                    <div class="col-md-6">
-                      <div class="fw-semibold mt-2 mb-1">IPs</div>
-                      {% if malware_report["indicators"]["ips"] %}
-                        <div class="table-responsive" style="max-height:220px;">
-                          <table class="table table-sm table-hover mb-0">
-                            <tbody>
-                              {% for ip in malware_report["indicators"]["ips"] %}
-                                <tr><td class="small"><code>{{ ip }}</code></td></tr>
-                              {% endfor %}
-                            </tbody>
-                          </table>
-                        </div>
-                      {% else %}
-                        <div class="text-muted small">None found</div>
-                      {% endif %}
-                    </div>
-
-                    <div class="col-md-6">
-                      <div class="fw-semibold mt-2 mb-1">Registry Paths</div>
-                      {% if malware_report["indicators"]["registry_paths"] %}
-                        <div class="table-responsive" style="max-height:220px;">
-                          <table class="table table-sm table-hover mb-0">
-                            <tbody>
-                              {% for r in malware_report["indicators"]["registry_paths"] %}
-                                <tr><td class="small"><code>{{ r }}</code></td></tr>
-                              {% endfor %}
-                            </tbody>
-                          </table>
-                        </div>
-                      {% else %}
-                        <div class="text-muted small">None found</div>
-                      {% endif %}
-                    </div>
-
+                    {% endfor %}
                   </div>
                 </div>
               </div>
 
-              <!-- PE Analysis -->
               <div class="card mb-3">
                 <div class="card-header fw-semibold">PE Analysis</div>
                 <div class="card-body">
                   {% if malware_report["pe"]["is_pe"] %}
                     <div class="row g-3 small mb-2">
                       <div class="col-md-6">
-                        <div><span class="text-muted">Entry Point:</span>
-                          <code>{{ malware_report["pe"]["entry_point"] }}</code></div>
-                        <div><span class="text-muted">Image Base:</span>
-                          <code>{{ malware_report["pe"]["image_base"] }}</code></div>
-                        <div><span class="text-muted">Subsystem:</span>
-                          {{ malware_report["pe"]["subsystem"] }}</div>
+                        <div><span class="text-muted">Entry Point:</span> <code>{{ malware_report["pe"]["entry_point"] }}</code></div>
+                        <div><span class="text-muted">Image Base:</span> <code>{{ malware_report["pe"]["image_base"] }}</code></div>
+                        <div><span class="text-muted">Subsystem:</span> {{ malware_report["pe"]["subsystem"] }}</div>
                       </div>
                       <div class="col-md-6">
-                        <div><span class="text-muted">Is DLL:</span>
-                          {{ "Yes" if malware_report["pe"]["is_dll"] else "No" }}</div>
+                        <div><span class="text-muted">Is DLL:</span> {{ "Yes" if malware_report["pe"]["is_dll"] else "No" }}</div>
                       </div>
                     </div>
-
                     <div class="fw-semibold mb-1">Sections</div>
                     <div class="table-responsive" style="max-height:260px;">
                       <table class="table table-sm table-striped mb-0">
-                        <thead>
-                          <tr>
-                            <th>Name</th>
-                            <th>Entropy</th>
-                            <th>Raw Size</th>
-                          </tr>
-                        </thead>
+                        <thead><tr><th>Name</th><th>Entropy</th><th>Raw Size</th></tr></thead>
                         <tbody>
                           {% for s in malware_report["pe"]["sections"] %}
                             <tr>
@@ -688,179 +468,122 @@
                 </div>
               </div>
 
-              <!-- Strings -->
               <div class="card mb-3">
                 <div class="card-header fw-semibold">Strings (Preview)</div>
                 <div class="card-body">
                   <div class="row g-3">
                     <div class="col-md-6">
-                      <div class="fw-semibold mb-1">
-                        ASCII ({{ malware_report["strings"]["ascii_count"] }})
-                      </div>
-                      <pre class="bg-dark text-light p-2 small rounded"
-                           style="max-height:260px; overflow:auto;">
-            {% for s in malware_report["strings"]["ascii_preview"] %}
-            {{ s }}
-            {% endfor %}
-                      </pre>
+                      <div class="fw-semibold mb-1">ASCII ({{ malware_report["strings"]["ascii_count"] }})</div>
+                      <pre class="bg-dark text-light p-2 small rounded" style="max-height:260px;overflow:auto;">{% for s in malware_report["strings"]["ascii_preview"] %}{{ s }}
+{% endfor %}</pre>
                     </div>
-
                     <div class="col-md-6">
-                      <div class="fw-semibold mb-1">
-                        UTF-16LE ({{ malware_report["strings"]["utf16le_count"] }})
-                      </div>
-                      <pre class="bg-dark text-light p-2 small rounded"
-                           style="max-height:260px; overflow:auto;">
-            {% for s in malware_report["strings"]["utf16le_preview"] %}
-            {{ s }}
-            {% endfor %}
-                      </pre>
+                      <div class="fw-semibold mb-1">UTF-16LE ({{ malware_report["strings"]["utf16le_count"] }})</div>
+                      <pre class="bg-dark text-light p-2 small rounded" style="max-height:260px;overflow:auto;">{% for s in malware_report["strings"]["utf16le_preview"] %}{{ s }}
+{% endfor %}</pre>
                     </div>
                   </div>
                 </div>
               </div>
-                {% endif %}
-              {% else %}
-                <div class="alert alert-secondary">
-                  Upload a file to generate a static malware analysis report.
-                </div>
-              {% endif %}
-            </div>
 
-            <!-- Image Analysis Sub-Tab -->
-            <div class="tab-pane" id="image-analysis" role="tabpanel">
-              <h4 class="tab-title color">Image Analysis</h4>
-              <p>Static image inspection: format validation, hashes, entropy, and EXIF/XMP metadata (if present).</p>
-
-              <!-- Input form -->
-              <form method="POST" action="{{ url_for('forensics') }}" class="scan-form mt-3">
-                <input type="hidden" name="action" value="image_analysis">
-
-                <div class="row g-3 align-items-end">
-                  <div class="col-md-8">
-                    <label for="ia_target_path" class="form-label">Target image path</label>
-
-                    <div class="input-group">
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="ia_target_path"
-                        name="target_path"
-                        placeholder="C:\Users\A\Pictures\photo.jpg"
-                        value="{{ ia_target_path or '' }}"
-                      >
-                      <button class="btn btn-outline-secondary" type="button" id="btnBrowseImageAnalysis">
-                        Browse…
-                      </button>
-                    </div>
-
-                    <div class="form-text">Desktop-only: uses native Windows file picker (pywebview).</div>
-                  </div>
-
-                  <div class="col-md-4 d-grid">
-                    <button type="submit" class="btn btn-primary">Analyze</button>
-                  </div>
-                </div>
-              </form>
-
-              {% if image_analysis_results %}
-                {% if image_analysis_results.error %}
-                  <div class="result_box mt-3">
-                    <p class="mb-0"><strong>Error:</strong> {{ image_analysis_results.error }}</p>
-                  </div>
-                {% else %}
-
-                  <!-- Flags -->
-                  {% if image_analysis_results.flags and image_analysis_results.flags|length > 0 %}
-                    <div class="result_box mt-3">
-                      <p class="mb-2"><strong>Indicators</strong></p>
-                    {% for f in image_analysis_results.flags %}
-                      <p>- {{ f }}</p>
-                    {% endfor %}
-                    </div>
-                  {% endif %}
-
-                  <!-- Overview -->
-                  <h5 class="mt-4">Overview</h5>
-                  <table class="table table-striped table-hover table-rounded">
-                    <thead class="table-dark">
-                      <tr>
-                        <th>Field</th>
-                        <th>Value</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr><td><strong>Path</strong></td><td>{{ image_analysis_results.path }}</td></tr>
-                      <tr><td><strong>Size (bytes)</strong></td><td>{{ image_analysis_results.size_bytes }}</td></tr>
-                      <tr><td><strong>Format</strong></td><td>{{ image_analysis_results.format or '—' }}</td></tr>
-                      <tr><td><strong>Entropy</strong></td><td>{{ image_analysis_results.entropy or '—' }}</td></tr>
-                    </tbody>
-                  </table>
-
-                  <!-- Hashes -->
-                  <h5 class="mt-4">Hashes</h5>
-                  <table class="table table-striped table-hover table-rounded">
-                    <thead class="table-dark">
-                      <tr>
-                        <th>Algorithm</th>
-                        <th>Digest</th>
-                        <th style="width: 120px;">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for algo, digest in image_analysis_results.hashes.items() %}
-                        <tr>
-                          <td><strong>{{ algo|upper }}</strong></td>
-                          <td id="ia_{{ algo }}">{{ digest }}</td>
-                          <td>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyDigest('ia_{{ algo }}')">
-                              Copy
-                            </button>
-                          </td>
-                        </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-
-                  <!-- EXIF -->
-                  <h5 class="mt-4">EXIF / Metadata</h5>
-                  {% if image_analysis_results.exif and image_analysis_results.exif|length > 0 %}
-                    <table class="table table-striped table-hover table-rounded">
-                      <thead class="table-dark">
-                        <tr>
-                          <th>Tag</th>
-                          <th>Value</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for k, v in image_analysis_results.exif.items() %}
-                          <tr>
-                            <td><strong>{{ k }}</strong></td>
-                            <td>{{ v }}</td>
-                          </tr>
-                        {% endfor %}
-                      </tbody>
-                    </table>
-                  {% else %}
-                    <div class="result_box mt-2">
-                      <p class="mb-0">No EXIF metadata found (or not supported for this image).</p>
-                    </div>
-                  {% endif %}
-
-                  <!-- Errors / warnings -->
-                  {% if image_analysis_results.errors and image_analysis_results.errors|length > 0 %}
-                    <div class="result_box mt-4">
-                      <p class="mb-2"><strong>Errors / Warnings</strong></p>
-                    {% for e in image_analysis_results.errors %}
-                      <p>- {{ e }}</p>
-                    {% endfor %}
-                    </div>
-                  {% endif %}
-
-                {% endif %}
-              {% endif %}
-            </div>
+            {% endif %}
+          {% else %}
+            <div class="alert alert-secondary">Upload a file to generate a static malware analysis report.</div>
+          {% endif %}
         </div>
+
+
+        {# ═══════════════════════════════════════════════════════════════
+           IMAGE ANALYSIS
+        ═══════════════════════════════════════════════════════════════ #}
+        <div class="tab-pane" id="image-analysis" role="tabpanel">
+          <h4 class="tab-title color">Image Analysis</h4>
+          <p>Static image inspection: format validation, hashes, entropy, and EXIF/XMP metadata (if present).</p>
+
+          <form method="POST" action="{{ url_for('forensics') }}" class="mt-3" enctype="multipart/form-data">
+            <input type="hidden" name="action" value="image_analysis">
+            <div class="row g-3 align-items-end">
+              <div class="col-md-8">
+                <label class="form-label">Upload image</label>
+                <input type="file" class="form-control" name="target_file"
+                       accept="image/*"
+                       onchange="document.getElementById('ia_path_display').value = this.files[0] ? this.files[0].name : ''">
+                <label class="form-label mt-2">Or enter full path manually</label>
+                <input type="text" class="form-control" id="ia_path_display" name="target_path"
+                       placeholder="C:\Users\A\Pictures\photo.jpg">
+              </div>
+              <div class="col-md-4 d-grid">
+                <button type="submit" class="btn btn-primary">Analyse</button>
+              </div>
+            </div>
+          </form>
+
+          {% if image_analysis_results %}
+            {% if image_analysis_results.error %}
+              <div class="result_box mt-3">
+                <p class="mb-0"><strong>Error:</strong> {{ image_analysis_results.error }}</p>
+              </div>
+            {% else %}
+
+              {% if image_analysis_results.flags and image_analysis_results.flags|length > 0 %}
+                <div class="result_box mt-3">
+                  <p class="mb-2"><strong>Indicators</strong></p>
+                  {% for f in image_analysis_results.flags %}<p>— {{ f }}</p>{% endfor %}
+                </div>
+              {% endif %}
+
+              <h5 class="mt-4">Overview</h5>
+              <table class="table table-striped table-hover table-rounded">
+                <thead class="table-dark"><tr><th>Field</th><th>Value</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>Path</strong></td><td>{{ image_analysis_results.path }}</td></tr>
+                  <tr><td><strong>Size (bytes)</strong></td><td>{{ image_analysis_results.size_bytes }}</td></tr>
+                  <tr><td><strong>Format</strong></td><td>{{ image_analysis_results.format or '—' }}</td></tr>
+                  <tr><td><strong>Entropy</strong></td><td>{{ image_analysis_results.entropy or '—' }}</td></tr>
+                </tbody>
+              </table>
+
+              <h5 class="mt-4">Hashes</h5>
+              <table class="table table-striped table-hover table-rounded">
+                <thead class="table-dark"><tr><th>Algorithm</th><th>Digest</th><th style="width:120px;">Action</th></tr></thead>
+                <tbody>
+                  {% for algo, digest in image_analysis_results.hashes.items() %}
+                    <tr>
+                      <td><strong>{{ algo|upper }}</strong></td>
+                      <td id="ia_{{ algo }}">{{ digest }}</td>
+                      <td><button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyDigest('ia_{{ algo }}')">Copy</button></td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+              <h5 class="mt-4">EXIF / Metadata</h5>
+              {% if image_analysis_results.exif and image_analysis_results.exif|length > 0 %}
+                <table class="table table-striped table-hover table-rounded">
+                  <thead class="table-dark"><tr><th>Tag</th><th>Value</th></tr></thead>
+                  <tbody>
+                    {% for k, v in image_analysis_results.exif.items() %}
+                      <tr><td><strong>{{ k }}</strong></td><td>{{ v }}</td></tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              {% else %}
+                <div class="result_box mt-2"><p class="mb-0">No EXIF metadata found.</p></div>
+              {% endif %}
+
+              {% if image_analysis_results.errors and image_analysis_results.errors|length > 0 %}
+                <div class="result_box mt-4">
+                  <p class="mb-2"><strong>Errors / Warnings</strong></p>
+                  {% for e in image_analysis_results.errors %}<p>— {{ e }}</p>{% endfor %}
+                </div>
+              {% endif %}
+
+            {% endif %}
+          {% endif %}
+        </div>
+
+
+      </div>{# end tab-content #}
     </main>
   </div>
 </div>
@@ -869,150 +592,50 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 window.addEventListener('load', () => {
-    const scrollPos = localStorage.getItem('scrollPos');
-    if (scrollPos) {
-      window.scrollTo(parseInt(scrollPos), parseInt(scrollPos));
-    }
+    const scrollPos = localStorage.getItem('forensicsScrollPos');
+    if (scrollPos) window.scrollTo(0, parseInt(scrollPos));
 });
-
-// Save scroll position whenever the user scrolls
 window.addEventListener('scroll', () => {
-    localStorage.setItem('scrollPos', window.scrollY);
+    localStorage.setItem('forensicsScrollPos', window.scrollY);
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-    let triggerTabList = [].slice.call(document.querySelectorAll('#toolTabs button'))
+    const triggerTabList = [].slice.call(document.querySelectorAll('#toolTabs button'));
     triggerTabList.forEach(function (triggerEl) {
         triggerEl.addEventListener('shown.bs.tab', function (event) {
-            localStorage.setItem('activeTab', event.target.getAttribute('data-bs-target'));
-        })
+            localStorage.setItem('forensicsActiveTab', event.target.getAttribute('data-bs-target'));
+        });
     });
 
-    let activeTab = localStorage.getItem('activeTab');
+    const activeTab = localStorage.getItem('forensicsActiveTab');
     if (activeTab) {
-        let tab = document.querySelector('#toolTabs button[data-bs-target="' + activeTab + '"]');
-        if (tab) {
-            new bootstrap.Tab(tab).show();
-        }
+        const tab = document.querySelector('#toolTabs button[data-bs-target="' + activeTab + '"]');
+        if (tab) new bootstrap.Tab(tab).show();
     }
 });
 
 function copyDigest(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const text = el.innerText || el.textContent;
-  if (!navigator.clipboard) {
-    // fallback
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); } catch(e) {}
-    document.body.removeChild(ta);
-    return;
-  }
-  navigator.clipboard.writeText(text).then(() => {
-    // optional: show quick feedback
-    const btn = event?.currentTarget;
-    if (btn) {
-      const orig = btn.innerHTML;
-      btn.innerHTML = 'Copied';
-      setTimeout(()=> btn.innerHTML = orig, 900);
+    const el = document.getElementById(id);
+    if (!el) return;
+    const text = el.innerText || el.textContent;
+    if (!navigator.clipboard) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch(e) {}
+        document.body.removeChild(ta);
+        return;
     }
-  }).catch(()=>{/* ignore */});
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = event?.currentTarget;
+        if (btn) {
+            const orig = btn.innerHTML;
+            btn.innerHTML = 'Copied';
+            setTimeout(() => btn.innerHTML = orig, 900);
+        }
+    }).catch(() => {});
 }
-
-(function () {
-  // Track when pywebview is ready
-  let pvReady = false;
-  window.addEventListener('pywebviewready', () => { pvReady = true; });
-
-  async function pickForensicsFile() {
-    // Hard feedback so you KNOW the click fired
-    console.log("Browse clicked");
-
-    if (!pvReady || !window.pywebview || !window.pywebview.api || !window.pywebview.api.pick_file) {
-      alert("pywebview API not ready (desktop mode).");
-      return;
-    }
-
-    try {
-      const path = await window.pywebview.api.pick_file();
-      if (path) {
-        const el = document.getElementById("target_path");
-        if (el) el.value = path;
-      }
-    } catch (e) {
-      alert("Failed to open file picker.");
-    }
-  }
-
-  // Wire the click in JS (more reliable than inline onclick)
-  document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("btnBrowseForensics");
-    if (btn) btn.addEventListener("click", pickForensicsFile);
-  });
-
-  // Optional: expose for debugging
-  window.pickForensicsFile = pickForensicsFile;
-})();
-
-(function () {
-  let pvReady = false;
-  window.addEventListener('pywebviewready', () => { pvReady = true; });
-
-  async function pickFileAnalysisFile() {
-    if (!pvReady || !window.pywebview || !window.pywebview.api || !window.pywebview.api.pick_file) {
-      alert("pywebview API not ready (desktop mode).");
-      return;
-    }
-    try {
-      const path = await window.pywebview.api.pick_file();
-      if (path) {
-        const el = document.getElementById("fa_target_path");
-        if (el) el.value = path;
-      }
-    } catch (e) {
-      alert("Failed to open file picker.");
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("btnBrowseFileAnalysis");
-    if (btn) btn.addEventListener("click", pickFileAnalysisFile);
-  });
-
-  // Optional export for debugging
-  window.pickFileAnalysisFile = pickFileAnalysisFile;
-})();
-
-(function () {
-  let pvReady = false;
-  window.addEventListener('pywebviewready', () => { pvReady = true; });
-
-  async function pickImageAnalysisFile() {
-    if (!pvReady || !window.pywebview || !window.pywebview.api || !window.pywebview.api.pick_file) {
-      alert("pywebview API not ready (desktop mode).");
-      return;
-    }
-    try {
-      const path = await window.pywebview.api.pick_file();
-      if (path) {
-        const el = document.getElementById("ia_target_path");
-        if (el) el.value = path;
-      }
-    } catch (e) {
-      alert("Failed to open file picker.");
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("btnBrowseImageAnalysis");
-    if (btn) btn.addEventListener("click", pickImageAnalysisFile);
-  });
-
-  window.pickImageAnalysisFile = pickImageAnalysisFile;
-})();
 </script>
 </body>
 </html>

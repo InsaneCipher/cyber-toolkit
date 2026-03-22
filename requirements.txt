@@ -2,6 +2,7 @@ Flask>=3.0.0
 pywebview>=4.4
 psutil>=5.9.0
 requests>=2.31.0
+scapy>=2.5.0
 
 # Forensics / file analysis
 pytsk3>=20230125

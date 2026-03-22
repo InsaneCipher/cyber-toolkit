@@ -18,6 +18,7 @@ import multiprocessing
 import os
 import sys
 import threading
+import webview
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -186,11 +187,18 @@ def _before():
 # pywebview JS API
 # ─────────────────────────────────────────────
 
-class Api:
-    def pick_file(self):
-        """Open a native file picker dialog and return the selected path."""
-        paths = webview.create_file_dialog(webview.OPEN_DIALOG, allow_multiple=False)
+def pick_file():
+    """Open a native file picker dialog and return the selected path."""
+    try:
+        wnd = webview.windows[0]
+        paths = wnd.create_file_dialog(webview.OPEN_DIALOG, allow_multiple=False)
         return paths[0] if paths else ""
+    except Exception:
+        return ""
+
+
+class Api:
+    pass
 
 
 # ─────────────────────────────────────────────
@@ -456,26 +464,61 @@ def forensics():
 
         # ── File system forensics ─────────────────────────────────────────────
         if action == "forensics":
+            import tempfile
+            uploaded_file = request.files.get("target_file")
             target_path = (request.form.get("target_path") or "").strip()
-            if target_path:
+
+            if uploaded_file and uploaded_file.filename != "":
+                suffix = os.path.splitext(uploaded_file.filename)[1] or ".bin"
+                try:
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+                        uploaded_file.save(tmp)
+                        tmp_path = tmp.name
+                    STATE["forensics_results"] = collect_forensics_results(target_path=tmp_path)
+                except Exception as e:
+                    STATE["forensics_results"] = {"error": str(e)}
+                finally:
+                    try:
+                        os.unlink(tmp_path)
+                    except Exception:
+                        pass
+            elif target_path:
                 try:
                     STATE["forensics_results"] = collect_forensics_results(target_path=target_path)
                 except Exception as e:
                     STATE["forensics_results"] = {"error": str(e)}
             else:
-                STATE["forensics_results"] = {"error": "Please enter a valid file path."}
+                STATE["forensics_results"] = {"error": "Please upload a file or enter a valid file path."}
             save_cache("forensics_results", STATE["forensics_results"])
 
         # ── File analysis ─────────────────────────────────────────────────────
         elif action == "file_analysis":
+            import tempfile
+            uploaded_file = request.files.get("target_file")
             fa_target_path = (request.form.get("target_path") or "").strip()
-            if fa_target_path:
+
+            if uploaded_file and uploaded_file.filename != "":
+                # Save to a temp file so analyze_file() can read it by path
+                suffix = os.path.splitext(uploaded_file.filename)[1] or ".bin"
+                try:
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+                        uploaded_file.save(tmp)
+                        tmp_path = tmp.name
+                    STATE["file_analysis_results"] = analyze_file(tmp_path)
+                except Exception as e:
+                    STATE["file_analysis_results"] = {"error": str(e)}
+                finally:
+                    try:
+                        os.unlink(tmp_path)
+                    except Exception:
+                        pass
+            elif fa_target_path:
                 try:
                     STATE["file_analysis_results"] = analyze_file(fa_target_path)
                 except Exception as e:
                     STATE["file_analysis_results"] = {"error": str(e)}
             else:
-                STATE["file_analysis_results"] = {"error": "Please enter a valid file path."}
+                STATE["file_analysis_results"] = {"error": "Please upload a file or enter a valid file path."}
             save_cache("file_analysis_results", STATE["file_analysis_results"])
 
         # ── Malware sandbox ───────────────────────────────────────────────────
@@ -500,14 +543,34 @@ def forensics():
 
         # ── Image analysis ────────────────────────────────────────────────────
         elif action == "image_analysis":
+            import tempfile
+            uploaded_file = request.files.get("target_file")
             target_path = (request.form.get("target_path") or "").strip()
-            if target_path:
+
+            if uploaded_file and uploaded_file.filename != "":
+                suffix = os.path.splitext(uploaded_file.filename)[1] or ".bin"
+                tmp_path = None
+                try:
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+                        uploaded_file.save(tmp)
+                        tmp_path = tmp.name
+                    STATE["image_analysis_results"] = analyze_image(tmp_path)
+                except Exception as e:
+                    STATE["image_analysis_results"] = {"error": str(e)}
+                finally:
+                    if tmp_path:
+                        try:
+                            os.unlink(tmp_path)
+                        except Exception:
+                            pass
+            elif target_path:
                 try:
                     STATE["image_analysis_results"] = analyze_image(target_path)
                 except Exception as e:
                     STATE["image_analysis_results"] = {"error": str(e)}
             else:
-                STATE["image_analysis_results"] = {"error": "Please enter a valid image file path."}
+                STATE["image_analysis_results"] = {"error": "Please upload an image or enter a valid file path."}
+
             save_cache("image_analysis_results", STATE["image_analysis_results"])
 
     return get_template("forensics.html", "forensics")
