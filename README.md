@@ -1,6 +1,6 @@
 # ⚙️ Cyber Toolkit
 
-A Windows-focused desktop cybersecurity utility built with Python, Flask, and pywebview. Brings together network analysis, reconnaissance, forensics, security auditing, and system inspection tools into a single offline-first desktop application — no browser required, no cloud dependency, no data leaves your machine.
+A Windows-focused desktop cybersecurity utility built with Python, Flask, and pywebview. Brings together network analysis, reconnaissance, forensics, security auditing, and system inspection tools into a single offline-first desktop application (no browser required, no cloud dependency, no data leaves your machine).
 
 ---
 
