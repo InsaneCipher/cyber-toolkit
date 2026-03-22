@@ -59,12 +59,28 @@ label {
     color: #fff;
 }
 
+.result_box li {
+    color: #fff !important;
+    font-size: 0.8rem;
+    margin: 4px 0;
+}
+
+.result_box label {
+    color: #fff !important;
+    font-size: 0.85rem;
+}
+
 .scan-form {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 12px;
     margin-bottom: 20px;
+}
+
+textarea::placeholder {
+    color: #6b7280 !important;
+    opacity: 1;
 }
 
 .scan-label {
@@ -239,6 +255,7 @@ pre {
 main {
   margin-left: 230px; /* leave room for sidebar */
   padding-top: 1rem;
+  padding-bottom: 2rem;
 }
 
 /* Fix horizontal nav alignment and height */

@@ -9,15 +9,14 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from flask import Flask, render_template, request
 
 from tools.caching_tools import *
-from tools.diagnostics import get_dns_cache, ping_host, get_arp_table, get_interface_info
 from tools.forensics_tools import *
 from tools.hashing_and_encoding import *
-from tools.net_scan import *
-from tools.port_scan import *
 from tools.recon_tools import *
 from tools.subnet import *
 from tools.system_tools import *
 from tools.security_tools import *
+from tools.network_tools import *
+from tools.developer_tools import *
 
 STATE = {
     # network
@@ -27,6 +26,8 @@ STATE = {
     "ping_result": None,
     "arp_table": None,
     "interface_info": None,
+    "monitoring_results": None,
+    "network_map_results": None,
 
     # recon
     "dns_result": None,
@@ -74,7 +75,17 @@ STATE = {
     "firewall_results": None,
     "shares_results": None,
     "privesc_results": None,
-    "vuln_results": None
+    "vuln_results": None,
+
+    # developer tools
+    "snippet_result":   None,
+    "tasks_result":     None,
+    "task_action_result": None,
+    "scripts_result":   None,
+    "script_run_result": None,
+    "event_log_result": None,
+    "app_log_result":   None,
+    "app_log_files":    None,
 }
 
 
@@ -137,7 +148,6 @@ def _before():
 # -------------------------------------
 # Network Page
 # -------------------------------------
-
 @app.route("/", methods=["GET", "POST"])
 @app.route("/network", methods=["GET", "POST"])
 def network():
@@ -148,7 +158,7 @@ def network():
             timeout = int(request.form.get("timeout", 5))
             print(f"Running network scan for {timeout} seconds...")
             results = net_scan(timeout)
-            STATE["result"]= {
+            STATE["result"] = {
                 "all": results[0],
                 "inbound": results[1],
                 "outbound": results[2],
@@ -166,16 +176,61 @@ def network():
             STATE["ping_result"] = ping_host(host)
 
         elif action == "arp_table":
-            print("Scanning dns cache...")
+            print("Fetching ARP table...")
             STATE["arp_table"] = get_arp_table()
 
         elif action == "interface_info":
-            print("Scanning dns cache...")
+            print("Fetching interface info...")
             STATE["interface_info"] = get_interface_info()
 
         elif action == "dns_cache":
-            print("Scanning dns cache...")
+            print("Fetching DNS cache...")
             STATE["dns_cache"] = get_dns_cache()
+
+        # ── Monitoring ────────────────────────────────────────────────────────
+        elif action == "bandwidth_snapshot":
+            print("Taking bandwidth snapshot...")
+            STATE["monitoring_results"] = {
+                "type": "bandwidth",
+                "data": get_bandwidth_snapshot(),
+            }
+
+        elif action == "active_connections":
+            print("Fetching active connections...")
+            STATE["monitoring_results"] = {
+                "type": "connections",
+                "data": get_active_connections(),
+            }
+
+        elif action == "top_processes":
+            top_n = int(request.form.get("top_n", 10))
+            print(f"Fetching top {top_n} processes by network usage...")
+            STATE["monitoring_results"] = {
+                "type": "processes",
+                "data": get_top_processes_by_net(top_n),
+            }
+
+        elif action == "interface_stats":
+            print("Fetching interface stats...")
+            STATE["monitoring_results"] = {
+                "type": "interface_stats",
+                "data": get_interface_stats(),
+            }
+
+        # ── Network Map ───────────────────────────────────────────────────────
+        elif action == "network_map":
+            subnet = request.form.get("map_subnet", "").strip() or None
+            print(f"Building network map for subnet: {subnet or 'auto-detect'}...")
+            STATE["network_map_results"] = build_network_map(subnet=subnet)
+
+        elif action == "traceroute_map":
+            target = request.form.get("trace_target", "").strip()
+            max_hops = int(request.form.get("max_hops", 20))
+            print(f"Running traceroute to {target}...")
+            STATE["network_map_results"] = {
+                "type": "traceroute",
+                "data": traceroute_hops(target, max_hops=max_hops),
+            }
 
     return get_template("index.html", "network")
 
@@ -476,8 +531,115 @@ def security():
     return get_template("security.html", "security")
 
 
-@app.route("/developer")
+@app.route("/developer", methods=["GET", "POST"])
 def developer():
+    if request.method == "POST":
+        action = request.form.get("action")
+
+        # ── Python Snippet Runner ──────────────────────────────────────────────
+        if action == "run_python":
+            code    = request.form.get("code", "")
+            timeout = int(request.form.get("timeout", 10))
+            try:
+                STATE["snippet_result"] = run_python_snippet(code, timeout=timeout)
+            except Exception as e:
+                STATE["snippet_result"] = {"error": str(e), "stdout": "", "stderr": "", "returncode": -1, "elapsed_ms": 0, "language": "python", "code": code}
+
+        # ── PowerShell Snippet Runner ──────────────────────────────────────────
+        elif action == "run_powershell":
+            code    = request.form.get("code", "")
+            timeout = int(request.form.get("timeout", 15))
+            try:
+                STATE["snippet_result"] = run_powershell_snippet(code, timeout=timeout)
+            except Exception as e:
+                STATE["snippet_result"] = {"error": str(e), "stdout": "", "stderr": "", "returncode": -1, "elapsed_ms": 0, "language": "powershell", "code": code}
+
+        # ── Scheduled Tasks ───────────────────────────────────────────────────
+        elif action == "get_tasks":
+            try:
+                STATE["tasks_result"] = get_scheduled_tasks()
+            except Exception as e:
+                STATE["tasks_result"] = {"tasks": [], "count": 0, "errors": [str(e)]}
+
+        elif action == "task_action":
+            task_name   = request.form.get("task_name", "").strip()
+            task_action = request.form.get("task_action", "")
+            try:
+                STATE["task_action_result"] = set_scheduled_task(task_name, task_action)
+            except Exception as e:
+                STATE["task_action_result"] = {"success": False, "output": "", "error": str(e)}
+
+        # ── Script Manager ────────────────────────────────────────────────────
+        elif action == "load_scripts":
+            try:
+                STATE["scripts_result"] = get_script_manager_scripts()
+            except Exception as e:
+                STATE["scripts_result"] = {"scripts": {}, "error": str(e)}
+
+        elif action == "save_script":
+            name     = request.form.get("script_name", "").strip()
+            language = request.form.get("script_language", "python")
+            code     = request.form.get("script_code", "")
+            try:
+                save_script(name, language, code)
+            except Exception as e:
+                STATE["scripts_result"] = {"scripts": {}, "error": str(e)}
+            # Reload scripts after save so the list updates
+            STATE["scripts_result"] = get_script_manager_scripts()
+
+        elif action == "delete_script":
+            name = request.form.get("script_name", "").strip()
+            try:
+                delete_script(name)
+            except Exception as e:
+                STATE["scripts_result"] = {"scripts": {}, "error": str(e)}
+            # Reload after delete
+            STATE["scripts_result"] = get_script_manager_scripts()
+
+        elif action == "run_saved_script":
+            name = request.form.get("script_name", "").strip()
+            try:
+                STATE["script_run_result"] = run_saved_script(name)
+                STATE["scripts_result"]    = get_script_manager_scripts()
+            except Exception as e:
+                STATE["script_run_result"] = {"error": str(e), "stdout": "", "stderr": "", "returncode": -1, "elapsed_ms": 0}
+
+        # ── Event Log Viewer ──────────────────────────────────────────────────
+        elif action == "get_event_log":
+            log_name     = request.form.get("log_name", "System")
+            max_events   = int(request.form.get("max_events", 200))
+            level_filter = request.form.get("level_filter", "") or None
+            search       = request.form.get("log_search", "").strip() or None
+            try:
+                STATE["event_log_result"] = get_event_log(
+                    log_name=log_name,
+                    max_events=max_events,
+                    level_filter=level_filter,
+                    search=search,
+                )
+            except Exception as e:
+                STATE["event_log_result"] = {"log_name": log_name, "events": [], "count": 0, "errors": [str(e)]}
+
+        # ── App Log Viewer ────────────────────────────────────────────────────
+        elif action == "list_app_logs":
+            try:
+                STATE["app_log_files"] = list_app_logs()
+            except Exception as e:
+                STATE["app_log_files"] = {"files": [], "error": str(e)}
+
+        elif action == "get_app_log":
+            log_path  = request.form.get("log_file", "").strip()
+            max_lines = int(request.form.get("max_lines", 500))
+            search    = request.form.get("app_log_search", "").strip() or None
+            try:
+                STATE["app_log_result"] = get_app_log(
+                    log_path=log_path,
+                    max_lines=max_lines,
+                    search=search,
+                )
+            except Exception as e:
+                STATE["app_log_result"] = {"log_path": log_path, "lines": [], "count": 0, "truncated": False, "error": str(e)}
+
     return get_template("developer.html", "developer")
 
 
@@ -509,7 +671,7 @@ if __name__ == "__main__":
         threading.Thread(target=run_flask, daemon=True).start()
         webview.settings['OPEN_EXTERNAL_LINKS_IN_BROWSER'] = True
         webview.create_window(
-            "Cyber Toolkit App",
+            "Cyber Toolkit",
             "http://127.0.0.1:5000/",
             js_api=Api(),
             maximized=True,

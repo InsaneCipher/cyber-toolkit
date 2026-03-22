@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Network Tools - Cyber Toolkit</title>
+    <title>About - Cyber Toolkit</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -20,63 +19,52 @@
   </div>
 </nav>
 
-<!-- Navigation Bar (Below Brand) -->
+<!-- Navigation Bar -->
 <nav class="horizontal-navbar navbar navbar-expand-lg fixed-top" style="top: 56px;">
     <div class="container-fluid">
         <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'network' %}active{% endif %}" href="{{ url_for('network') }}">Network</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'recon' %}active{% endif %}" href="{{ url_for('recon') }}">Recon</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'system' %}active{% endif %}" href="{{ url_for('system') }}">System</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'forensics' %}active{% endif %}" href="{{ url_for('forensics') }}">Forensics</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'security' %}active{% endif %}" href="{{ url_for('security') }}">Security</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'utils' %}active{% endif %}" href="{{ url_for('utils') }}">Utilities</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'developer' %}active{% endif %}" href="{{ url_for('developer') }}">Developer</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'about' %}active{% endif %}" href="{{ url_for('about') }}">About</a>
-            </li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('network') }}">Network</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('recon') }}">Recon</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('system') }}">System</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('forensics') }}">Forensics</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('security') }}">Security</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('utils') }}">Utilities</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('developer') }}">Developer</a></li>
+            <li class="nav-item"><a class="nav-link active" href="{{ url_for('about') }}">About</a></li>
         </ul>
     </div>
 </nav>
 
 <div class="container-fluid">
   <div class="row">
+
     <!-- Sidebar -->
     <nav class="vert-sidebar">
       <ul class="nav flex-column nav-pills" id="toolTabs" role="tablist">
         <li class="nav-item">
-          <button class="nav-link active" id="network-tab" data-bs-toggle="tab" data-bs-target="#network" type="button" role="tab">Network Scan</button>
+          <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+            <i class="bi bi-info-circle me-2" style="color:#4da6ff;"></i> Overview
+          </button>
         </li>
         <li class="nav-item">
-          <button class="nav-link" id="port-tab" data-bs-toggle="tab" data-bs-target="#port" type="button" role="tab">Port Scanner</button>
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#modules" type="button" role="tab">
+            <i class="bi bi-grid me-2" style="color:#4ecca3;"></i> Modules
+          </button>
         </li>
         <li class="nav-item">
-          <button class="nav-link" id="process-tab" data-bs-toggle="tab" data-bs-target="#process" type="button" role="tab">Processes</button>
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#architecture" type="button" role="tab">
+            <i class="bi bi-diagram-3 me-2" style="color:#c77dff;"></i> Architecture
+          </button>
         </li>
         <li class="nav-item">
-          <button class="nav-link" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab">Services</button>
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#libraries" type="button" role="tab">
+            <i class="bi bi-box-seam me-2" style="color:#f0a500;"></i> Libraries
+          </button>
         </li>
         <li class="nav-item">
-          <button class="nav-link" id="dns-tab" data-bs-toggle="tab" data-bs-target="#dns" type="button" role="tab">Recon Tools</button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" id="misc-tab" data-bs-toggle="tab" data-bs-target="#misc" type="button" role="tab">Utilities</button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" id="about-tab" data-bs-toggle="tab" data-bs-target="#about" type="button" role="tab">About</button>
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#disclaimer" type="button" role="tab">
+            <i class="bi bi-shield-exclamation me-2" style="color:#e05c5c;"></i> Disclaimer
+          </button>
         </li>
       </ul>
     </nav>
@@ -84,599 +72,308 @@
     <!-- Main content -->
     <main class="col-md-10 ms-sm-auto px-md-4">
       <div class="tab-content" id="toolTabsContent">
-        <div class="tab-pane show active" id="network" role="tabpanel">
-            <div class="tool-card">
-                <h4 class="tab-title color">Network Scan</h4>
-                <p class="tool-description">Capture and analyze live network traffic, then view inbound, outbound, and most common connections with host details and packet counts.</p>
-                <form method="POST" action="/" class="scan-form">
-                <input type="hidden" name="action" value="scan">
-                  <label for="timeout" class="scan-label">Scan duration:</label>
-                  <select name="timeout" id="timeout" class="scan-select">
-                    <option value="5">5 seconds</option>
-                    <option value="10">10 seconds</option>
-                    <option value="15">15 seconds</option>
-                    <option value="30">30 seconds</option>
-                    <option value="60">60 seconds</option>
-                  </select>
-                  <button type="submit" class="btn-primary">Start Scan</button>
-                </form>
-            </div>
 
-            {% if result %}
-            <!-- Sub-tabs -->
-            <ul class="nav nav-pills mb-3" id="scanSubTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="all-tab" data-bs-toggle="pill" data-bs-target="#all" type="button" role="tab">All</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="inbound-tab" data-bs-toggle="pill" data-bs-target="#inbound" type="button" role="tab">Inbound</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="outbound-tab" data-bs-toggle="pill" data-bs-target="#outbound" type="button" role="tab">Outbound</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="common-tab" data-bs-toggle="pill" data-bs-target="#common" type="button" role="tab">Most Common</button>
-                </li>
+
+        {# ═══════════════════════════════════════════════════
+           OVERVIEW
+        ═══════════════════════════════════════════════════ #}
+        <div class="tab-pane show active" id="overview" role="tabpanel">
+          <h4 class="tab-title color">About Cyber Toolkit</h4>
+          <p>Cyber Toolkit is a desktop cybersecurity utility built for Windows. It brings together common network, recon, forensics, and security analysis tools into a single offline-first application — no web server, no cloud dependency, no external accounts required.</p>
+
+          <div class="result_box mt-3">
+            <p class="mb-2"><strong>Key Facts</strong></p>
+            <p>— Runs entirely locally as a desktop application</p>
+            <p>— Built with Python, Flask, and pywebview</p>
+            <p>— Windows-focused — uses native Windows APIs where possible</p>
+            <p>— All results cached locally in JSON — no data leaves your machine</p>
+            <p class="mb-0">— Packagable as a standalone <code>.exe</code> via PyInstaller</p>
+          </div>
+
+          <h5 class="mt-4" style="color:#4da6ff;">How It Works</h5>
+          <p>The app starts a local Flask web server on <code>127.0.0.1:5000</code> and launches a native desktop window via pywebview pointed at that server. From your perspective it behaves like a regular desktop app — there is no browser involved and no network exposure. All tool logic runs in Python on your machine and results are rendered back through Jinja2 HTML templates.</p>
+          <p>Each tab in the sidebar corresponds to a Flask route. When you click a button or submit a form, a standard HTTP POST is made to the local server, the relevant Python tool runs, the result is stored in a central <code>STATE</code> dictionary, and the page re-renders with the new data. Previous scan results are persisted to a local JSON cache so they survive app restarts.</p>
+
+          <h5 class="mt-4" style="color:#4da6ff;">Designed For</h5>
+          <div class="row mt-3 g-3">
+            {% for item in [
+              ("bi-person-badge", "#4da6ff", "Security Analysts", "Quickly triage a Windows machine — check persistence, firewall rules, open shares, and privilege escalation vectors."),
+              ("bi-bug", "#e05c5c", "Malware Investigators", "Analyse suspicious files, extract metadata, check entropy, inspect PE headers, and run a basic sandbox."),
+              ("bi-search", "#4ecca3", "Recon & OSINT", "DNS lookups, WHOIS, traceroute, IP geolocation, certificate inspection, and web fingerprinting."),
+              ("bi-tools", "#f0a500", "Sysadmins", "Monitor network connections, view running services and processes, inspect hardware, and audit installed software.")
+            ] %}
+            <div class="col-md-6">
+              <div class="result_box h-100">
+                <p class="mb-2"><i class="bi {{ item[0] }} me-2" style="color:{{ item[1] }};font-size:1.2rem;"></i><strong>{{ item[2] }}</strong></p>
+                <p class="mb-0">{{ item[3] }}</p>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+
+        {# ═══════════════════════════════════════════════════
+           MODULES
+        ═══════════════════════════════════════════════════ #}
+        <div class="tab-pane" id="modules" role="tabpanel">
+          <h4 class="tab-title color">Modules</h4>
+          <p>Cyber Toolkit is organised into six functional modules, each accessible from the top navigation bar.</p>
+
+          {% set modules = [
+            (
+              "bi-radar", "#4da6ff", "Network",
+              "Live packet capture, port scanning, diagnostics, network monitoring, and LAN host discovery.",
+              [
+                ("Network Scan", "Captures live traffic using Scapy and categorises connections as inbound, outbound, or common."),
+                ("Port Scanner", "Fast multithreaded TCP port scan on localhost with service name resolution."),
+                ("Diagnostics", "Ping, ARP table, interface info, and DNS cache viewer."),
+                ("Monitoring", "Active connections, bandwidth snapshots, top processes by network usage, and interface error stats."),
+                ("Network Map", "ARP sweep + ping fallback to discover LAN hosts. Structured traceroute to any target.")
+              ]
+            ),
+            (
+              "bi-binoculars", "#4ecca3", "Recon",
+              "OSINT and reconnaissance tools for investigating domains, IPs, and web infrastructure.",
+              [
+                ("Network Intelligence", "DNS lookup, reverse DNS, IP geolocation, and ASN lookup."),
+                ("Domain & Ownership", "WHOIS lookup and SSL/TLS certificate inspection."),
+                ("Web Footprinting", "HTTP header analysis, HTTP response viewer, technology fingerprinting, and robots.txt viewer."),
+                ("Infrastructure Discovery", "Traceroute with structured hop output.")
+              ]
+            ),
+            (
+              "bi-cpu", "#c77dff", "System",
+              "Full hardware and OS inventory — refreshable on demand, cached between sessions.",
+              [
+                ("Overview", "OS version, hostname, uptime, and hardware summary."),
+                ("CPU & Memory", "Processor details, core counts, clock speeds, and RAM usage."),
+                ("Storage & Drives", "Disk partitions, usage, and file systems."),
+                ("Network & Adapters", "All network interfaces with IPs, MACs, and link status."),
+                ("GPU & Display", "Graphics card info via pynvml and WMI."),
+                ("Power & Battery", "Battery status, charge level, and power source."),
+                ("Sensors", "Temperature and fan speed readings where available."),
+                ("Processes & Services", "Running processes and Windows service list."),
+                ("BIOS / Motherboard", "Firmware and board details via WMI."),
+                ("Connected Devices", "USB and PnP devices."),
+                ("Installed Software", "Full software inventory from Windows Registry.")
+              ]
+            ),
+            (
+              "bi-fingerprint", "#4da6ff", "Forensics",
+              "File system analysis, file inspection, malware sandbox, and image metadata extraction.",
+              [
+                ("Forensics", "File system analysis using pytsk3 for low-level inspection."),
+                ("File Analysis", "Magic signature detection, MD5/SHA1/SHA256 hashing, entropy calculation, and PE header analysis."),
+                ("Malware Sandbox", "Static analysis of uploaded files — hashes, strings, PE sections, import table, and quarantine."),
+                ("Image Analysis", "EXIF metadata extraction and basic image inspection.")
+              ]
+            ),
+            (
+              "bi-shield-lock", "#e05c5c", "Security",
+              "Vulnerability scanning, persistence detection, firewall analysis, share enumeration, and privilege escalation checks.",
+              [
+                ("Vulnerability Scanner", "Matches installed software against CVE databases (OSV + NVD) with SQLite caching. Also detects local listening services with banner grabbing."),
+                ("Persistence Detection", "Scans Registry Run keys, startup folders, non-Microsoft scheduled tasks, and suspicious services."),
+                ("Firewall Analyser", "Lists all Windows Firewall rules with per-profile status, direction, and action filtering."),
+                ("Open Shares", "Enumerates SMB shares and flags non-hidden shares with accessible paths."),
+                ("Priv Esc Checks", "Checks UAC config, AlwaysInstallElevated, unquoted service paths, writable PATH dirs, and dangerous user privileges.")
+              ]
+            ),
+            (
+              "bi-tools", "#f0a500", "Utilities",
+              "Hashing, Base64 encoding/decoding, and subnet calculation.",
+              [
+                ("Hash & Encrypt", "Hashes strings or files using MD5, SHA1, SHA256, SHA512, and more."),
+                ("Base64 Encode / Decode", "Encodes and decodes strings using Base64."),
+                ("Subnet Calculator", "VLSM subnet allocation — enter a base network and host requirements to get allocated subnets.")
+              ]
+            )
+          ] %}
+
+          {% for icon, color, name, desc, tools in modules %}
+          <div class="result_box mt-3">
+            <p class="mb-2" style="font-size:1rem;">
+              <i class="bi {{ icon }} me-2" style="color:{{ color }};font-size:1.1rem;"></i>
+              <strong>{{ name }}</strong> — {{ desc }}
+            </p>
+            <ul class="mb-0" style="padding-left:1.4rem;">
+              {% for tool_name, tool_desc in tools %}
+              <li><strong>{{ tool_name }}</strong> — {{ tool_desc }}</li>
+              {% endfor %}
             </ul>
-
-            <!-- Sub-tab content -->
-            <div class="tab-content" id="scanSubTabsContent">
-                <div class="tab-pane fade show active" id="all" role="tabpanel">
-                    {% if result.all %}
-                    <table class="table table-striped table-hover table-responsive">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Source</th>
-                                <th>Destination</th>
-                                <th>Packets</th>
-                                <th>Source Hostname</th>
-                                <th>Destination Hostname</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for row in result.all %}
-                            <tr>
-                                <td>{{ row.src }}</td>
-                                <td>{{ row.dst }}</td>
-                                <td>{{ row.count }}</td>
-                                <td>{{ row.src_hostname }}</td>
-                                <td>{{ row.dst_hostname }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% else %}
-                    <p>No results available.</p>
-                    {% endif %}
-                </div>
-
-                <div class="tab-pane fade" id="inbound" role="tabpanel">
-                    {% if result.inbound %}
-                    <table class="table table-striped table-hover">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Source</th>
-                                <th>Destination</th>
-                                <th>Packets</th>
-                                <th>Source Hostname</th>
-                                <th>Destination Hostname</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for row in result.inbound %}
-                            <tr>
-                                <td>{{ row.src }}</td>
-                                <td>{{ row.dst }}</td>
-                                <td>{{ row.count }}</td>
-                                <td>{{ row.src_hostname }}</td>
-                                <td>{{ row.dst_hostname }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% else %}
-                    <p>No inbound traffic found.</p>
-                    {% endif %}
-                </div>
-
-                <div class="tab-pane" id="outbound" role="tabpanel">
-                    {% if result.outbound %}
-                    <table class="table table-striped table-hover">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Source</th>
-                                <th>Destination</th>
-                                <th>Packets</th>
-                                <th>Source Hostname</th>
-                                <th>Destination Hostname</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for row in result.outbound %}
-                            <tr>
-                                <td>{{ row.src }}</td>
-                                <td>{{ row.dst }}</td>
-                                <td>{{ row.count }}</td>
-                                <td>{{ row.src_hostname }}</td>
-                                <td>{{ row.dst_hostname }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% else %}
-                    <p>No outbound traffic found.</p>
-                    {% endif %}
-                </div>
-
-                <div class="tab-pane fade" id="common" role="tabpanel">
-                    {% if result.common %}
-                    <table class="table table-striped table-hover">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Source</th>
-                                <th>Destination</th>
-                                <th>Packets</th>
-                                <th>Source Hostname</th>
-                                <th>Destination Hostname</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for row in result.common %}
-                            <tr>
-                                <td>{{ row.src }}</td>
-                                <td>{{ row.dst }}</td>
-                                <td>{{ row.count }}</td>
-                                <td>{{ row.src_hostname }}</td>
-                                <td>{{ row.dst_hostname }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    {% else %}
-                    <p>No common results found.</p>
-                    {% endif %}
-                </div>
-            </div>
-            {% endif %}
+          </div>
+          {% endfor %}
         </div>
 
 
-        <div class="tab-pane" id="port" role="tabpanel">
-          <form method="POST" action="/" class="scan-form">
-                <div class="tool-card">
-                    <h4 class="tab-title color"> Port Scanner</h4>
-                    <p class="tool-description">Scan open ports on a host and identify services.</p>
+        {# ═══════════════════════════════════════════════════
+           ARCHITECTURE
+        ═══════════════════════════════════════════════════ #}
+        <div class="tab-pane" id="architecture" role="tabpanel">
+          <h4 class="tab-title color">Architecture</h4>
+          <p>Cyber Toolkit follows a simple local client-server architecture entirely contained within a single process on your machine.</p>
 
-                    <input type="hidden" name="action" value="port_scan">
-                    <label for="ports" class="scan-label">Port Range:</label>
-                    <select name="ports" id="ports" class="scan-select">
-                        <option value="1025">Common Ports (1–1025)</option>
-                        <option value="49151">Registered Ports (1–49151)</option>
-                        <option value="65535">All Ports (1–65535)</option>
-                    </select>
-                    <button type="submit" class="btn-primary">Run Port Scan</button>
-                </div>
-            </form>
+          <h5 class="mt-4" style="color:#4da6ff;">Stack</h5>
+          <div class="result_box mt-2">
+            <p><strong>Frontend</strong> — Bootstrap 5 HTML/CSS/JS served by Flask's Jinja2 template engine. No JavaScript frameworks. Forms use standard HTTP POST.</p>
+            <p><strong>Backend</strong> — Python Flask application running on <code>127.0.0.1:5000</code>. All tool logic is organised into modules in the <code>tools/</code> directory.</p>
+            <p class="mb-0"><strong>Desktop wrapper</strong> — pywebview renders the Flask app inside a native OS window using the system's built-in WebView component (Edge WebView2 on Windows). No Electron, no Chromium bundled.</p>
+          </div>
 
-            {% if port_results %}
-            <table class="table table-striped table-hover table-responsive">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Port</th>
-                        <th>Port Service</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in port_results %}
-                    <tr>
-                        <td>{{ row.port }}</td>
-                        <td>{{ row.type }}</td>
-                        <td>Open</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% endif %}
+          <h5 class="mt-4" style="color:#4da6ff;">State Management</h5>
+          <div class="result_box mt-2">
+            <p>All tool results are stored in a central <code>STATE</code> dictionary in <code>app.py</code>. This is passed into every template render so any tab can access any result without page-specific state.</p>
+            <p class="mb-0">Results are also persisted to JSON files via a caching layer (<code>tools/caching_tools.py</code>). On startup, cached results are loaded back into STATE so previous scans are immediately visible without re-running.</p>
+          </div>
+
+          <h5 class="mt-4" style="color:#4da6ff;">File Structure</h5>
+          <pre>CyberToolkit/
+├── app.py                  ← Flask routes + STATE + pywebview entry point
+├── tools/
+│   ├── caching_tools.py    ← JSON cache read/write helpers
+│   ├── diagnostics.py      ← Ping, ARP, interface, DNS cache
+│   ├── forensics_tools.py  ← File analysis, malware sandbox, image analysis
+│   ├── hashing_and_encoding.py
+│   ├── network_tools.py    ← Network scan, port scan, monitoring, map
+│   ├── recon_tools.py      ← DNS, WHOIS, traceroute, geo, headers
+│   ├── security_tools.py   ← Vuln scanner, persistence, firewall, privesc
+│   ├── subnet.py
+│   └── system_tools.py     ← Hardware/OS inventory via WMI + psutil
+├── templates/              ← Jinja2 HTML templates (one per page)
+├── static/
+│   ├── style.css
+│   └── images/
+├── cache/                  ← JSON result cache files (auto-created)
+└── quarantine/             ← Malware sandbox quarantine directory</pre>
+
+          <h5 class="mt-4" style="color:#4da6ff;">Action Routing Pattern</h5>
+          <div class="result_box mt-2">
+            <p>Every form in the UI contains a hidden <code>action</code> input. The Flask route reads this value and dispatches to the appropriate tool function:</p>
+            <pre class="mb-0">action = request.form.get("action")
+if action == "vuln_scan":
+    STATE["vuln_results"] = run_vulnerability_scanner(...)
+elif action == "persistence_scan":
+    STATE["persistence_results"] = persistence_detection()</pre>
+          </div>
+
+          <h5 class="mt-4" style="color:#4da6ff;">Packaging</h5>
+          <div class="result_box mt-2">
+            <p>The app can be packaged into a standalone <code>.exe</code> using PyInstaller. A <code>resource_path()</code> helper resolves template and static file paths correctly whether running from source or from a PyInstaller bundle (<code>sys._MEIPASS</code>).</p>
+            <p class="mb-0">Flask is started with <code>use_reloader=False</code> to prevent PyInstaller's frozen process from launching a second instance on startup.</p>
+          </div>
         </div>
 
-        <div class="tab-pane" id="process" role="tabpanel">
-          <form method="POST" action="/" class="scan-form">
-                <div class="tool-card">
-                    <h4 class="tab-title color">Running Processes</h4>
-                    <p class="tool-description">View all running processes, their CPU/memory usage, and the user running them.</p>
-                    <button type="submit" class="btn-primary">Scan Processes</button>
-                    <input type="hidden" name="action" value="process_scan">
-                </div>
-            </form>
 
-            {% if running_processes %}
-            <table class="table table-striped table-hover table-responsive">
-                <thead class="table-dark">
-                    <tr>
-                        <th>PID</th>
-                        <th>Name</th>
-                        <th>User</th>
-                        <th>CPU %</th>
-                        <th>Mem %</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for p in running_processes %}
-                    <tr>
-                        <td>{{ p.pid }}</td>
-                        <td>{{ p.name }}</td>
-                        <td>{{ p.username or p.user or "N/A" }}</td>
-                        <td>{{ "%.1f"|format(p.cpu_percent or 0) }}</td>
-                        <td>{{ "%.1f"|format(p.memory_percent or p.mem_percent or 0) }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
-        </div>
+        {# ═══════════════════════════════════════════════════
+           LIBRARIES
+        ═══════════════════════════════════════════════════ #}
+        <div class="tab-pane" id="libraries" role="tabpanel">
+          <h4 class="tab-title color">Libraries & Dependencies</h4>
+          <p>Cyber Toolkit is built entirely on open-source Python libraries. All processing happens locally — no data is sent to third-party services except where explicitly initiated by you (e.g. WHOIS lookups, CVE database queries).</p>
 
-        <div class="tab-pane" id="services" role="tabpanel">
-          <form method="POST" action="/" class="scan-form">
-                <div class="tool-card">
-                    <input type="hidden" name="action" value="service_scan">
-                    <h4 class="tab-title color">Windows Services</h4>
-                    <p class="text-description">Lists all Windows services with their display names, current status, and start type.</p>
-                    <button type="submit" class="btn-primary">Scan Services</button>
-                </div>
-            </form>
+          {% set lib_groups = [
+            ("bi-box-seam", "#4da6ff", "Core Framework", [
+              ("Flask", "Local web server and template rendering engine."),
+              ("pywebview", "Wraps the Flask app in a native desktop window using the OS WebView component."),
+              ("Jinja2", "HTML templating — bundled with Flask.")
+            ]),
+            ("bi-cpu", "#4ecca3", "System & Hardware", [
+              ("psutil", "Cross-platform process, CPU, memory, disk, and network interface information."),
+              ("wmi", "Windows Management Instrumentation — BIOS, GPU, motherboard, and device info."),
+              ("cpuinfo", "Detailed CPU model, architecture, and feature flag information."),
+              ("pynvml", "NVIDIA GPU stats via NVML."),
+              ("ctypes / winreg", "Direct Windows API and registry access — built into Python standard library.")
+            ]),
+            ("bi-diagram-3", "#c77dff", "Network", [
+              ("Scapy", "Packet capture, ARP sweep, and raw network operations."),
+              ("requests", "HTTP requests for CVE APIs, geolocation, and web recon tools."),
+              ("socket / ssl", "Low-level TCP connections and TLS certificate inspection — Python standard library.")
+            ]),
+            ("bi-fingerprint", "#f0a500", "Forensics", [
+              ("pefile", "PE (Portable Executable) file parsing — headers, sections, imports, exports."),
+              ("Pillow (PIL)", "Image file opening and metadata extraction."),
+              ("exifread", "EXIF metadata extraction from image files."),
+              ("pytsk3", "Python bindings for The Sleuth Kit — low-level file system analysis."),
+              ("python-evtx", "Windows Event Log (.evtx) file parsing."),
+              ("python-registry", "Windows Registry hive file parsing."),
+              ("hashlib / struct", "Cryptographic hashing and binary data parsing — Python standard library.")
+            ]),
+            ("bi-shield-lock", "#e05c5c", "Security & CVE", [
+              ("sqlite3", "Local SQLite database for CVE lookup caching — Python standard library."),
+              ("OSV API", "Open Source Vulnerability database — queried over HTTPS for CVE lookups."),
+              ("NVD API", "NIST National Vulnerability Database — keyword-based CVE search.")
+            ]),
+            ("bi-tools", "#4da6ff", "Utilities", [
+              ("ipaddress", "IP address and subnet manipulation — Python standard library."),
+              ("subprocess", "Running system commands (ping, tracert, netsh, sc, schtasks) — standard library."),
+              ("multiprocessing", "PyInstaller freeze_support for Windows packaging — standard library.")
+            ])
+          ] %}
 
-            {% if running_services %}
-            <table class="table table-striped table-hover table-responsive table-rounded">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Name</th>
-                        <th>Display Name</th>
-                        <th>Status</th>
-                        <th>Startup</th>
-                        <th>PID</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for name, svc in running_services.items() %}
-                    <tr>
-                        <td>{{ name }}</td>
-                        <td>{{ svc.display_name }}</td>
-                        <td>{{ svc.status }}</td>
-                        <td>{{ svc.start_type }}</td>
-                        <td>{{ svc.pid or "N/A" }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% endif %}
-        </div>
-
-        <div class="tab-pane" id="dns" role="tabpanel">
-          <!-- DNS Lookup -->
-            <div class="tool-card">
-                <h4 class="tab-title color">🔎 DNS Lookup</h4>
-                <p>DNS Lookup resolves an IP address to its associated hostname (or vice versa), helping identify the server or domain behind an IP.</p>
-                <form method="POST" action="/" class="scan-form mt-2">
-                    <input type="hidden" name="action" value="dns_lookup">
-                    <label for="ip" class="scan-label">Enter IP Address:</label>
-                    <input type="text" name="ip" id="ip" class="form-control" placeholder="e.g. 8.8.8.8" required>
-                    <button type="submit" class="btn-primary">Lookup</button>
-                </form>
-
-                {% if dns_result %}
-                <div class="result_box">
-                    <p><strong>IP:</strong> {{ dns_result.ip }}</p>
-                    <p><strong>Hostname:</strong> {{ dns_result.hostname }}</p>
-                </div>
-                {% endif %}
-            </div>
-
-            <hr>
-
-            <!-- Traceroute -->
-            <h4 class="tab-title color">🌍 Traceroute</h4>
-            <p>Traceroute shows the path your request takes across the internet, revealing each “hop” between routers and networks.</p>
-            <form method="POST" action="/" class="scan-form mt-2">
-                <input type="hidden" name="action" value="traceroute">
-                <label for="trace_target" class="scan-label">Enter Host/IP:</label>
-                <input type="text" name="trace_target" id="trace_target" class="form-control mb-2" placeholder="e.g. example.com" required>
-                <button type="submit" class="btn-primary">Scan</button>
-            </form>
-
-            {% if traceroute_result %}
-            <h5>Traceroute Result For {{trace_target}}:</h5>
-            <table class="table table-striped table-hover table-responsive table-rounded">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Hop</th>
-                        <th>Latency 1</th>
-                        <th>Latency 2</th>
-                        <th>Latency 3</th>
-                        <th>Host / IP</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for hop in traceroute_result.hops %}
-                    <tr>
-                        <td>{{ hop.hop }}</td>
-                        <td>{{ hop.latency1 }}</td>
-                        <td>{{ hop.latency2 }}</td>
-                        <td>{{ hop.latency3 }}</td>
-                        <td>{{ hop.host }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% endif %}
-            <hr>
-
-            <!-- WHOIS -->
-            <h4 class="tab-title color">📑 WHOIS Lookup</h4>
-            <p>WHOIS Lookup retrieves registration details about a domain or IP, such as the owner, registrar, and creation/expiry dates.</p>
-            <form method="POST" action="/" class="scan-form mt-2">
-                <input type="hidden" name="action" value="whois">
-                <label for="whois_target" class="scan-label">Enter Domain/IP:</label>
-                <input type="text" name="whois_target" id="whois_target" class="form-control mb-2" placeholder="e.g. example.com" required>
-                <button type="submit" class="btn-primary">Lookup</button>
-            </form>
-
-            {% if whois_result %}
-            <div class="mt-3 p-3 bg-white shadow-sm">
-                <h5>WHOIS Lookup Result For {{whois_target}}:</h5>
-                <table class="table table-striped table-hover table-responsive">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Field</th>
-                            <th>Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for key, value in whois_result.items() %}
-                        <tr>
-                            <td>{{ key }}</td>
-                            <td>
-                                {% if value is iterable and value is not string %}
-                                    {% if value|length > 0 %}
-                                        <ul class="mb-0">
-                                            {% for v in value %}
-                                                <li>{{ v }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                    {% else %}
-                                        None
-                                    {% endif %}
-                                {% else %}
-                                    {{ value if value else "None" }}
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% endif %}
-            <hr>
-
-            <!-- Certificate Inspection -->
-            <h4 class="tab-title color">🔒 Certificate Inspection</h4>
-            <p>Fetches the SSL/TLS certificate of a domain, showing issuer, expiry, and Subject Alternative Names (SANs).</p>
-            <form method="POST" action="/" class="scan-form mt-2">
-                <input type="hidden" name="action" value="cert_lookup">
-                <label for="cert_target" class="scan-label">Enter Domain:</label>
-                <input type="text" name="cert_target" id="cert_target" class="form-control mb-2" placeholder="e.g. example.com" required>
-                <button type="submit" class="btn-primary">Inspect</button>
-            </form>
-
-            {% if cert_result %}
-            <div class="mt-3 p-3 bg-white shadow-sm">
-                <h5>Certificate Details for {{ cert_target }}:</h5>
-                <table class="table table-striped table-hover table-responsive">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Field</th>
-                            <th>Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for key, value in cert_result.items() %}
-                        <tr>
-                            <td>{{ key }}</td>
-                            <td>
-                                {% if value is iterable and value is not string %}
-                                    {% if value|length > 0 %}
-                                        <ul class="mb-0">
-                                            {% for v in value %}
-                                                <li>{{ v }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                    {% else %}
-                                        None
-                                    {% endif %}
-                                {% else %}
-                                    {{ value if value else "None" }}
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% endif %}
-            <hr>
-        </div>
-        <div class="tab-pane" id="misc" role="tabpanel">
-            <h4 class="tab-title color">Hash Encryption</h4>
-            <p>Convert a string or file to various hashes.</p>
-
-            <form method="POST" action="/" class="scan-form mt-2" enctype="multipart/form-data">
-                <input type="hidden" name="action" value="hash_encrypt">
-
-                <label class="scan-label" for="plain_string">Enter String:</label>
-                <input type="text" name="plain_string" id="plain_string" class="form-control" placeholder="e.g. Apple">
-
-                <label class="scan-label" for="file_input">Upload File:</label>
-                <input type="file" name="file_input" id="file_input" class="form-control">
-
-                <button type="submit" class="btn-primary">Encrypt</button>
-            </form>
-
-            {% if hashed_strings %}
-            <table class="table table-striped table-hover table-sm table-responsive">
+          {% for icon, color, group_name, libs in lib_groups %}
+          <div class="result_box mt-3">
+            <p class="mb-3" style="font-size:1rem;">
+              <i class="bi {{ icon }} me-2" style="color:{{ color }};font-size:1.1rem;"></i>
+              <strong>{{ group_name }}</strong>
+            </p>
+            <table class="table table-sm table-bordered mb-0" style="background:transparent;">
               <thead class="table-dark">
-                <tr>
-                  <th>Algorithm</th>
-                  <th>Digest (hex)</th>
-                  <th class="text-end">Actions</th>
-                </tr>
+                <tr><th style="width:180px;">Library</th><th>Purpose</th></tr>
               </thead>
               <tbody>
-                {% for algo, digest in hashed_strings.items() %}
+                {% for lib_name, lib_desc in libs %}
                 <tr>
-                  <td class="align-middle">{{ algo }}</td>
-                  <td class="align-middle">
-                    <code class="d-block text-break" id="digest-{{ loop.index }}">{{ digest }}</code>
-                  </td>
-                  <td class="text-end align-middle">
-                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="copyDigest('digest-{{ loop.index }}')">
-                      Copy
-                    </button>
-                  </td>
+                  <td class="font-monospace">{{ lib_name }}</td>
+                  <td>{{ lib_desc }}</td>
                 </tr>
                 {% endfor %}
               </tbody>
             </table>
-            {% endif %}
-            <hr>
-
-            <h4 class="tab-title color">Base64 Encode</h4>
-            <p>Converts a string to various hashes.</p>
-            <form method="POST" action="/" class="scan-form mt-2">
-                <input type="hidden" name="action" value="encode_string">
-                <label for="ip" class="scan-label">Enter String:</label>
-                <input type="text" name="encode_string" id="encode_string" class="form-control" placeholder="e.g. Orange" required>
-                <button type="submit" class="btn-primary">Encode</button>
-
-            {% if encoded_string %}
-            <table class="table table-striped table-hover table-sm table-responsive">
-              <thead class="table-dark">
-                <tr>
-                  <th>String</th>
-                  <th>Encoded Value</th>
-                  <th class="text-end">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="align-middle">{{ encoded_string.plaintext }}</td>
-                  <td class="align-middle">
-                    <code class="d-block text-break" id="base64_encoded_string">{{ encoded_string.data }}</code>
-                  </td>
-                  <td class="text-end align-middle">
-                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="copyDigest('base64_encoded_string')">
-                      Copy
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            {% endif %}
-            </form>
-            <hr>
-
-            <h4 class="tab-title color">Base64 Decode</h4>
-            <p>Converts a string to various hashes.</p>
-            <form method="POST" action="/" class="scan-form mt-2">
-                <input type="hidden" name="action" value="decode_string">
-                <label for="ip" class="scan-label">Enter Encoded String:</label>
-                <input type="text" name="decode_string" id="decode_string" class="form-control" placeholder="e.g. T3Jhbmdl" required>
-                <button type="submit" class="btn-primary">Decode</button>
-
-            {% if decoded_string %}
-            <table class="table table-striped table-hover table-sm table-responsive">
-              <thead class="table-dark">
-                <tr>
-                  <th>Encoded Value</th>
-                  <th>String</th>
-                  <th class="text-end">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="align-middle">{{ decoded_string.data }}</td>
-                  <td class="align-middle">
-                    <code class="d-block text-break" id="base64_decoded_string">{{ decoded_string.plaintext }}</code>
-                  </td>
-                  <td class="text-end align-middle">
-                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="copyDigest('base64_decoded_string')">
-                      Copy
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            {% endif %}
-            </form>
-            <hr>
-
-
-            <h4 class="tab-title color">Subnet Calculator</h4>
-            <p>Calculates subnets for a given IP.</p>
-            <form method="POST" action="/" class="scan-form mt-3">
-                <input type="hidden" name="action" value="subnet_calc">
-
-                <div class="mb-3">
-                    <label for="base_network" class="form-label">Base Network (CIDR):</label>
-                    <input type="text" id="base_network" name="base_network" class="form-control"
-                           placeholder="e.g. 192.168.1.0/24" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="requirements" class="form-label">Host Requirements (comma-separated):</label>
-                    <input type="text" id="requirements" name="requirements" class="form-control"
-                           placeholder="e.g. 50,20,10" required>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Calculate</button>
-            </form>
-
-            {% if subnet %}
-            <table class="table table-striped table-hover table-responsive">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Group</th>
-                        <th>Hosts Required</th>
-                        <th>Network</th>
-                        <th>Prefix</th>
-                        <th>Netmask</th>
-                        <th>Broadcast</th>
-                        <th>Usable Range</th>
-                        <th>Usable Count</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for res in subnet %}
-                    <tr>
-                        <td>{{ res.Group }}</td>
-                        <td>{{ res["Hosts Required"] }}</td>
-                        <td>{{ res.Network }}</td>
-                        <td>{{ res.Prefix }}</td>
-                        <td>{{ res.Netmask }}</td>
-                        <td>{{ res.Broadcast }}</td>
-                        <td>{{ res["Usable Range"] }}</td>
-                        <td>{{ res["Usable Count"] }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% endif %}
-            <hr>
-            </div>
+          </div>
+          {% endfor %}
         </div>
-        <div class="tab-pane fade" id="about" role="tabpanel">
-            <h4 class="tab-title color">About</h4>
-            <p>Convert a string or file to various hashes.</p>
+
+
+        {# ═══════════════════════════════════════════════════
+           DISCLAIMER
+        ═══════════════════════════════════════════════════ #}
+        <div class="tab-pane" id="disclaimer" role="tabpanel">
+          <h4 class="tab-title color">Disclaimer & Legal</h4>
+
+          <div class="result_box mt-3">
+            <p class="mb-2"><i class="bi bi-shield-exclamation me-2" style="color:#e05c5c;"></i><strong>Authorised Use Only</strong></p>
+            <p>Cyber Toolkit is intended for use on systems and networks you own or have explicit written permission to test. Using these tools against systems without authorisation may be illegal under the Computer Misuse Act 1990 (UK), the Computer Fraud and Abuse Act (US), and equivalent legislation in other jurisdictions.</p>
+            <p class="mb-0">The developer accepts no responsibility for misuse of this software.</p>
+          </div>
+
+          <div class="result_box mt-3">
+            <p class="mb-2"><i class="bi bi-database me-2" style="color:#f0a500;"></i><strong>Data & Privacy</strong></p>
+            <p>All scan results are stored locally on your machine in the <code>cache/</code> directory. No telemetry, analytics, or usage data is collected or transmitted.</p>
+            <p>Some tools make outbound network requests by design — for example, WHOIS lookups, IP geolocation, CVE database queries (OSV/NVD), and DNS resolution. These requests are always initiated explicitly by you clicking a button and involve only the target data you provide.</p>
+            <p class="mb-0">No credentials, scan results, or system data are ever sent to external servers automatically.</p>
+          </div>
+
+          <div class="result_box mt-3">
+            <p class="mb-2"><i class="bi bi-exclamation-triangle me-2" style="color:#f0a500;"></i><strong>CVE Data Accuracy</strong></p>
+            <p>Vulnerability scan results are based on keyword matching against the OSV and NVD databases. Results are indicative only — false positives are expected, and the absence of CVEs does not mean software is secure.</p>
+            <p class="mb-0">Always verify findings manually before taking action based on scan results.</p>
+          </div>
+
+          <div class="result_box mt-3">
+            <p class="mb-2"><i class="bi bi-bug me-2" style="color:#e05c5c;"></i><strong>Malware Sandbox</strong></p>
+            <p>The malware sandbox performs static analysis only — it does not execute uploaded files. Files submitted to the sandbox are quarantined in the local <code>quarantine/</code> directory. Handle quarantined files with care and do not execute them outside of a controlled environment.</p>
+            <p class="mb-0">The sandbox is not a substitute for professional malware analysis or enterprise endpoint detection tools.</p>
+          </div>
+
+          <div class="result_box mt-3">
+            <p class="mb-2"><i class="bi bi-info-circle me-2" style="color:#4da6ff;"></i><strong>No Warranty</strong></p>
+            <p class="mb-0">This software is provided as-is without warranty of any kind. It is a personal project intended for educational and professional development purposes. Use at your own risk.</p>
+          </div>
         </div>
+
+
+      </div>
     </main>
   </div>
 </div>
@@ -684,59 +381,20 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-window.addEventListener('load', () => {
-    const scrollPos = localStorage.getItem('scrollPos');
-    if (scrollPos) {
-      window.scrollTo(parseInt(scrollPos), parseInt(scrollPos));
-    }
-});
-
-// Save scroll position whenever the user scrolls
-window.addEventListener('scroll', () => {
-    localStorage.setItem('scrollPos', window.scrollY);
-});
-
 document.addEventListener("DOMContentLoaded", function () {
-    let triggerTabList = [].slice.call(document.querySelectorAll('#toolTabs button'))
+    const triggerTabList = [].slice.call(document.querySelectorAll('#toolTabs button'));
     triggerTabList.forEach(function (triggerEl) {
         triggerEl.addEventListener('shown.bs.tab', function (event) {
-            localStorage.setItem('activeTab', event.target.getAttribute('data-bs-target'));
-        })
+            localStorage.setItem('aboutActiveTab', event.target.getAttribute('data-bs-target'));
+        });
     });
 
-    let activeTab = localStorage.getItem('activeTab');
+    const activeTab = localStorage.getItem('aboutActiveTab');
     if (activeTab) {
-        let tab = document.querySelector('#toolTabs button[data-bs-target="' + activeTab + '"]');
-        if (tab) {
-            new bootstrap.Tab(tab).show();
-        }
+        const tab = document.querySelector('#toolTabs button[data-bs-target="' + activeTab + '"]');
+        if (tab) new bootstrap.Tab(tab).show();
     }
 });
-
-function copyDigest(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const text = el.innerText || el.textContent;
-  if (!navigator.clipboard) {
-    // fallback
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); } catch(e) {}
-    document.body.removeChild(ta);
-    return;
-  }
-  navigator.clipboard.writeText(text).then(() => {
-    // optional: show quick feedback
-    const btn = event?.currentTarget;
-    if (btn) {
-      const orig = btn.innerHTML;
-      btn.innerHTML = 'Copied';
-      setTimeout(()=> btn.innerHTML = orig, 900);
-    }
-  }).catch(()=>{/* ignore */});
-}
 </script>
 </body>
 </html>
