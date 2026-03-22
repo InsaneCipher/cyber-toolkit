@@ -7,7 +7,9 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
 </head>
 <body>
 
@@ -56,24 +58,34 @@
   <div class="row">
     <!-- Sidebar -->
     <nav class="vert-sidebar">
-        <ul class="nav flex-column nav-pills" id="toolTabs" role="tablist">
-            <li class="nav-item">
-                <button class="nav-link active" id="network-tab" data-bs-toggle="tab" data-bs-target="#network" type="button" role="tab"><span class="emoji">🔍</span> Network Scan</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" id="port-tab" data-bs-toggle="tab" data-bs-target="#port" type="button" role="tab"><span class="emoji">🚪</span> Port Scanner</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" id="diag-tab" data-bs-toggle="tab" data-bs-target="#diag" type="button" role="tab"><span class="emoji">🧪</span> Diagnostics</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" id="monitor-tab" data-bs-toggle="tab" data-bs-target="#monitor" type="button" role="tab"><span class="emoji">📈</span> Monitoring</button>
-            </li>
-            <li class="nav-item">
-                <button class="nav-link" id="net-map-tab" data-bs-toggle="tab" data-bs-target="#net-map" type="button" role="tab"><span class="emoji">🗺️</span> Network Map</button>
-            </li>
-        </ul>
-    </nav>
+  <ul class="nav flex-column nav-pills" id="toolTabs" role="tablist">
+    <li class="nav-item">
+      <button class="nav-link active" id="network-tab" data-bs-toggle="tab" data-bs-target="#network" type="button" role="tab">
+        <i class="bi bi-radar me-2" style="color:#4da6ff;"></i> Network Scan
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" id="port-tab" data-bs-toggle="tab" data-bs-target="#port" type="button" role="tab">
+        <i class="bi bi-door-open me-2" style="color:#f0a500;"></i> Port Scanner
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" id="diag-tab" data-bs-toggle="tab" data-bs-target="#diag" type="button" role="tab">
+        <i class="bi bi-activity me-2" style="color:#4ecca3;"></i> Diagnostics
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" id="monitor-tab" data-bs-toggle="tab" data-bs-target="#monitor" type="button" role="tab">
+        <i class="bi bi-graph-up me-2" style="color:#c77dff;"></i> Monitoring
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" id="net-map-tab" data-bs-toggle="tab" data-bs-target="#net-map" type="button" role="tab">
+        <i class="bi bi-map me-2" style="color:#e05c5c;"></i> Network Map
+      </button>
+    </li>
+  </ul>
+</nav>
 
     <!-- Main content -->
     <main class="col-md-10 ms-sm-auto px-md-4">

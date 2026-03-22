@@ -3,3 +3,4 @@ cve_cache.sqlite
 /dist
 /build
 *.spec
+ideas.txt

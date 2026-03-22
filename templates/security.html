@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Network Tools - Cyber Toolkit</title>
+    <title>Security - Cyber Toolkit</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -20,298 +19,658 @@
   </div>
 </nav>
 
-<!-- Navigation Bar (Below Brand) -->
+<!-- Navigation Bar -->
 <nav class="horizontal-navbar navbar navbar-expand-lg fixed-top" style="top: 56px;">
     <div class="container-fluid">
         <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'network' %}active{% endif %}" href="{{ url_for('network') }}">Network</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'recon' %}active{% endif %}" href="{{ url_for('recon') }}">Recon</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'system' %}active{% endif %}" href="{{ url_for('system') }}">System</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'forensics' %}active{% endif %}" href="{{ url_for('forensics') }}">Forensics</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'security' %}active{% endif %}" href="{{ url_for('security') }}">Security</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'utils' %}active{% endif %}" href="{{ url_for('utils') }}">Utilities</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'developer' %}active{% endif %}" href="{{ url_for('developer') }}">Developer</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {% if active == 'about' %}active{% endif %}" href="{{ url_for('about') }}">About</a>
-            </li>
+            <li class="nav-item"><a class="nav-link {% if active == 'network' %}active{% endif %}" href="{{ url_for('network') }}">Network</a></li>
+            <li class="nav-item"><a class="nav-link {% if active == 'recon' %}active{% endif %}" href="{{ url_for('recon') }}">Recon</a></li>
+            <li class="nav-item"><a class="nav-link {% if active == 'system' %}active{% endif %}" href="{{ url_for('system') }}">System</a></li>
+            <li class="nav-item"><a class="nav-link {% if active == 'forensics' %}active{% endif %}" href="{{ url_for('forensics') }}">Forensics</a></li>
+            <li class="nav-item"><a class="nav-link {% if active == 'security' %}active{% endif %}" href="{{ url_for('security') }}">Security</a></li>
+            <li class="nav-item"><a class="nav-link {% if active == 'utils' %}active{% endif %}" href="{{ url_for('utils') }}">Utilities</a></li>
+            <li class="nav-item"><a class="nav-link {% if active == 'developer' %}active{% endif %}" href="{{ url_for('developer') }}">Developer</a></li>
+            <li class="nav-item"><a class="nav-link {% if active == 'about' %}active{% endif %}" href="{{ url_for('about') }}">About</a></li>
         </ul>
     </div>
 </nav>
 
 <div class="container-fluid">
   <div class="row">
+
     <!-- Sidebar -->
     <nav class="vert-sidebar">
-      <ul class="nav flex-column nav-pills" id="toolTabs" role="tablist">
-        <li class="nav-item">
-          <button class="nav-link" id="vulnerability-tab" data-bs-toggle="tab" data-bs-target="#vulnerability" type="button" role="tab"><span class="emoji">🛡️</span> Vulnerability Scanner</button>
-        </li>
-      </ul>
+        <ul class="nav flex-column nav-pills" id="toolTabs" role="tablist">
+          <li class="nav-item">
+            <button class="nav-link" id="vulnerability-tab" data-bs-toggle="tab" data-bs-target="#vulnerability" type="button" role="tab">
+              <i class="bi bi-bug me-2" style="color:#e05c5c;"></i> Vulnerability Scanner
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="persistence-tab" data-bs-toggle="tab" data-bs-target="#persistence" type="button" role="tab">
+              <i class="bi bi-clock-history me-2" style="color:#f0a500;"></i> Persistence Detection
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="firewall-tab" data-bs-toggle="tab" data-bs-target="#firewall" type="button" role="tab">
+              <i class="bi bi-shield-check me-2" style="color:#4ecca3;"></i> Firewall Analyser
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="shares-tab" data-bs-toggle="tab" data-bs-target="#shares" type="button" role="tab">
+              <i class="bi bi-folder-symlink me-2" style="color:#4da6ff;"></i> Open Shares
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="privesc-tab" data-bs-toggle="tab" data-bs-target="#privesc" type="button" role="tab">
+              <i class="bi bi-arrow-up-circle me-2" style="color:#c77dff;"></i> Priv Esc Checks
+            </button>
+          </li>
+        </ul>
     </nav>
 
     <!-- Main content -->
     <main class="col-md-10 ms-sm-auto px-md-4">
-        <div class="tab-content" id="toolTabsContent">
+      <div class="tab-content" id="toolTabsContent">
 
-            <!-- Vulnerability Scanner Sub-Tab -->
-            <div class="tab-pane" id="vulnerability" role="tabpanel">
-              <h4 class="tab-title color">Vulnerability Scanner</h4>
-              <p>Installed software CVE lookup + local listening service detection with basic banner grabs.</p>
 
-              <!-- Run form -->
-              <form method="POST" action="{{ url_for('security') }}" class="scan-form mt-3">
-                <input type="hidden" name="action" value="vuln_scan">
+        {# ═══════════════════════════════════════════════════════════════
+           VULNERABILITY SCANNER
+        ═══════════════════════════════════════════════════════════════ #}
+        <div class="tab-pane" id="vulnerability" role="tabpanel">
+          <h4 class="tab-title color">Vulnerability Scanner</h4>
+          <p>Installed software CVE lookup + local listening service detection with basic banner grabs.</p>
 
-                <div class="row g-3 align-items-end">
-                  <div class="col-md-6">
-                    <label for="vs_limit" class="form-label">Software limit</label>
-                    <input type="number" class="form-control" id="vs_limit" name="vs_limit" value="{{ vs_limit or 50 }}" min="1" max="500">
-                    <div class="form-text">Limits CVE lookups to avoid long runs.</div>
-                  </div>
-
-                  <div class="col-md-6">
-                    <label for="vs_nmap" class="form-label">Nmap integration</label>
-                    <select class="form-select" id="vs_nmap" name="vs_nmap">
-                      <option value="1" {% if vs_nmap is not none and vs_nmap %}selected{% endif %}>Enable (if installed)</option>
-                      <option value="0" {% if vs_nmap is not none and not vs_nmap %}selected{% endif %}>Disable</option>
-                    </select>
-                    <div class="form-text">Requires user-installed Nmap; not bundled.</div>
-                  </div>
-
-                  <div class="col-md-12 d-grid mt-2">
-                    <button type="submit" class="btn btn-primary">Run Scan</button>
-                  </div>
-                </div>
-              </form>
-
-              {% if vuln_results %}
-                {% if vuln_results.error %}
-                  <div class="result_box mt-3">
-                    <p class="mb-0"><strong>Error:</strong> {{ vuln_results.error }}</p>
-                  </div>
-                {% else %}
-
-                  <!-- Cache stats -->
-                  <div class="result_box mt-3">
-                    <p class="mb-1"><strong>Cache</strong></p>
-                    <p>- Hits: {{ vuln_results.cache_stats.hits }}</p>
-                    <p>- Misses: {{ vuln_results.cache_stats.misses }}</p>
-                    <p>- Writes: {{ vuln_results.cache_stats.writes }}</p>
-                  </div>
-
-                  <!-- Local Services -->
-                  <h5 class="mt-4">Local Listening Services</h5>
-                  {% if vuln_results.service_findings and vuln_results.service_findings|length > 0 %}
-                    <table class="table table-striped table-hover table-rounded">
-                      <thead class="table-dark">
-                        <tr>
-                          <th>IP</th>
-                          <th>Port</th>
-                          <th>Process</th>
-                          <th>PID</th>
-                          <th>Exe Version</th>
-                          <th>Banner</th>
-                          <th>Confidence</th>
-                          <th>OSV</th>
-                          <th>NVD</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for s in vuln_results.service_findings %}
-                          <tr>
-                            <td>{{ s.service.listen_ip }}</td>
-                            <td>{{ s.service.port }}</td>
-                            <td>{{ s.service.process_name or '—' }}</td>
-                            <td>{{ s.service.pid or '—' }}</td>
-                            <td>{{ s.service.exe_version or '—' }}</td>
-                            <td>
-                              {% if s.banner.proto == 'http' and s.banner.http_headers %}
-                                {{ s.banner.http_headers.get('Server') or s.banner.http_headers.get('X-Powered-By') or '—' }}
-                              {% else %}
-                                {{ s.banner.banner or '—' }}
-                              {% endif %}
-                            </td>
-                            <td>{{ s.confidence }}</td>
-                            <td>{{ s.osv.count }}</td>
-                            <td>{{ s.nvd.count }}</td>
-                          </tr>
-                        {% endfor %}
-                      </tbody>
-                    </table>
-
-                    <!-- Expandable details -->
-                    <div class="accordion mt-3" id="svcAcc">
-                      {% for s in vuln_results.service_findings %}
-                        <div class="accordion-item">
-                          <h2 class="accordion-header" id="svcH{{ loop.index }}">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#svcC{{ loop.index }}">
-                              {{ s.service.listen_ip }}:{{ s.service.port }} — {{ s.service.process_name or 'Unknown' }}
-                              (OSV {{ s.osv.count }}, NVD {{ s.nvd.count }})
-                            </button>
-                          </h2>
-                          <div id="svcC{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#svcAcc">
-                            <div class="accordion-body">
-                              <p class="mb-2"><strong>Executable:</strong> {{ s.service.exe_path or '—' }}</p>
-                              <p class="mb-2"><strong>Banner proto:</strong> {{ s.banner.proto }}</p>
-                              {% if s.nmap %}
-                                <p class="mb-2"><strong>Nmap:</strong> {{ s.nmap.service }} — {{ s.nmap.version }}</p>
-                              {% endif %}
-
-                              <h6 class="mt-3">OSV CVEs (top 10)</h6>
-                              {% if s.osv.cves and s.osv.cves|length > 0 %}
-                                <ul>
-                                  {% for c in s.osv.cves[:10] %}
-                                    <li><strong>{{ c.id }}</strong> — {{ c.summary or '—' }}</li>
-                                  {% endfor %}
-                                </ul>
-                              {% else %}
-                                <p class="mb-0">None.</p>
-                              {% endif %}
-
-                              <h6 class="mt-3">NVD CVEs (top 10)</h6>
-                              {% if s.nvd.cves and s.nvd.cves|length > 0 %}
-                                <ul>
-                                  {% for c in s.nvd.cves[:10] %}
-                                    <li><strong>{{ c.id }}</strong> — {{ c.summary or '—' }}</li>
-                                  {% endfor %}
-                                </ul>
-                              {% else %}
-                                <p class="mb-0">None.</p>
-                              {% endif %}
-                            </div>
-                          </div>
-                        </div>
-                      {% endfor %}
-                    </div>
-
-                  {% else %}
-                    <div class="result_box mt-3">
-                      <p class="mb-0">No listening services detected.</p>
-                    </div>
-                  {% endif %}
-
-                  <!-- Installed software findings -->
-                  <h5 class="mt-5">Installed Software CVE Lookups</h5>
-                  {% if vuln_results.software_findings and vuln_results.software_findings|length > 0 %}
-                    <table class="table table-striped table-hover table-rounded">
-                      <thead class="table-dark">
-                        <tr>
-                          <th>Software</th>
-                          <th>Version</th>
-                          <th>Publisher</th>
-                          <th>Confidence</th>
-                          <th>OSV</th>
-                          <th>NVD</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for sw in vuln_results.software_findings %}
-                          <tr>
-                            <td>{{ sw.software.name }}</td>
-                            <td>{{ sw.software.version or '—' }}</td>
-                            <td>{{ sw.software.publisher or '—' }}</td>
-                            <td>{{ sw.confidence }}</td>
-                            <td>{{ sw.osv.count }}</td>
-                            <td>{{ sw.nvd.count }}</td>
-                          </tr>
-                        {% endfor %}
-                      </tbody>
-                    </table>
-
-                    <div class="accordion mt-3" id="swAcc">
-                      {% for sw in vuln_results.software_findings %}
-                        <div class="accordion-item">
-                          <h2 class="accordion-header" id="swH{{ loop.index }}">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#swC{{ loop.index }}">
-                              {{ sw.software.name }} {{ sw.software.version or '' }}
-                              — OSV {{ sw.osv.count }}, NVD {{ sw.nvd.count }}
-                              ({{ sw.confidence }})
-                            </button>
-                          </h2>
-                          <div id="swC{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#swAcc">
-                            <div class="accordion-body">
-
-                              {% if sw.osv.error %}
-                                <div class="result_box mb-3"><p class="mb-0"><strong>OSV error:</strong> {{ sw.osv.error }}</p></div>
-                              {% endif %}
-                              {% if sw.nvd.error %}
-                                <div class="result_box mb-3"><p class="mb-0"><strong>NVD error:</strong> {{ sw.nvd.error }}</p></div>
-                              {% endif %}
-
-                              <h6>OSV CVEs (top 10)</h6>
-                              {% if sw.osv.cves and sw.osv.cves|length > 0 %}
-                                <ul>
-                                  {% for c in sw.osv.cves[:10] %}
-                                    <li><strong>{{ c.id }}</strong> — {{ c.summary or '—' }}</li>
-                                  {% endfor %}
-                                </ul>
-                              {% else %}
-                                <p class="mb-0">None.</p>
-                              {% endif %}
-
-                              <h6 class="mt-3">NVD CVEs (top 10)</h6>
-                              {% if sw.nvd.cves and sw.nvd.cves|length > 0 %}
-                                <ul>
-                                  {% for c in sw.nvd.cves[:10] %}
-                                    <li><strong>{{ c.id }}</strong> — {{ c.summary or '—' }}</li>
-                                  {% endfor %}
-                                </ul>
-                              {% else %}
-                                <p class="mb-0">None.</p>
-                              {% endif %}
-
-                            </div>
-                          </div>
-                        </div>
-                      {% endfor %}
-                    </div>
-
-                  {% else %}
-                    <div class="result_box mt-3">
-                      <p class="mb-0">No software inventory passed into the scanner.</p>
-                    </div>
-                  {% endif %}
-
-                  <!-- Errors -->
-                  {% if vuln_results.errors and vuln_results.errors|length > 0 %}
-                    <div class="result_box mt-4">
-                      <p class="mb-2"><strong>Errors / Warnings</strong></p>
-                      <ul class="mb-0">
-                        {% for e in vuln_results.errors %}
-                          <li>{{ e }}</li>
-                        {% endfor %}
-                      </ul>
-                    </div>
-                  {% endif %}
-
-                  <!-- Export (JSON) -->
-                  <h5 class="mt-5">Export</h5>
-                  <div class="result_box mt-2">
-                    <p class="mb-2">Copy JSON (for saving/export):</p>
-                    <pre class="mb-0" style="max-height: 260px; overflow:auto;">{{ vuln_results | tojson(indent=2) }}</pre>
-                  </div>
-
-                {% endif %}
-              {% endif %}
+          <form method="POST" action="{{ url_for('security') }}" class="scan-form mt-3">
+            <input type="hidden" name="action" value="vuln_scan">
+            <div class="row g-3 align-items-end">
+              <div class="col-md-6">
+                <label for="vs_limit" class="form-label">Software limit</label>
+                <input type="number" class="form-control" id="vs_limit" name="vs_limit" value="{{ vs_limit or 50 }}" min="1" max="500">
+                <div class="form-text">Limits CVE lookups to avoid long runs.</div>
+              </div>
+              <div class="col-md-6">
+                <label for="vs_nmap" class="form-label">Nmap integration</label>
+                <select class="form-select" id="vs_nmap" name="vs_nmap">
+                  <option value="1" {% if vs_nmap is not none and vs_nmap %}selected{% endif %}>Enable (if installed)</option>
+                  <option value="0" {% if vs_nmap is not none and not vs_nmap %}selected{% endif %}>Disable</option>
+                </select>
+                <div class="form-text">Requires user-installed Nmap; not bundled.</div>
+              </div>
+              <div class="col-md-12 d-grid mt-2">
+                <button type="submit" class="btn btn-primary">Run Scan</button>
+              </div>
             </div>
+          </form>
 
+          {% if vuln_results %}
+            {% if vuln_results.error %}
+              <div class="result_box mt-3"><p class="mb-0"><strong>Error:</strong> {{ vuln_results.error }}</p></div>
+            {% else %}
+
+              <div class="result_box mt-3">
+                <p class="mb-1"><strong>Cache Stats</strong></p>
+                <p>Hits: {{ vuln_results.cache_stats.hits }} &nbsp;|&nbsp;
+                   Misses: {{ vuln_results.cache_stats.misses }} &nbsp;|&nbsp;
+                   Writes: {{ vuln_results.cache_stats.writes }}</p>
+              </div>
+
+              <!-- Local Services -->
+              <h5 class="mt-4">Local Listening Services</h5>
+              {% if vuln_results.service_findings and vuln_results.service_findings|length > 0 %}
+                <table class="table table-striped table-hover table-rounded">
+                  <thead class="table-dark">
+                    <tr><th>IP</th><th>Port</th><th>Process</th><th>PID</th><th>Exe Version</th><th>Banner</th><th>Confidence</th><th>OSV</th><th>NVD</th></tr>
+                  </thead>
+                  <tbody>
+                    {% for s in vuln_results.service_findings %}
+                      <tr>
+                        <td>{{ s.service.listen_ip }}</td>
+                        <td>{{ s.service.port }}</td>
+                        <td>{{ s.service.process_name or '—' }}</td>
+                        <td>{{ s.service.pid or '—' }}</td>
+                        <td>{{ s.service.exe_version or '—' }}</td>
+                        <td>
+                          {% if s.banner.proto == 'http' and s.banner.http_headers %}
+                            {{ s.banner.http_headers.get('Server') or s.banner.http_headers.get('X-Powered-By') or '—' }}
+                          {% else %}
+                            {{ s.banner.banner or '—' }}
+                          {% endif %}
+                        </td>
+                        <td>{{ s.confidence }}</td>
+                        <td>{{ s.osv.count }}</td>
+                        <td>{{ s.nvd.count }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+
+                <div class="accordion mt-3" id="svcAcc">
+                  {% for s in vuln_results.service_findings %}
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="svcH{{ loop.index }}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#svcC{{ loop.index }}">
+                          {{ s.service.listen_ip }}:{{ s.service.port }} — {{ s.service.process_name or 'Unknown' }}
+                          (OSV {{ s.osv.count }}, NVD {{ s.nvd.count }})
+                        </button>
+                      </h2>
+                      <div id="svcC{{ loop.index }}" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                          <p class="mb-2"><strong>Executable:</strong> {{ s.service.exe_path or '—' }}</p>
+                          <p class="mb-2"><strong>Banner proto:</strong> {{ s.banner.proto }}</p>
+                          {% if s.nmap %}<p class="mb-2"><strong>Nmap:</strong> {{ s.nmap.service }} — {{ s.nmap.version }}</p>{% endif %}
+                          <h6 class="mt-3">OSV CVEs (top 10)</h6>
+                          {% if s.osv.cves and s.osv.cves|length > 0 %}
+                            <ul>{% for c in s.osv.cves[:10] %}<li><strong>{{ c.id }}</strong> — {{ c.summary or '—' }}</li>{% endfor %}</ul>
+                          {% else %}<p class="mb-0">None.</p>{% endif %}
+                          <h6 class="mt-3">NVD CVEs (top 10)</h6>
+                          {% if s.nvd.cves and s.nvd.cves|length > 0 %}
+                            <ul>{% for c in s.nvd.cves[:10] %}<li><strong>{{ c.id }}</strong> — {{ c.summary or '—' }}</li>{% endfor %}</ul>
+                          {% else %}<p class="mb-0">None.</p>{% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <div class="result_box mt-3"><p class="mb-0">No listening services detected.</p></div>
+              {% endif %}
+
+              <!-- Software findings -->
+              <h5 class="mt-5">Installed Software CVE Lookups</h5>
+              {% if vuln_results.software_findings and vuln_results.software_findings|length > 0 %}
+                <table class="table table-striped table-hover table-rounded">
+                  <thead class="table-dark">
+                    <tr><th>Software</th><th>Version</th><th>Publisher</th><th>Confidence</th><th>OSV</th><th>NVD</th></tr>
+                  </thead>
+                  <tbody>
+                    {% for sw in vuln_results.software_findings %}
+                      <tr>
+                        <td>{{ sw.software.name }}</td>
+                        <td>{{ sw.software.version or '—' }}</td>
+                        <td>{{ sw.software.publisher or '—' }}</td>
+                        <td>{{ sw.confidence }}</td>
+                        <td>{{ sw.osv.count }}</td>
+                        <td>{{ sw.nvd.count }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+
+                <div class="accordion mt-3" id="swAcc">
+                  {% for sw in vuln_results.software_findings %}
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="swH{{ loop.index }}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#swC{{ loop.index }}">
+                          {{ sw.software.name }} {{ sw.software.version or '' }} — OSV {{ sw.osv.count }}, NVD {{ sw.nvd.count }} ({{ sw.confidence }})
+                        </button>
+                      </h2>
+                      <div id="swC{{ loop.index }}" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                          {% if sw.osv.error %}<div class="result_box mb-3"><p class="mb-0"><strong>OSV error:</strong> {{ sw.osv.error }}</p></div>{% endif %}
+                          {% if sw.nvd.error %}<div class="result_box mb-3"><p class="mb-0"><strong>NVD error:</strong> {{ sw.nvd.error }}</p></div>{% endif %}
+                          <h6>OSV CVEs (top 10)</h6>
+                          {% if sw.osv.cves and sw.osv.cves|length > 0 %}
+                            <ul>{% for c in sw.osv.cves[:10] %}<li><strong>{{ c.id }}</strong> — {{ c.summary or '—' }}</li>{% endfor %}</ul>
+                          {% else %}<p class="mb-0">None.</p>{% endif %}
+                          <h6 class="mt-3">NVD CVEs (top 10)</h6>
+                          {% if sw.nvd.cves and sw.nvd.cves|length > 0 %}
+                            <ul>{% for c in sw.nvd.cves[:10] %}<li><strong>{{ c.id }}</strong> — {{ c.summary or '—' }}</li>{% endfor %}</ul>
+                          {% else %}<p class="mb-0">None.</p>{% endif %}
+                        </div>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <div class="result_box mt-3"><p class="mb-0">No software inventory passed into the scanner.</p></div>
+              {% endif %}
+
+              {% if vuln_results.errors and vuln_results.errors|length > 0 %}
+                <div class="result_box mt-4">
+                  <p class="mb-2"><strong>Errors / Warnings</strong></p>
+                  <ul class="mb-0">{% for e in vuln_results.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                </div>
+              {% endif %}
+
+              <h5 class="mt-5">Export</h5>
+              <div class="result_box mt-2">
+                <p class="mb-2">Copy JSON:</p>
+                <pre class="mb-0" style="max-height:260px;overflow:auto;">{{ vuln_results | tojson(indent=2) }}</pre>
+              </div>
+
+            {% endif %}
+          {% endif %}
         </div>
+
+
+        {# ═══════════════════════════════════════════════════════════════
+           PERSISTENCE DETECTION
+        ═══════════════════════════════════════════════════════════════ #}
+        <div class="tab-pane" id="persistence" role="tabpanel">
+          <h4 class="tab-title color">Persistence Detection</h4>
+          <p>Scans Registry Run keys, startup folders, scheduled tasks, and suspicious services for persistence mechanisms.</p>
+
+          <form method="POST" action="{{ url_for('security') }}" class="scan-form mt-3">
+            <input type="hidden" name="action" value="persistence_scan">
+            <button type="submit" class="btn btn-warning">Run Scan</button>
+          </form>
+
+          {% if persistence_results %}
+            {% if persistence_results.error is defined %}
+              <div class="result_box mt-3"><p class="mb-0"><strong>Error:</strong> {{ persistence_results.error }}</p></div>
+            {% else %}
+
+              <!-- Summary badges -->
+              <div class="result_box mt-3">
+                <p class="mb-2"><strong>Summary</strong></p>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge bg-secondary fs-6">Registry Entries: {{ persistence_results.summary.registry_run_count }}</span>
+                  <span class="badge bg-secondary fs-6">Startup Files: {{ persistence_results.summary.startup_files_count }}</span>
+                  <span class="badge bg-secondary fs-6">Scheduled Tasks: {{ persistence_results.summary.scheduled_tasks_count }}</span>
+                  <span class="badge fs-6 {% if persistence_results.summary.suspicious_services_count > 0 %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                    Suspicious Services: {{ persistence_results.summary.suspicious_services_count }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Registry Run Keys -->
+              {% if persistence_results.registry_run %}
+                <h5 class="mt-4">Registry Run Keys</h5>
+                <table class="table table-striped table-hover table-rounded">
+                  <thead class="table-dark">
+                    <tr><th>Hive</th><th>Key</th><th>Name</th><th>Value</th></tr>
+                  </thead>
+                  <tbody>
+                    {% for entry in persistence_results.registry_run %}
+                      <tr>
+                        <td><span class="badge bg-secondary">{{ entry.hive }}</span></td>
+                        <td class="font-monospace small text-break">{{ entry.key }}</td>
+                        <td>{{ entry.name }}</td>
+                        <td class="font-monospace small text-break">{{ entry.value }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              {% endif %}
+
+              <!-- Startup Folder Files -->
+              {% if persistence_results.startup_folders %}
+                <h5 class="mt-4">Startup Folder Files</h5>
+                <table class="table table-striped table-hover table-rounded">
+                  <thead class="table-dark">
+                    <tr><th>Folder</th><th>File</th><th>Size (bytes)</th></tr>
+                  </thead>
+                  <tbody>
+                    {% for f in persistence_results.startup_folders %}
+                      <tr>
+                        <td class="font-monospace small text-break">{{ f.folder }}</td>
+                        <td>{{ f.file }}</td>
+                        <td>{{ f.size_bytes if f.size_bytes is not none else '—' }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              {% else %}
+                <div class="result_box mt-3"><p class="mb-0">No files found in startup folders.</p></div>
+              {% endif %}
+
+              <!-- Scheduled Tasks -->
+              {% if persistence_results.scheduled_tasks %}
+                <h5 class="mt-4">Non-Microsoft Scheduled Tasks</h5>
+                <table class="table table-striped table-hover table-rounded">
+                  <thead class="table-dark">
+                    <tr><th>Task Name</th><th>Status</th><th>Next Run</th><th>Run As</th><th>Command</th></tr>
+                  </thead>
+                  <tbody>
+                    {% for task in persistence_results.scheduled_tasks %}
+                      <tr>
+                        <td class="font-monospace small">{{ task.get("TaskName", "") }}</td>
+                        <td>
+                          <span class="badge {% if task.get('Status') == 'Ready' %}bg-success{% else %}bg-secondary{% endif %}">
+                            {{ task.get("Status", "—") }}
+                          </span>
+                        </td>
+                        <td class="small">{{ task.get("Next Run Time", "—") }}</td>
+                        <td class="small">{{ task.get("Run As User", "—") }}</td>
+                        <td class="font-monospace small text-break">{{ task.get("Task To Run", "—") }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              {% else %}
+                <div class="result_box mt-3"><p class="mb-0">No non-Microsoft scheduled tasks found.</p></div>
+              {% endif %}
+
+              <!-- Suspicious Services -->
+              {% if persistence_results.suspicious_services %}
+                <h5 class="mt-4">⚠️ Suspicious Services</h5>
+                <table class="table table-striped table-hover table-rounded">
+                  <thead class="table-dark">
+                    <tr><th>Service</th><th>Start Type</th><th>State</th><th>Flag</th><th>Binary Path</th></tr>
+                  </thead>
+                  <tbody>
+                    {% for svc in persistence_results.suspicious_services %}
+                      <tr class="table-warning">
+                        <td class="fw-bold">{{ svc.service }}</td>
+                        <td><span class="badge bg-dark">{{ svc.start_type }}</span></td>
+                        <td>{{ svc.state }}</td>
+                        <td class="fw-bold">{{ svc.flag }}</td>
+                        <td class="font-monospace small text-break">{{ svc.binary_path }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              {% else %}
+                <div class="result_box mt-3"><p class="mb-0">No suspicious services detected.</p></div>
+              {% endif %}
+
+              {% if persistence_results.errors %}
+                <div class="result_box mt-3">
+                  <p class="mb-2"><strong>Warnings</strong></p>
+                  <ul class="mb-0">{% for e in persistence_results.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                </div>
+              {% endif %}
+
+            {% endif %}
+          {% endif %}
+        </div>
+
+
+        {# ═══════════════════════════════════════════════════════════════
+           FIREWALL RULES ANALYSER
+        ═══════════════════════════════════════════════════════════════ #}
+        <div class="tab-pane" id="firewall" role="tabpanel">
+          <h4 class="tab-title color">Firewall Rules Analyser</h4>
+          <p>Lists all Windows Firewall rules and per-profile status via netsh.</p>
+
+          <form method="POST" action="{{ url_for('security') }}" class="scan-form mt-3">
+            <input type="hidden" name="action" value="firewall_scan">
+            <button type="submit" class="btn btn-primary">Analyse Firewall</button>
+          </form>
+
+          {% if firewall_results %}
+            {% if firewall_results.error is defined %}
+              <div class="result_box mt-3"><p class="mb-0"><strong>Error:</strong> {{ firewall_results.error }}</p></div>
+            {% else %}
+
+              <!-- Profile status -->
+              <div class="result_box mt-3">
+                <p class="mb-2"><strong>Profile Status</strong></p>
+                <div class="d-flex gap-3 flex-wrap">
+                  {% for profile, state in firewall_results.profiles.items() %}
+                    <div class="text-center px-3 py-2 border rounded bg-dark">
+                      <div class="small text-white text-capitalize">{{ profile }}</div>
+                      <div class="fw-bold fs-5 {% if state == 'ON' %}text-success{% else %}text-danger{% endif %}">{{ state }}</div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <!-- Summary badges -->
+              <div class="result_box mt-3">
+                <p class="mb-2"><strong>Summary</strong></p>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge bg-secondary fs-6">Total: {{ firewall_results.summary.total_rules }}</span>
+                  <span class="badge bg-primary fs-6">Inbound: {{ firewall_results.summary.inbound }}</span>
+                  <span class="badge bg-info text-dark fs-6">Outbound: {{ firewall_results.summary.outbound }}</span>
+                  <span class="badge bg-success fs-6">Enabled: {{ firewall_results.summary.enabled }}</span>
+                  <span class="badge bg-danger fs-6">Blocking: {{ firewall_results.summary.blocking_rules }}</span>
+                </div>
+              </div>
+
+              <!-- Filter buttons -->
+              <div class="d-flex gap-2 mt-3 mb-2 flex-wrap align-items-center">
+                <span class="small fw-bold me-1">Filter:</span>
+                <button class="btn btn-sm btn-outline-secondary fw-filter-btn active" data-filter="all">All</button>
+                <button class="btn btn-sm btn-outline-primary fw-filter-btn" data-filter="In">Inbound</button>
+                <button class="btn btn-sm btn-outline-info fw-filter-btn" data-filter="Out">Outbound</button>
+                <button class="btn btn-sm btn-outline-danger fw-filter-btn" data-filter="Block">Blocking</button>
+              </div>
+
+              <!-- Rules table -->
+              <div style="max-height:500px;overflow-y:auto;">
+                <table class="table table-striped table-hover table-rounded" id="fw-rules-table">
+                  <thead class="table-dark" style="position:sticky;top:0;">
+                    <tr><th>Name</th><th>Dir</th><th>Action</th><th>Enabled</th><th>Protocol</th><th>Local Port</th><th>Remote</th><th>Program</th></tr>
+                  </thead>
+                  <tbody>
+                    {% for rule in firewall_results.rules %}
+                      <tr class="fw-rule-row"
+                          data-direction="{{ rule.direction }}"
+                          data-action="{{ rule.action }}"
+                          {% if rule.action | lower == 'block' %}style="background:rgba(220,53,69,.08)"{% endif %}>
+                        <td class="text-break" style="max-width:200px">{{ rule.name }}</td>
+                        <td>
+                          <span class="badge {% if rule.direction | lower == 'in' %}bg-primary{% else %}bg-info text-dark{% endif %}">{{ rule.direction }}</span>
+                        </td>
+                        <td>
+                          <span class="badge {% if rule.action | lower == 'block' %}bg-danger{% else %}bg-success{% endif %}">{{ rule.action }}</span>
+                        </td>
+                        <td>
+                          <span class="badge {% if rule.enabled | lower == 'yes' %}bg-success{% else %}bg-secondary{% endif %}">{{ rule.enabled }}</span>
+                        </td>
+                        <td>{{ rule.protocol }}</td>
+                        <td>{{ rule.local_port }}</td>
+                        <td class="small text-break">{{ rule.remote_address }}</td>
+                        <td class="font-monospace small text-break" style="max-width:180px">{{ rule.program }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+
+              {% if firewall_results.errors %}
+                <div class="result_box mt-3">
+                  <p class="mb-2"><strong>Warnings</strong></p>
+                  <ul class="mb-0">{% for e in firewall_results.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                </div>
+              {% endif %}
+
+            {% endif %}
+          {% endif %}
+        </div>
+
+
+        {# ═══════════════════════════════════════════════════════════════
+           OPEN SHARES / SMB CHECKER
+        ═══════════════════════════════════════════════════════════════ #}
+        <div class="tab-pane" id="shares" role="tabpanel">
+          <h4 class="tab-title color">Open Shares / SMB Checker</h4>
+          <p>Enumerates local SMB shares and flags potentially exposed paths.</p>
+
+          <form method="POST" action="{{ url_for('security') }}" class="scan-form mt-3">
+            <input type="hidden" name="action" value="shares_scan">
+            <button type="submit" class="btn btn-primary">Check Shares</button>
+          </form>
+
+          {% if shares_results %}
+            {% if shares_results.error is defined %}
+              <div class="result_box mt-3"><p class="mb-0"><strong>Error:</strong> {{ shares_results.error }}</p></div>
+            {% else %}
+
+              <!-- Summary -->
+              <div class="result_box mt-3">
+                <p class="mb-2"><strong>Summary</strong></p>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge bg-secondary fs-6">Total: {{ shares_results.summary.total_shares }}</span>
+                  <span class="badge bg-dark fs-6">Admin Shares: {{ shares_results.summary.admin_shares }}</span>
+                  <span class="badge bg-secondary fs-6">Hidden ($): {{ shares_results.summary.hidden_shares }}</span>
+                  <span class="badge fs-6 {% if shares_results.summary.exposed_count > 0 %}bg-danger{% else %}bg-success{% endif %}">
+                    Exposed: {{ shares_results.summary.exposed_count }}
+                  </span>
+                </div>
+              </div>
+
+              {% if shares_results.exposed %}
+                <div class="result_box mt-3">
+                  <p class="mb-2"><strong>⚠️ Potentially Exposed Shares</strong></p>
+                  <ul class="mb-0">
+                    {% for s in shares_results.exposed %}
+                      <li><strong>{{ s.name }}</strong> → <code>{{ s.path }}</code> — {{ s.flag }}</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              {% else %}
+                <div class="result_box mt-3"><p class="mb-0 text-success">✓ No exposed non-hidden shares detected.</p></div>
+              {% endif %}
+
+              <h5 class="mt-4">All Shares</h5>
+              <table class="table table-striped table-hover table-rounded">
+                <thead class="table-dark">
+                  <tr><th>Share Name</th><th>Path</th><th>Remark</th><th>Hidden</th><th>Admin Share</th></tr>
+                </thead>
+                <tbody>
+                  {% for share in shares_results.shares %}
+                    <tr {% if share.get('flag') %}class="table-warning"{% endif %}>
+                      <td class="fw-bold font-monospace">{{ share.name }}</td>
+                      <td class="font-monospace small text-break">{{ share.path }}</td>
+                      <td>{{ share.remark or '—' }}</td>
+                      <td><span class="badge {% if share.hidden %}bg-secondary{% else %}bg-light text-dark border{% endif %}">{{ "Yes" if share.hidden else "No" }}</span></td>
+                      <td><span class="badge {% if share.admin_share %}bg-dark{% else %}bg-light text-dark border{% endif %}">{{ "Yes" if share.admin_share else "No" }}</span></td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+              {% if shares_results.errors %}
+                <div class="result_box mt-3">
+                  <p class="mb-2"><strong>Warnings</strong></p>
+                  <ul class="mb-0">{% for e in shares_results.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                </div>
+              {% endif %}
+
+            {% endif %}
+          {% endif %}
+        </div>
+
+
+        {# ═══════════════════════════════════════════════════════════════
+           PRIVILEGE ESCALATION CHECKS
+        ═══════════════════════════════════════════════════════════════ #}
+        <div class="tab-pane" id="privesc" role="tabpanel">
+          <h4 class="tab-title color">Privilege Escalation Checks</h4>
+          <p>Checks UAC status, AlwaysInstallElevated, unquoted service paths, writable PATH directories, and dangerous user privileges.</p>
+
+          <form method="POST" action="{{ url_for('security') }}" class="scan-form mt-3">
+            <input type="hidden" name="action" value="privesc_scan">
+            <button type="submit" class="btn btn-danger">Run Checks</button>
+          </form>
+
+          {% if privesc_results %}
+            {% if privesc_results.error is defined %}
+              <div class="result_box mt-3"><p class="mb-0"><strong>Error:</strong> {{ privesc_results.error }}</p></div>
+            {% else %}
+
+              <!-- Status strip -->
+              <div class="result_box mt-3">
+                <p class="mb-2"><strong>Summary</strong></p>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge fs-6 {% if privesc_results.summary.is_admin %}bg-danger{% else %}bg-success{% endif %}">
+                    {{ "⚠ Running as Admin" if privesc_results.summary.is_admin else "✓ Standard User" }}
+                  </span>
+                  <span class="badge fs-6 {% if not privesc_results.summary.uac_enabled %}bg-danger{% else %}bg-success{% endif %}">
+                    UAC: {{ "Enabled" if privesc_results.summary.uac_enabled else "DISABLED" }}
+                  </span>
+                  <span class="badge fs-6 {% if privesc_results.summary.always_install_elevated %}bg-danger{% else %}bg-success{% endif %}">
+                    AlwaysInstallElevated: {{ "SET" if privesc_results.summary.always_install_elevated else "Not Set" }}
+                  </span>
+                  <span class="badge fs-6 {% if privesc_results.summary.high_risk_findings > 0 %}bg-danger{% else %}bg-success{% endif %}">
+                    High Risk: {{ privesc_results.summary.high_risk_findings }}
+                  </span>
+                  <span class="badge fs-6 {% if privesc_results.summary.medium_risk_findings > 0 %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                    Medium Risk: {{ privesc_results.summary.medium_risk_findings }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Findings -->
+              {% if privesc_results.findings %}
+                <h5 class="mt-4">Findings</h5>
+                {% for finding in privesc_results.findings %}
+                  <div class="result_box mt-2">
+                      <p class="mb-0">
+                        <span class="badge {% if finding.severity == 'HIGH' %}bg-danger{% else %}bg-warning text-dark{% endif %} me-2">{{ finding.severity }}</span>
+                        <strong>{{ finding.check }}</strong> — {{ finding.detail }}
+                      </p>
+                    </div>
+                {% endfor %}
+              {% else %}
+                <div class="result_box mt-3"><p class="mb-0 text-success">✓ No privilege escalation vectors detected.</p></div>
+              {% endif %}
+
+              <!-- UAC Details -->
+              <h5 class="mt-4">UAC Configuration</h5>
+              <table class="table table-striped table-rounded" style="max-width:420px">
+                <tbody>
+                  <tr><td>EnableLUA</td><td class="font-monospace">{{ privesc_results.uac.lua_enabled }}</td></tr>
+                  <tr><td>ConsentPromptBehaviorAdmin</td><td class="font-monospace">{{ privesc_results.uac.consent_behavior }}</td></tr>
+                  <tr><td>PromptOnSecureDesktop</td><td class="font-monospace">{{ privesc_results.uac.secure_desktop }}</td></tr>
+                </tbody>
+              </table>
+
+              <!-- Unquoted Service Paths -->
+              {% if privesc_results.unquoted_service_paths %}
+                <h5 class="mt-4">⚠️ Unquoted Service Paths</h5>
+                <table class="table table-striped table-hover table-rounded">
+                  <thead class="table-dark"><tr><th>Service</th><th>Binary Path</th></tr></thead>
+                  <tbody>
+                    {% for svc in privesc_results.unquoted_service_paths %}
+                      <tr class="table-warning">
+                        <td class="fw-bold">{{ svc.service }}</td>
+                        <td class="font-monospace small text-break">{{ svc.binary_path }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              {% else %}
+                <div class="result_box mt-3"><p class="mb-0">No unquoted service paths found.</p></div>
+              {% endif %}
+
+              <!-- Writable PATH dirs -->
+              {% if privesc_results.writable_path_dirs %}
+                <h5 class="mt-4">⚠️ Writable PATH Directories</h5>
+                <ul class="list-group mt-2">
+                  {% for d in privesc_results.writable_path_dirs %}
+                    <li class="list-group-item list-group-item-warning font-monospace small">{{ d }}</li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <div class="result_box mt-3"><p class="mb-0">No writable PATH directories found.</p></div>
+              {% endif %}
+
+              <!-- Dangerous Privileges -->
+              {% if privesc_results.user_privileges %}
+                <h5 class="mt-4">Dangerous User Privileges</h5>
+                <table class="table table-striped table-hover table-rounded">
+                  <thead class="table-dark"><tr><th>Privilege</th><th>Enabled</th><th>Risk</th></tr></thead>
+                  <tbody>
+                    {% for priv in privesc_results.user_privileges %}
+                      <tr class="{% if priv.enabled %}table-danger{% endif %}">
+                        <td class="font-monospace">{{ priv.privilege }}</td>
+                        <td><span class="badge {% if priv.enabled %}bg-danger{% else %}bg-secondary{% endif %}">{{ "Yes" if priv.enabled else "No" }}</span></td>
+                        <td><span class="badge {% if priv.risk == 'HIGH' %}bg-danger{% else %}bg-secondary{% endif %}">{{ priv.risk }}</span></td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              {% else %}
+                <div class="result_box mt-3"><p class="mb-0">No dangerous privileges detected.</p></div>
+              {% endif %}
+
+              {% if privesc_results.errors %}
+                <div class="result_box mt-3">
+                  <p class="mb-2"><strong>Warnings</strong></p>
+                  <ul class="mb-0">{% for e in privesc_results.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+                </div>
+              {% endif %}
+
+            {% endif %}
+          {% endif %}
+        </div>
+
+
+      </div>{# end tab-content #}
     </main>
   </div>
 </div>
@@ -319,58 +678,76 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+// Restore scroll position
 window.addEventListener('load', () => {
     const scrollPos = localStorage.getItem('scrollPos');
-    if (scrollPos) {
-      window.scrollTo(parseInt(scrollPos), parseInt(scrollPos));
-    }
+    if (scrollPos) window.scrollTo(0, parseInt(scrollPos));
 });
-
-// Save scroll position whenever the user scrolls
 window.addEventListener('scroll', () => {
     localStorage.setItem('scrollPos', window.scrollY);
 });
 
+// Persist active tab across page loads
 document.addEventListener("DOMContentLoaded", function () {
-    let triggerTabList = [].slice.call(document.querySelectorAll('#toolTabs button'))
+    const triggerTabList = [].slice.call(document.querySelectorAll('#toolTabs button'));
     triggerTabList.forEach(function (triggerEl) {
         triggerEl.addEventListener('shown.bs.tab', function (event) {
-            localStorage.setItem('activeTab', event.target.getAttribute('data-bs-target'));
-        })
+            localStorage.setItem('activeSecurityTab', event.target.getAttribute('data-bs-target'));
+        });
     });
 
-    let activeTab = localStorage.getItem('activeTab');
+    const activeTab = localStorage.getItem('activeSecurityTab');
     if (activeTab) {
-        let tab = document.querySelector('#toolTabs button[data-bs-target="' + activeTab + '"]');
-        if (tab) {
-            new bootstrap.Tab(tab).show();
-        }
+        const tab = document.querySelector('#toolTabs button[data-bs-target="' + activeTab + '"]');
+        if (tab) new bootstrap.Tab(tab).show();
+    } else {
+        // Default: show first tab
+        const first = document.querySelector('#toolTabs button');
+        if (first) new bootstrap.Tab(first).show();
     }
 });
 
+// Firewall rule filter buttons
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".fw-filter-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            document.querySelectorAll(".fw-filter-btn").forEach(b => b.classList.remove("active"));
+            this.classList.add("active");
+            const filter = this.dataset.filter;
+            document.querySelectorAll(".fw-rule-row").forEach(row => {
+                if (filter === "all") {
+                    row.style.display = "";
+                } else if (filter === "Block") {
+                    row.style.display = row.dataset.action === "Block" ? "" : "none";
+                } else {
+                    row.style.display = row.dataset.direction === filter ? "" : "none";
+                }
+            });
+        });
+    });
+});
+
 function copyDigest(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const text = el.innerText || el.textContent;
-  if (!navigator.clipboard) {
-    // fallback
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); } catch(e) {}
-    document.body.removeChild(ta);
-    return;
-  }
-  navigator.clipboard.writeText(text).then(() => {
-    // optional: show quick feedback
-    const btn = event?.currentTarget;
-    if (btn) {
-      const orig = btn.innerHTML;
-      btn.innerHTML = 'Copied';
-      setTimeout(()=> btn.innerHTML = orig, 900);
+    const el = document.getElementById(id);
+    if (!el) return;
+    const text = el.innerText || el.textContent;
+    if (!navigator.clipboard) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch(e) {}
+        document.body.removeChild(ta);
+        return;
     }
-  }).catch(()=>{/* ignore */});
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = event?.currentTarget;
+        if (btn) {
+            const orig = btn.innerHTML;
+            btn.innerHTML = 'Copied';
+            setTimeout(() => btn.innerHTML = orig, 900);
+        }
+    }).catch(() => {});
 }
 </script>
 </body>

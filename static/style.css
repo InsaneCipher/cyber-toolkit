@@ -168,6 +168,14 @@ pre {
     border-bottom-width: medium !important;
 }
 
+.vert-sidebar .nav-link i {
+    text-shadow:
+        -0.45px -0.45px 0 #000,
+         0.45px -0.45px 0 #000,
+        -0.45px  0.45px 0 #000,
+         0.45px  0.45px 0 #000;
+}
+
 /* Hover state */
 .vert-sidebar .nav-link:hover {
     background-color: #cdcdcd !important;

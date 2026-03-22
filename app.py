@@ -1,20 +1,23 @@
-from flask import Flask, render_template, request
-import webview
 import argparse
-import threading
-import sys
-import os
 import multiprocessing
+import sys
+import threading
+import os
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from flask import Flask, render_template, request
+
+from tools.caching_tools import *
 from tools.diagnostics import get_dns_cache, ping_host, get_arp_table, get_interface_info
+from tools.forensics_tools import *
+from tools.hashing_and_encoding import *
 from tools.net_scan import *
 from tools.port_scan import *
 from tools.recon_tools import *
-from tools.hashing_and_encoding import *
 from tools.subnet import *
 from tools.system_tools import *
-from tools.forensics_tools import *
-from tools.caching_tools import *
+from tools.security_tools import *
 
 STATE = {
     # network
@@ -62,10 +65,16 @@ STATE = {
 
     # forensics tools (load cache only initially)
     "forensics_results": None,
-    "vuln_results": None,
     "file_analysis_results": None,
     "malware_report": None,
     "image_analysis_results": None,
+
+    # security tools
+    "persistence_results": None,
+    "firewall_results": None,
+    "shares_results": None,
+    "privesc_results": None,
+    "vuln_results": None
 }
 
 
@@ -79,8 +88,10 @@ def init_cached_state():
         if STATE[key] is None:
             STATE[key] = get_or_refresh(key, lambda: {"error": "not loaded"}, load_only=True)
 
-    # forensics outputs: load cache only
-    for key in ["forensics_results", "vuln_results", "file_analysis_results", "malware_report", "image_analysis_results"]:
+    # forensics + security outputs: load cache only
+    for key in ["forensics_results", "vuln_results", "file_analysis_results", "malware_report",
+                "image_analysis_results",
+                "persistence_results", "firewall_results", "shares_results", "privesc_results"]:
         if STATE[key] is None:
             STATE[key] = get_or_refresh(key, lambda: {"error": "not loaded"}, load_only=True)
 
@@ -403,17 +414,15 @@ def security():
     if request.method == "POST":
         action = request.form.get("action")
 
+        # ── Existing: Vulnerability Scanner ───────────────────────────────────
         if action == "vuln_scan":
-            # Read form inputs
             try:
                 vs_limit = int(request.form.get("vs_limit", 50))
             except ValueError:
                 vs_limit = 50
-
             vs_limit = max(1, min(vs_limit, 500))
             vs_nmap = (request.form.get("vs_nmap", "1") == "1")
 
-            # Your installed software is in STATE["software_info"]["apps"]
             apps = []
             try:
                 apps = (STATE["software_info"] or {}).get("apps", [])
@@ -425,12 +434,44 @@ def security():
             try:
                 STATE["vuln_results"] = run_vulnerability_scanner(
                     installed_software=apps[:vs_limit],
-                    use_nmap_if_available=vs_nmap
+                    use_nmap_if_available=vs_nmap,
                 )
             except Exception as e:
                 STATE["vuln_results"] = {"error": str(e)}
 
             save_cache("vuln_results", STATE["vuln_results"])
+
+        # ── New: Persistence Detection ─────────────────────────────────────────
+        elif action == "persistence_scan":
+            try:
+                STATE["persistence_results"] = persistence_detection()
+            except Exception as e:
+                STATE["persistence_results"] = {"error": str(e)}
+            save_cache("persistence_results", STATE["persistence_results"])
+
+        # ── New: Firewall Rules Analyser ───────────────────────────────────────
+        elif action == "firewall_scan":
+            try:
+                STATE["firewall_results"] = firewall_rules_analyser()
+            except Exception as e:
+                STATE["firewall_results"] = {"error": str(e)}
+            save_cache("firewall_results", STATE["firewall_results"])
+
+        # ── New: Open Shares / SMB Checker ────────────────────────────────────
+        elif action == "shares_scan":
+            try:
+                STATE["shares_results"] = open_shares_checker()
+            except Exception as e:
+                STATE["shares_results"] = {"error": str(e)}
+            save_cache("shares_results", STATE["shares_results"])
+
+        # ── New: Privilege Escalation Checks ──────────────────────────────────
+        elif action == "privesc_scan":
+            try:
+                STATE["privesc_results"] = privesc_checks()
+            except Exception as e:
+                STATE["privesc_results"] = {"error": str(e)}
+            save_cache("privesc_results", STATE["privesc_results"])
 
     return get_template("security.html", "security")
 
