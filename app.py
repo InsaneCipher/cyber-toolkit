@@ -561,7 +561,7 @@ def forensics():
                     if tmp_path:
                         try:
                             os.unlink(tmp_path)
-                        except Exception:
+                        except Exception as e:
                             pass
             elif target_path:
                 try:
