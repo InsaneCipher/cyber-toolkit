@@ -147,13 +147,18 @@ pre {
     position: fixed;
     top: 86px; /* Below navbar */
     left: 0;
-    height: calc(100vh - 57px);
+    height: calc(100vh - 86px);
     width: 246px;
     background-color: #e7e9eb;
     display: flex;
     flex-direction: column;
     z-index: 900;
     padding: 0;        /* Remove any extra padding */
+}
+
+.container-fluid > .row {
+    margin-left: 0;
+    margin-right: 0;
 }
 
 /* Remove ul spacing */
@@ -253,9 +258,15 @@ pre {
 }
 
 main {
-  margin-left: 230px; /* leave room for sidebar */
+  margin-left: 246px;
   padding-top: 1rem;
   padding-bottom: 2rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  min-width: 0;
+  width: calc(100% - 246px);  /* ← explicitly constrain width */
+  position: relative;
+  overflow-x: hidden;          /* ← prevent content spilling left */
 }
 
 /* Fix horizontal nav alignment and height */
