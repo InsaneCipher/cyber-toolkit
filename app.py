@@ -39,6 +39,8 @@ from tools.utility_tools import *
 # ─────────────────────────────────────────────
 
 STATE = {
+    "app_version": "1.0.0",
+
     # ── Network ───────────────────────────────────────────────────────────────
     "result":               None,
     "port_results":         None,
@@ -368,6 +370,15 @@ def recon():
             url = request.form.get("robots_url")
             print(f"Fetching robots.txt / sitemap for {url}...")
             STATE["robots_result"] = robots_sitemap_viewer(url)
+
+        # ── Infrastructure discovery ──────────────────────────────────────────────────
+        elif action == "infrastructure_discovery":
+            target = request.form.get("infra_target", "").strip()
+            print(f"Running infrastructure discovery on {target}...")
+            try:
+                STATE["infra_results"] = infrastructure_discovery(target)
+            except Exception as e:
+                STATE["infra_results"] = {"error": str(e)}
 
     return get_template("recon.html", "recon")
 
@@ -785,7 +796,7 @@ def developer():
 
 @app.route("/about")
 def about():
-    return render_template("about.html", title="About", active="about")
+    return get_template("about.html", "about")
 
 
 # ─────────────────────────────────────────────
